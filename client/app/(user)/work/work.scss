@@ -1,0 +1,67 @@
+#WorkHeadSection {
+    background-color: #f6a3ba;
+}
+
+#WorkHeadSection {
+    display: flex;
+    justify-content: center;
+}
+
+.HeadBox {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    text-custom-black-align: end;
+}
+
+$LIGHTING_FLOOR: 1;
+$LIGHTING_CEIL: 2;
+$LIGHTING_FLAT: 3;
+
+@mixin text3d(
+  $text-custom-black-primary, 
+  $depth: 5, 
+  $shadowsteps: 5, 
+  $shadowincrementer: 3px, 
+  $shadowopacity: .5, 
+  $primaryshadowcolour: #000, 
+  $lighting: $LIGHTING_CEIL) {
+  text-custom-black-shadow: 0 1px 0 #dba1a1, 0 1px 0 #d89999, 0 3px 0 #d59292, 0 0px 0 #d28a8a, 0 1px 0 #cf8383, 0 5px 0 #cd7c7c, 0 3px 0 #ca7474, 0 0px 0 #c76d6d, 0 0 2px rgba(230, 139, 139, 0.05), 0 -1px 5px rgba(230, 139, 139, 0.2), 0 3px 3px rgba(230, 139, 139, 0.3), 0 6px 4px rgba(230, 139, 139, 0.3), 0 8px 8px rgba(230, 139, 139, 0.3);
+}
+
+$primarycolor: rgb(230,190,190);
+
+
+.HeadWork-1, .HeadWork-2, .HeadWork-3 {
+  color: #FFF;
+  width: 100%;
+  font-weight: 600;
+  
+  @include text3d(
+    adjust-color($primarycolor, $lightness: -8%), 
+    $depth: 8, 
+    $primaryshadowcolour: adjust-color($primarycolor, $lightness: -10%, $saturation: +20%),
+    $shadowopacity: .3);
+}
+
+@media (max-width: 767px) {
+  .HeadWork-1, .HeadWork-2, .HeadWork-3 {
+    font-size: 12px;
+  }
+}
+
+.HeadWork-1, .HeadWork-3 {
+    color: #fff;
+    font-size: 30px;
+}
+
+.HeadWork-2 {
+    font-weight: 500;
+    color: #FDA8FF;
+    font-size: 22px;
+}
+
+.HeadWork-3 {
+    font-weight: 500;
+    font-size: 22px;
+}
