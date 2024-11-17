@@ -7,8 +7,9 @@ export interface Vote {
     content: string,
     refers: VoteRefers[],
     documents: VoteDocuments[],
-    date: string,
     result: VoteResult,
+    createdAt: string;
+    updatedAt: string;
 }
 
 interface VoteRefers {

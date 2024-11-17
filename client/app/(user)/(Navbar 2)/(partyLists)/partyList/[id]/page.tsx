@@ -13,20 +13,20 @@ import PartyListCard from "@/components/PartyList/PartyListCard";
 import { getPartyList } from '@/app/functions/PartyList';
 import Image from "next/image";
 
-export async function generateMetadata(props : { params : { id:string } }) {
+export async function generateMetadata(props: { params: { id: string } }) {
   const params = await props.params
   const id = params.id
-  const partyList : PartyList = await getPartyList(parseInt(id));
+  const partyList: PartyList = await getPartyList(parseInt(id));
   const imgSrc = process.env.NEXT_PUBLIC_PARTYLIST_IMG_FULL_PATH
 
   return {
     title: `ทำความรู้จัก ${partyList.nickName} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
     description:
-    `${partyList.rank} ${partyList.bio.shortMessage} ${partyList.nickName} ${partyList.bio.classroom}`,
+      `${partyList.rank} ${partyList.bio.shortMessage} ${partyList.nickName} ${partyList.bio.classroom}`,
     openGraph: {
       title: `ทำความรู้จัก ${partyList.nickName} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
       description:
-      `${partyList.rank} | ${partyList.bio.shortMessage} | ${partyList.nickName} | ${partyList.bio.classroom}`,
+        `${partyList.rank} | ${partyList.bio.shortMessage} | ${partyList.nickName} | ${partyList.bio.classroom}`,
       images: {
         url: `${imgSrc}${partyList.profile_image_full}`
       }
@@ -163,24 +163,27 @@ async function AboutPartyList(props: { params: { id: string } }) {
                 key={contact.id}
                 href={contact.link}
                 target="_blank"
+                className="block"
               >
                 <Button
                   variant="outline"
-                  className="group relative overflow-hidden px-6 py-3 bg-white dark:bg-stone-200 hover:bg-white/90 border border-gray-200 shadow-sm transition-all duration-300"
+                  className="flex items-center justify-between w-full gap-4 px-5 py-3 rounded-lg dark:bg-blue-400 dark:hover:bg-blue-500 bg-blue-300 hover:bg-blue-400 text-white transition-all duration-300"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-yellow-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                   <div className="flex items-center gap-3">
                     <Image
+                      width={24}
+                      height={24}
                       src={platformIconSrc + contact.platform.icon}
                       alt={contact.username}
-                      className="w-5 h-5"
+                      className="w-6 h-6"
                     />
-                    <span className="font-medium">{contact.platform.name}</span>
-                    <ExternalLink className="w-4 h-4 opacity-100 transition-opacity duration-300" />
+                    <span className="text-lg">{contact.platform.name}</span>
                   </div>
+                  <ExternalLink className="w-5 h-5 text-white opacity-90 hover:opacity-100 transition-opacity duration-300" />
                 </Button>
               </Link>
             ))}
+
           </div>
         </div>
       </section>

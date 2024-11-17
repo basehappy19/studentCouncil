@@ -7,7 +7,7 @@ export interface Transaction {
     amount: string;
     budgetBefore: string;
     type: string | 'INCOME' | 'EXPENSE';
-    date: string;
     byUser: User;
     createdAt: string;
+    updatedAt: string;
 }

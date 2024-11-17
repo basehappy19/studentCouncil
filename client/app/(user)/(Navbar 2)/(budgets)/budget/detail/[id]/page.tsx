@@ -33,7 +33,7 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
         <Card className="mb-8 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10">
           <CardContent className="pt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-              <div className="flex justify-center md:justify-start">
+              <div className="flex justify-center">
                 <div
                   className="w-48 h-48 rounded-full flex items-center justify-center"
                   style={{ backgroundColor: budget.department.color }}
@@ -51,6 +51,12 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
                   งบประมาณทั้งหมด: {' '}
                   <span className="text-green-600 dark:text-green-400">
                     {budget.total.toLocaleString()} บาท
+                  </span>
+                </div>
+                <div className="text-xl font-semibold">
+                  หัวหน้วฝ่าย: {' '}
+                  <span className="text-green-600 dark:text-green-400">
+                    {budget.department.leader.firstName} {budget.department.leader.middleName} {budget.department.leader.lastName}
                   </span>
                 </div>
                 <Separator className="my-4" />
@@ -80,7 +86,8 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
                     <TableHead>คำอธิบาย</TableHead>
                     <TableHead className="text-right">จำนวน</TableHead>
                     <TableHead>ประเภท</TableHead>
-                    <TableHead>วันที่</TableHead>
+                    <TableHead>สร้างเมื่อ</TableHead>
+                    <TableHead>อัพเดทเมื่อ</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -104,7 +111,14 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          {new Date(transaction.date).toLocaleDateString("th-TH", {
+                          {new Date(transaction.createdAt).toLocaleDateString("th-TH", {
+                            year: "numeric",
+                            month: "long",
+                            day: "2-digit",
+                          })}
+                        </TableCell>
+                        <TableCell>
+                          {new Date(transaction.updatedAt).toLocaleDateString("th-TH", {
                             year: "numeric",
                             month: "long",
                             day: "2-digit",
