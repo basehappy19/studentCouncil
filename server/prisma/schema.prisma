@@ -19,7 +19,9 @@ model Department {
   name        String
   description String    @db.Text
   color       String
-  budget      Budget?   
+  budget      Budget?
+  leaderId    Int?       @unique  
+  leader      PartyList? @relation("LeaderToDepartments", fields: [leaderId], references: [id])
 }
 
 model Budget {
@@ -45,13 +47,14 @@ model Transaction {
   budgetBefore    Float     
   budgetAfter     Float     
   type            TransactionType 
-  date            DateTime   @default(now())
   byUserId        Int
   byUser          User       @relation("TransactionsCreated", fields: [byUserId], references: [id])
   editByUserId    Int?
   editByUser      User?       @relation("TransactionsEdited", fields: [editByUserId], references: [id])
   budgetId        Int
   budget          Budget     @relation(fields: [budgetId], references: [id])
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 }
 
 enum CheckInType {
@@ -149,10 +152,11 @@ model Vote {
   title       String
   description String         @db.Text
   content     String
-  date        DateTime       @default(now())
   refers      VoteRefer[]    
   documents   VoteDocument[] 
   result      VoteResult?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 }
 
 model Refer {
@@ -248,24 +252,25 @@ model NoVote {
 }
 
 model PartyList {
-  id Int @id @default(autoincrement())
-  firstName String
-  middleName String?
-  lastName String
-  nickName String
-  bio      Bio?      @relation(fields: [bioId], references: [id])
-  bioId    Int?      @unique
-  contacts Contact[]
-  rank String @unique
-  profile_image_full String @default("default-image-partyList.png")
-  profile_image_128x128 String @default("default-image-partyList_128x128.png")
-  roles           RoleForPartyList[]
-  showInHomepage Boolean @default(false)
-  user            User?             @relation 
-  voteAgrees VoteAgree[]
-  voteDisagrees VoteDisagree[]
-  voteAbstains VoteAbstain[]
-  noVotes NoVote[]
+  id                      Int                @id @default(autoincrement())
+  firstName              String
+  middleName             String?
+  lastName               String
+  nickName               String
+  bio                    Bio?               @relation(fields: [bioId], references: [id])
+  bioId                  Int?               @unique
+  contacts               Contact[]
+  rank                   String             @unique
+  profile_image_full     String             @default("default-image-partyList.png")
+  profile_image_128x128  String             @default("default-image-partyList_128x128.png")
+  roles                  RoleForPartyList[]
+  showInHomepage         Boolean            @default(false)
+  user                   User?              @relation 
+  voteAgrees             VoteAgree[]
+  voteDisagrees          VoteDisagree[]
+  voteAbstains           VoteAbstain[]
+  noVotes                NoVote[]
+  departmentsLeader      Department[]       @relation("LeaderToDepartments")
 }
 
 model Role {

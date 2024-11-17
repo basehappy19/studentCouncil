@@ -97,7 +97,7 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
                         </TableCell>
                         <TableCell>
                           <Badge
-                            variant={transaction.type === "INCOME" ? "success" : "destructive"}
+                            variant={transaction.type === "INCOME" ? "default" : "destructive"}
                             className="font-semibold"
                           >
                             {transaction.type === "INCOME" ? "รายรับ" : "รายจ่าย"}
@@ -111,21 +111,21 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
                           })}
                         </TableCell>
                       </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center">
-                        ไม่มีข้อมูล
-                      </TableCell>
-                    </TableRow>
+                ))
+                ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center">
+                    ไม่มีข้อมูล
+                  </TableCell>
+                </TableRow>
                   )}
-                </TableBody>
-              </Table>
-            </ScrollArea>
-          </CardContent>
-        </Card>
-      </div>
+              </TableBody>
+            </Table>
+          </ScrollArea>
+        </CardContent>
+      </Card>
     </div>
+    </div >
   );
 }
 
