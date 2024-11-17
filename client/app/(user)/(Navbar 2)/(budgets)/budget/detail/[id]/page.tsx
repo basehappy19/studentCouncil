@@ -1,176 +1,130 @@
-import { getBudgetInDepartment } from "@/app/functions/Budget";
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { Budget } from "@/app/interfaces/Budget/Budget";
+import { getBudgetInDepartment } from "@/app/functions/Budget";
 
-export async function generateMetadata(props: { params : Promise<{ id: string }> }) {
-  const params = await props.params
-  const id = params.id
+export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const id = params.id;
   const budget: Budget = await getBudgetInDepartment(parseInt(id));
   return {
     title: `งบประมาณ${budget.title} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
-    description:
-      "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามงบประมาณเราได้ที่นี้",
+    description: "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามงบประมาณเราได้ที่นี้",
     openGraph: {
       title: `งบประมาณ${budget.title} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
-      description:
-        "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามงบประมาณเราได้ที่นี้",
+      description: "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามงบประมาณเราได้ที่นี้",
     },
   };
 }
 
-async function BudgetInDepartment(props: { params : Promise<{ id: string }> }) {
-  const params = await props.params
-  const id = params.id
-  const budget : Budget = await getBudgetInDepartment(parseInt(id))
-  console.log(budget);
-  
+async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const id = params.id;
+  const budget: Budget = await getBudgetInDepartment(parseInt(id));
+
   return (
-    <div className="min-h-screen
-        dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 
-        bg-gradient-to-br from-blue-50 via-yellow-50 to-pink-50">
-      <section className="bg-custom-section-primary p-10">
-        <div className="container mx-auto px-4">
-          <div className="w-full max-w-[600px] mx-auto">
-            <div className="text-start">
-              <h1
-                style={{
-                  textShadow:
-                    "0 1px 0 var(--color-text-shadow),0 1px 0 var(--color-text-shadow-1),0 3px 0 var(--color-text-shadow-3),0 0 0 var(--color-text-shadow-4),0 1px 0 var(--color-text-shadow-5),0 5px 0 var(--color-text-shadow-6),0 3px 0 var(--color-text-shadow-7),0 0 0 var(--color-text-shadow-8),0 0 2px var(--color-text-shadow-9),0 -1px 5px var(--color-text-shadow-10),0 3px 3px var(--color-text-shadow-11),0 6px 4px var(--color-text-shadow-12),0 8px 8px var(--color-text-shadow-13)",
-                }}
-                className="text-custom-white text-5xl font-semibold w-full"
-              >
-                ติดตามงบประมาณ
-              </h1>
-            </div>
-            <div className="text-end">
-              <h1
-                style={{
-                  textShadow:
-                    "0 1px 0 var(--color-text-shadow),0 1px 0 var(--color-text-shadow-1),0 3px 0 var(--color-text-shadow-3),0 0 0 var(--color-text-shadow-4),0 1px 0 var(--color-text-shadow-5),0 5px 0 var(--color-text-shadow-6),0 3px 0 var(--color-text-shadow-7),0 0 0 var(--color-text-shadow-8),0 0 2px var(--color-text-shadow-9),0 -1px 5px var(--color-text-shadow-10),0 3px 3px var(--color-text-shadow-11),0 6px 4px var(--color-text-shadow-12),0 8px 8px var(--color-text-shadow-13)",
-                }}
-                className="text-custom-white text-5xl font-semibold w-full"
-              >
-                ฝ่าย{budget.title}
-              </h1>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="p-10">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row flex-wrap justify-center">
-            <div className={`w-full lg:w-1/2 mx-auto text-center`}>
-              <div
-                className={`mb-3 flex justify-center mx-auto w-[250px] h-[250px] border border-[#ccc] rounded-[50%] align-middle items-center`}
-                style={{ backgroundColor: budget.department.color }}>
-                <div className="text-5xl text-custom-white font-semibold">
-                  {budget.title}
+    <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header Section */}
+        <Card className="mb-8 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10">
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+              <div className="flex justify-center md:justify-start">
+                <div
+                  className="w-48 h-48 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: budget.department.color }}
+                >
+                  <span className="text-4xl font-bold text-white">
+                    {budget.title}
+                  </span>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <h1 className="text-3xl font-bold tracking-tight">
+                  ฝ่าย{budget.title}
+                </h1>
+                <div className="text-2xl font-semibold">
+                  งบประมาณทั้งหมด: {' '}
+                  <span className="text-green-600 dark:text-green-400">
+                    {budget.total.toLocaleString()} บาท
+                  </span>
+                </div>
+                <Separator className="my-4" />
+                <div>
+                  <h3 className="font-semibold mb-2">หน้าที่ของฝ่าย{budget.department.name}</h3>
+                  <p className="text-zinc-600 dark:text-zinc-400">
+                    {budget.department.description}
+                  </p>
                 </div>
               </div>
             </div>
-            <div className="w-full lg:w-1/2 mx-auto text-center items-start">
-              <div className="mt-12">
-                <div className={`InfoAmountText`}>
-                จำนวน{" "}
-                <span className={`${budget.department.color}`}>
-                  {budget.total}
-                </span>{" "}
-                บาท
-              </div>
-                <hr />
-                <div className="text-2xl mt-4">
-                  หน้าที่ของฝ่าย{budget.department.name}
-                </div>
-                <div className="text-start text-custom-gray">
-                  {budget.department.description}
-                </div>
-              </div>
-            </div>
-          </div>
-          <hr />
-        </div>
-        <div className="container mx-auto py-8 px-4">
-          <h1 className="text-center font-semibold mb-8 text-3xl">
-            บัญชีงบประมาณฝ่าย{budget.title}
-          </h1>
-          <div className="bg-custom-white relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3" scope="col">
-                    #
-                  </th>
-                  <th className="px-6 py-3" scope="col">
-                    หัวข้อ
-                  </th>
-                  <th className="px-6 py-3" scope="col">
-                    คำอธิบาย
-                  </th>
-                  <th className="px-6 py-3" scope="col">
-                    จำนวน
-                  </th>
-                  <th className="text-center px-6 py-3" scope="col">
-                    ประเภท
-                  </th>
-                  <th className="px-6 py-3" scope="col">
-                    วันที่
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {budget.transactions.length > 0 ? (
-                  budget.transactions.map((transaction, index) => (
-                    <tr
-                      className="bg-custom-white border-b border-custom-light-2 hover:bg-gray-300"
-                      key={transaction.id}
-                    >
-                      <td className="px-6 py-4">{index + 1}</td>
-                      <th scope="row" className="px-6 py-4">
-                        {transaction.title}
-                      </th>
-                      <td className="px-6 py-4">
-                        {transaction.description}
-                      </td>
-                      <td className="px-6 py-4">
-                        {transaction.amount}
-                      </td>
-                      <td
-                        className="px-6 py-4"
-                        style={{
-                          backgroundColor:
-                            transaction.type === "INCOME" ? "#74e5a1" : "#eb344f",
-                        }}
-                      >
-                        {transaction.type === "INCOME" ? (
-                          <div className="font-bold text-center text-custom-black">
-                            รายรับ
-                          </div>
-                        ) : (
-                          <div className="font-bold text-center text-custom-black">
-                            รายจ่าย
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        {new Date(
-                          new Date(transaction.date).getTime()
-                        ).toLocaleDateString("th-TH", {
-                          year: "numeric",
-                          month: "long",
-                          day: "2-digit",
-                        })}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr className="bg-custom-white border-b border-custom-light-2 hover:bg-gray-300">
-                    <td colSpan={6} className="text-center py-4">ไม่มีข้อมูล</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+          </CardContent>
+        </Card>
+
+        {/* Transactions Table */}
+        <Card>
+          <CardHeader>
+            <CardTitle>บัญชีงบประมาณฝ่าย{budget.title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-[600px] rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-12">#</TableHead>
+                    <TableHead>หัวข้อ</TableHead>
+                    <TableHead>คำอธิบาย</TableHead>
+                    <TableHead className="text-right">จำนวน</TableHead>
+                    <TableHead>ประเภท</TableHead>
+                    <TableHead>วันที่</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {budget.transactions.length > 0 ? (
+                    budget.transactions.map((transaction, index) => (
+                      <TableRow key={transaction.id}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell className="font-medium">
+                          {transaction.title}
+                        </TableCell>
+                        <TableCell>{transaction.description}</TableCell>
+                        <TableCell className="text-right">
+                          {transaction.amount.toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={transaction.type === "INCOME" ? "success" : "destructive"}
+                            className="font-semibold"
+                          >
+                            {transaction.type === "INCOME" ? "รายรับ" : "รายจ่าย"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {new Date(transaction.date).toLocaleDateString("th-TH", {
+                            year: "numeric",
+                            month: "long",
+                            day: "2-digit",
+                          })}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center">
+                        ไม่มีข้อมูล
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
