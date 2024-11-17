@@ -1,10 +1,16 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router()
 
-const { AllVote, Vote, AddVote } = require('../Controllers/VoteController')
+const { AllVotes, AddVote, RemoveVote, getVote } = require('../Controllers/VoteController');
+const { upload } = require('../Middlewares/UploadsMiddlewares');
 
-router.get("/vote", AllVote)
-router.get("/vote/:id", Vote)
-router.post("/vote", AddVote)
+router.get("/votes", AllVotes)
+router.get("/vote/:id", getVote)
+router.delete("/vote", RemoveVote)
+router.post("/vote", (req, res, next) => {
+    req.params.fieldName = 'voteDocumentFiles';
+    req.params.type = 'documents';
+    next();
+}, upload, AddVote)
 
-module.exports = router
+module.exports = router;

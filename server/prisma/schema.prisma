@@ -1,0 +1,419 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Department {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String    @db.Text
+  color       String
+  budget      Budget?   
+}
+
+model Budget {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String @db.Text
+  total       Float @default(0)
+  department  Department?  @relation(fields: [departmentId], references: [id])
+  departmentId    Int?      @unique
+  transactions Transaction[]
+}
+
+enum TransactionType {
+  INCOME   
+  EXPENSE  
+}
+
+model Transaction {
+  id              Int        @id @default(autoincrement())
+  title           String
+  description     String     @db.Text
+  amount          Float     
+  budgetBefore    Float     
+  budgetAfter     Float     
+  type            TransactionType 
+  date            DateTime   @default(now())
+  byUserId        Int
+  byUser          User       @relation("TransactionsCreated", fields: [byUserId], references: [id])
+  editByUserId    Int?
+  editByUser      User?       @relation("TransactionsEdited", fields: [editByUserId], references: [id])
+  budgetId        Int
+  budget          Budget     @relation(fields: [budgetId], references: [id])
+}
+
+enum CheckInType {
+  NORMAL     
+  SICK_LEAVE 
+  PERSONAL_LEAVE 
+}
+
+model User {
+  id           Int        @id @default(autoincrement())
+  email        String
+  username     String
+  password     String
+  fullName     String
+  displayName  String
+  profile_image_full String @default("default-image-user_full.png")
+  profile_image_128x128 String @default("default-image-partyList_128x128.png")
+  sid          Int
+  accessId     Int
+  access       Access     @relation(fields: [accessId], references: [id])
+  partyListId  Int?       @unique
+  partyList    PartyList? @relation(fields: [partyListId], references: [id])
+  checkIns     CheckIn[]  
+  works        Work[]     
+  operatedWorks WorkOperators[]
+  transactionsCreated Transaction[] @relation("TransactionsCreated")
+  transactionsEdited Transaction[] @relation("TransactionsEdited")
+}
+
+model Work {
+  id          Int           @id @default(autoincrement())
+  title       String
+  description String        @db.Text
+  postById    Int           
+  postBy      User          @relation(fields: [postById], references: [id]) 
+  date  DateTime @default(now())
+  images      WorkImages[]  
+  operators   WorkOperators[] 
+  tags        TagInWorks[]
+}
+
+model WorkImages {
+  id      Int   @id @default(autoincrement())
+  path    String
+  workId  Int   
+  work    Work  @relation(fields: [workId], references: [id])
+}
+
+model WorkOperators {
+  id      Int   @id @default(autoincrement())
+  userId  Int   
+  workId  Int   
+  user    User  @relation(fields: [userId], references: [id])
+  work    Work  @relation(fields: [workId], references: [id])
+
+  @@unique([userId, workId]) 
+}
+
+model WorkTag {
+  id      Int   @id @default(autoincrement())
+  title   String
+  icon    String?
+  color   String?
+  works   TagInWorks[]    
+}
+
+model TagInWorks {
+  id      Int   @id @default(autoincrement())
+  workId  Int   
+  tagId   Int   
+  work    Work  @relation(fields: [workId], references: [id])
+  tag     WorkTag @relation(fields: [tagId], references: [id])
+
+  @@unique([workId, tagId])
+}
+
+model CheckIn {
+  id         Int         @id @default(autoincrement())
+  attendTime DateTime    @default(now()) 
+  type       CheckInType 
+  reason     String?     
+  userId     Int         
+  user       User        @relation(fields: [userId], references: [id])
+}
+
+model Access {
+  id  Int @id @default(autoincrement())
+  name String 
+  description String  @db.Text
+  user        User[]
+}
+
+model Vote {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String         @db.Text
+  content     String
+  date        DateTime       @default(now())
+  refers      VoteRefer[]    
+  documents   VoteDocument[] 
+  result      VoteResult?
+}
+
+model Refer {
+  id     Int        @id @default(autoincrement())
+  name   String
+  votes  VoteRefer[] 
+}
+
+model Document {
+  id     Int        @id @default(autoincrement())
+  name   String
+  path   String
+  votes  VoteDocument[] 
+}
+
+model VoteRefer {
+  id      Int     @id @default(autoincrement())
+  voteId  Int     
+  referId Int     
+  vote    Vote    @relation(fields: [voteId], references: [id])
+  refer   Refer   @relation(fields: [referId], references: [id])
+
+  @@unique([voteId, referId])
+}
+
+model VoteDocument {
+  id         Int     @id @default(autoincrement())
+  voteId     Int     
+  documentId Int     
+  vote       Vote      @relation(fields: [voteId], references: [id])
+  document   Document  @relation(fields: [documentId], references: [id])
+
+  @@unique([voteId, documentId])
+}
+
+model VoteResult {
+  id              Int               @id @default(autoincrement())
+  maxAttendees    VoteMaxAttendees? @relation(fields: [maxAttendeesId], references: [id])
+  maxAttendeesId  Int?              @unique
+  agrees          VoteAgree[]       
+  disagrees       VoteDisagree[]    
+  abstains        VoteAbstain[]     
+  noVotes     NoVote[]  
+  vote            Vote              @relation(fields: [voteId], references: [id]) 
+  voteId          Int               @unique
+}
+
+model VoteMaxAttendees {
+  id     Int @id @default(autoincrement())
+  number Int
+  result VoteResult? @relation
+}
+
+model VoteAgree {
+  id          Int        @id @default(autoincrement())
+  partyListId Int        
+  resultId    Int        
+  result      VoteResult @relation(fields: [resultId], references: [id])
+  partyList   PartyList  @relation(fields: [partyListId], references: [id]) 
+
+  @@unique([partyListId, resultId]) 
+}
+
+model VoteDisagree {
+  id          Int        @id @default(autoincrement())
+  partyListId Int        
+  resultId    Int        
+  result      VoteResult @relation(fields: [resultId], references: [id])
+  partyList   PartyList  @relation(fields: [partyListId], references: [id]) 
+
+  @@unique([partyListId, resultId]) 
+}
+
+model VoteAbstain {
+  id          Int        @id @default(autoincrement())
+  partyListId Int        
+  resultId    Int        
+  result      VoteResult @relation(fields: [resultId], references: [id])
+  partyList   PartyList  @relation(fields: [partyListId], references: [id]) 
+
+  @@unique([partyListId, resultId]) 
+}
+
+model NoVote {
+  id          Int        @id @default(autoincrement())
+  partyListId Int        
+  reason      String?    @default("ไม่อยู่ลงคะแนน")
+  resultId    Int        
+  result      VoteResult @relation(fields: [resultId], references: [id])
+  partyList   PartyList  @relation(fields: [partyListId], references: [id]) 
+
+  @@unique([partyListId, resultId]) 
+}
+
+model PartyList {
+  id Int @id @default(autoincrement())
+  firstName String
+  middleName String?
+  lastName String
+  nickName String
+  bio      Bio?      @relation(fields: [bioId], references: [id])
+  bioId    Int?      @unique
+  contacts Contact[]
+  rank String @unique
+  profile_image_full String @default("default-image-partyList.png")
+  profile_image_128x128 String @default("default-image-partyList_128x128.png")
+  roles           RoleForPartyList[]
+  showInHomepage Boolean @default(false)
+  user            User?             @relation 
+  voteAgrees VoteAgree[]
+  voteDisagrees VoteDisagree[]
+  voteAbstains VoteAbstain[]
+  noVotes NoVote[]
+}
+
+model Role {
+  id Int @id @default(autoincrement())
+  name String
+  parties RoleForPartyList[]
+}
+
+model RoleForPartyList {
+  id          Int       @id @default(autoincrement())
+  partyListId Int       
+  roleId      Int       
+  partyList   PartyList @relation(fields: [partyListId], references: [id])
+  role        Role      @relation(fields: [roleId], references: [id])
+
+  @@unique([partyListId, roleId]) 
+}
+
+model Bio {
+  id                Int           @id @default(autoincrement())
+  shortMessage      String
+  classroom         String
+  experiences       ExperienceOwnPartyList[]
+  skills            SkillOwnPartyList[]
+  messageToStudent  String
+  partyList         PartyList?    @relation 
+}
+
+model Experience {
+  id Int @id @default(autoincrement())
+  title String
+  description String  @db.Text
+  date DateTime
+  owners      ExperienceOwnPartyList[]
+}
+
+model ExperienceOwnPartyList {
+  id            Int        @id @default(autoincrement())
+  experienceId  Int       
+  bioId         Int        
+  experience    Experience @relation(fields: [experienceId], references: [id])
+  bio           Bio        @relation(fields: [bioId], references: [id])
+  @@unique([experienceId, bioId]) 
+}
+
+model Skill {
+  id Int @id @default(autoincrement())
+  name String
+  icon String?
+  owners SkillOwnPartyList[]
+}
+
+model SkillOwnPartyList {
+  id Int @id @default(autoincrement())
+  skillId Int
+  bioId Int
+  skill Skill @relation(fields: [skillId], references: [id])
+  bio Bio @relation(fields: [bioId], references: [id])
+}
+
+model Contact {
+  id          Int        @id @default(autoincrement())
+  username    String     
+  link        String     
+  partyListId Int        
+  partyList   PartyList  @relation(fields: [partyListId], references: [id])
+  platformId  Int        
+  platform    Platform   @relation(fields: [platformId], references: [id])
+
+  @@unique([partyListId, platformId]) 
+}
+
+model Platform {
+  id     Int     @id @default(autoincrement())
+  name   String  
+  icon   String  
+  color  String  
+  contacts Contact[] 
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  title String
+  icon  String?
+  thumbnailImage  String
+  subCategories SubCategory[] 
+  policies Policy[]
+}
+
+model SubCategory {
+  id          Int              @id @default(autoincrement())
+  title       String
+  icon        String?
+  categoryId  Int              
+  category    Category         @relation(fields: [categoryId], references: [id])
+  policies    PolicySubCategory[] 
+}
+
+model Policy {
+  id              Int                @id @default(autoincrement())
+  rank            String
+  title           String
+  thumbnailImage  String
+  categoryId      Int              
+  category        Category           @relation(fields: [categoryId], references: [id])
+  subCategories   PolicySubCategory[]
+  progresses      ProgressPolicy[] 
+  description     PolicyDescription @relation(fields: [descriptionId], references: [id])
+  descriptionId   Int             @unique
+}
+
+model PolicyDescription {
+  id        Int     @id @default(autoincrement())
+  problem   String  @db.Text
+  offer     String  @db.Text
+  budget    String  @db.Text
+  policy    Policy? @relation
+}
+
+
+model PolicySubCategory {
+  id             Int          @id @default(autoincrement())
+  policyId       Int          
+  subCategoryId  Int          
+  policy         Policy       @relation(fields: [policyId], references: [id])
+  subCategory    SubCategory  @relation(fields: [subCategoryId], references: [id])
+
+  @@unique([policyId, subCategoryId]) 
+}
+
+model Status {
+  id     Int      @id @default(autoincrement())
+  name   String   
+  color  String   
+  step   Int?  @unique
+  progresses ProgressPolicy[] 
+}
+
+model ProgressPolicy {
+  id          Int      @id @default(autoincrement())
+  statusId    Int      
+  policyId    Int      
+  description String   @db.Text
+  startedAt   DateTime @default(now()) 
+  status      Status   @relation(fields: [statusId], references: [id])
+  policy      Policy   @relation(fields: [policyId], references: [id])
+}
+
+
+
+

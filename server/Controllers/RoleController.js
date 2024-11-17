@@ -1,23 +1,28 @@
-const Role = require('../Models/RoleModel')
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
-exports.AllRole = async(req,res)=>{
+exports.AllRoles = async(req,res)=>{
     try {
-        const All = await Role.find({})
-        .exec()
-        res.send(All).status(200)
-    } catch (err) {
-        console.log('Role Error : ' + err);
-        res.status(500).send('Role Error')
+        const roles = await prisma.role.findMany()
+        res.send(roles).status(200)
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error')
     }
 }
 
 exports.AddRole = async(req,res)=>{
     try {
-        let data = req.body
-        const Add = await Role(data).save()
-        res.send(Add).status(200)
-    } catch (err) {
-        console.log('AddRole Error : ' + err);
-        res.status(500).send('AddRole Error')
+        const { name } = req.body
+
+        await prisma.role.create({
+            data: {
+                name
+            }
+        })
+        res.json({message:`เพิ่มบทบาท ${name} เรียบร้อยแล้ว`, type: "success"}).status(201)
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error')
     }
 }

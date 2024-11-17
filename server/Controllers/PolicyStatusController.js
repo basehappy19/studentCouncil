@@ -1,53 +1,119 @@
-const PolicyStatus = require('../Models/PolicyStatusModel')
-const Policy = require('../Models/PolicyModel')
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+const validateRequiredFields = require('../Functions/ValidateRequiredFields');
 
-exports.AllStatus = async(req,res)=>{
+
+exports.AllStatuses = async (req,res) => {
     try {
-        const All = await PolicyStatus.find({})
-        .exec()
-        res.send(All).status(200)
-    } catch (err) {
-        console.log('PolicyStatus Error : ' + err);
-        res.status(500).send('PolicyStatus Error')
+        const statuses = await prisma.status.findMany({
+            orderBy:{
+                step: 'asc',
+            }
+        })
+        res.status(200).send(statuses);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error')
     }
 }
 
-exports.AllPolicyProgress = async(req,res)=>{
+exports.AllPolicyProgresses = async (req, res) => {
     try {
-        const counts = await Policy.aggregate([
-            {
-                $group: {
-                    _id: "$statusId",
-                    count: { $sum: 1 }
-                }
+        const { category } = req.query;
+        const policies = await prisma.policy.findMany({
+            where: {
+                category: {
+                    id: isNaN(parseInt(category)) ? undefined : parseInt(category)
+                },
             },
-            {
-                $sort: { _id: 1 }
-            }
-        ]);
-
-        const result = {};
-        result["AllPolicy"] = 0;
-        counts.forEach(item => {
-            result["statusId_"+item._id] = item.count;
-            result["AllPolicy"] += item.count
+            include: {
+                description:true,
+                category:true,
+                progresses: {
+                    include: {
+                        status: true,
+                    },
+                },
+            },
+            orderBy: {
+                id: 'asc',
+            },
         });
 
-        res.status(200).json(result);
-    } catch (err) {
-        console.log('AllPolicyProgress Error : ' + err);
-        res.status(500).send('AllPolicyProgress Error')
+        const policiesWithCurrentProgress = policies.map((policy) => {
+            const latestProgress = policy.progresses.reduce((latest, progress) => {
+                return !latest || progress.startedAt > latest.startedAt ? progress : latest;
+            }, null);
+
+            return {
+                ...policy,
+                current_progress: latestProgress, 
+            };
+        });
+
+        res.status(200).send(policiesWithCurrentProgress);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error');
     }
-}
+};
+
+exports.StatisticProgresses = async (req, res) => {
+    try {
+        const policyCount = await prisma.policy.count();
+
+        // Retrieve all statuses
+        const allStatuses = await prisma.status.findMany();
+
+        // Get the grouped counts for statuses that have progress
+        const statusCounts = await prisma.progressPolicy.groupBy({
+            by: ['statusId'],
+            _count: {
+                policyId: true,
+            },
+        });
+
+        // Create a result that includes all statuses, setting count to 0 if no progress
+        const result = await Promise.all(
+            allStatuses.map(async (status) => {
+                // Find the count for this status from `statusCounts`
+                const matchedGroup = statusCounts.find((group) => group.statusId === status.id);
+                
+                return {
+                    statusId: status.id,
+                    count: matchedGroup ? matchedGroup._count.policyId : 0, // Set count to 0 if no match
+                    status: status, 
+                };
+            })
+        );
+
+        res.status(200).json({ statistic: result, policies: policyCount });
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error');
+    }
+};
 
 exports.AddStatus = async(req,res)=>{
     try {
-        let data = req.body
-        const Add = await PolicyStatus(data).save()
-        res.send(Add).status(200)
-    } catch (err) {
-        console.log('AddPolicyStatus Error : ' + err);
-        res.status(500).send('AddPolicyStatus Error')
+        const { name, color } = req.body
+        const requiredFields = {
+            name: "Name",
+        };
+        const errorMessage = validateRequiredFields(req.body, requiredFields);
+        if (errorMessage) {
+            return res.status(400).send(errorMessage);
+        }
+        await prisma.status.create({
+            data: {
+                name,
+                color
+            },
+        })
+        res.json({message:`เพิ่มสถานะ ${name} เรียบร้อยแล้ว`, type: "success"}).status(201)
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error')
     }
 }
 

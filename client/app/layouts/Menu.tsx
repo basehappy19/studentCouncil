@@ -10,34 +10,34 @@ export const Menu: Menu[] = [
   },
   {
     title: "รู้จักสภานักเรียน",
-    path: "/partylist",
+    path: "/partyLists",
   },
   {
     title: "นโยบาย",
-    path: "/policy",
+    path: "/policies",
   },
   {
     title: "ติดตามนโยบาย",
-    path: "/policy/track",
+    path: "/policy/watch",
   },
   {
     title: "ติดตามการทำงาน",
-    path: "/work",
+    path: "/works",
   },
   {
     title: "ติดตามการลงมติ",
-    path: "/vote",
+    path: "/votes",
   },
   {
     title: "ติดตามสภานักเรียน",
-    path: "/partylist/track",
+    path: "/partyList/tracks",
   },
   {
     title: "งบประมาณ",
-    path: "/budget",
+    path: "/budgets",
   },
   {
     title: "แจ้งปัญหา",
-    path: "/",
+    path: "/traffy-fondue",
   },
 ];

@@ -1,9 +1,9 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router()
+const { AllAccesses, AddAccess } = require('../Controllers/AccessController');
+const { VerifyAuth } = require('../Middlewares/Verify')
 
-const { AllAccess, AddAccess } = require('../Controllers/AccessController')
+router.get("/accesses", VerifyAuth, AllAccesses)
+router.post("/access", VerifyAuth, AddAccess)
 
-router.get("/access", AllAccess)
-router.post("/access", AddAccess)
-
-module.exports = router
+module.exports = router;

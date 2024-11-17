@@ -1,39 +1,68 @@
-export interface Social {
-  instagram: string;
-  facebook: string;
+export interface PartyList {
+    id: number,
+    firstName: string,
+    middleName: string | null,
+    lastName: string,
+    nickName: string,
+    bioId : number,
+    rank: string,
+    profile_image_full: string,
+    profile_image_128x128: string,
+    showInHomepage: boolean,
+    contacts: Contact[],
+    roles: Role[],
+    bio: Bio,
 }
 
 export interface Role {
-  _id: string;
-  roleId: number;
-  roleTitle: string;
-  __v: number;
+    role:{
+        id:number,
+        name:string,
+    }
+}
+
+export interface Bio {
+    id: number,
+    shortMessage: string,
+    classroom: string,
+    messageToStudent: string,
+    skills: Skill[],
+    experiences: Experience[],
 }
 
 export interface Skill {
-  _id: string;
-  skillId: number;
-  skillIcon: string;
-  skillTitle: string;
-  __v: number;
+    id:number
+    skill:{
+        id:number,
+        name:string,
+        icon:string | null,
+    }
+}
+export interface Experience {
+    id:number
+    experience:{
+        id:number,
+        title:string,
+        description: string,
+        date: string | null,
+    }
+}
+export interface Contact {
+    id: number,
+    username: string,
+    link: string,
+    platform: Platform,
 }
 
-export interface PartyList {
-  _id: string;
-  idQuery: number;
-  firstName: string;
-  lastName: string;
-  nickName: string;
-  description: string;
-  numberTag: string;
-  study: string;
-  work: string;
-  showInHomepage: boolean;
-  __v: number;
-  social: Social[];
-  image: string;
-  roleId: number[];
-  skillId: number[];
-  roleData: Role[];
-  skillData: Skill[];
+export interface Platform {
+    id:number,
+    name:string,
+    icon:string,
+    color:string,
+}
+
+export interface Role {
+    id:number,
+    partyListId:number,
+    roleId:number,
 }

@@ -1,54 +1,82 @@
-import { FC } from "react";
+'use client'
 import Link from "next/link";
 import Image from "next/image";
-import { PartyListCardProps } from "@/app/interfaces/Props/PartyList";
+import { PartyList } from "../../app/interfaces/PartyList/partylist";
+import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
+import { ArrowRight } from "lucide-react";
+import { usePathname } from 'next/navigation'
 
-const PartyListCard: FC<PartyListCardProps> = ({ partyList, imgSrc }) => {
-  
+const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
+  const pathname = usePathname()
+
   return (
-    <div>
-      <Link href={`/partylist/${partyList.id}`}>
-        <div className="bg-custom-white rounded-lg mb-3 transition-transform ease-in-out hover:scale-105 shadow-lg">
-          <div>
-            <Image
-              className="w-full h-max max-h-[400px] object-cover rounded-lg"
-              width={600}
-              height={1200}
-              quality={100}
-              src={imgSrc + partyList.image}
-              alt={partyList.nickName}
-            />
-          </div>
-          <div className="p-3">
-            <div className="text-custom-black h-full max-h-10 text-3xl font-semibold">
+    <Card className="group overflow-hidden bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-blue-500/10">
+      <div className="relative">
+        <div className="relative h-96 overflow-hidden">
+          <Image
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            fill
+            quality={100}
+            src={`${process.env.NEXT_PUBLIC_PARTYLIST_IMG_FULL_PATH}${partyList.profile_image_full}`}
+            alt={partyList.nickName}
+          />
+          {pathname === `/partyList/${partyList.id}` && (
+            <Badge className="absolute top-4 right-4 p-2 font-medium bg-blue-600 dark:bg-blue-900 hover:bg-blue-600 hover:dark:bg-blue-900">
+              {partyList.rank}
+            </Badge>
+          )}
+          {pathname !== `/partyList/${partyList.id}` && (
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent dark:from-black/80 transition-all duration-300 group-hover:from-black/20 dark:group-hover:from-black/40" />
+          )}
+        </div>
+
+        <CardContent className="relative -mt-20 space-y-4 p-6">
+          <div className="rounded-lg bg-white dark:bg-gray-900 p-4 shadow-lg dark:shadow-gray-900/50">
+            <h3 className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
               {partyList.nickName}
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {partyList.roleData.map((role) => (
-                <div
-                  key={role.id}
-                  className="text-xl font-normal text-custom-text-black-secondary"
+            </h3>
+            <div className="mb-2 flex flex-wrap gap-2">
+              {partyList.roles.map((role) => (
+                <Badge
+                  key={role.role.id}
+                  variant="secondary"
+                  className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
                 >
-                  <div className="text-custom-text-black-secondary">
-                    {role.name}
-                  </div>
-                </div>
+                  {role.role.name}
+                </Badge>
               ))}
             </div>
-          </div>
-          <div>
-            <Link href={`/partylist/${partyList.id}`}>
-              <button
-                className="w-full py-2.5 text-lg font-medium px-2.5 text-custom-white bg-custom-btn-secondary rounded-b-lg p-3"
-                style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.25)" }}
-              >
-                ทำความรู้จักผู้สมัคร
-              </button>
+            <div className="mb-4 flex flex-wrap gap-2">
+              {partyList.bio.skills.map((skill) => (
+                <Badge
+                  key={skill.skill.id}
+                  variant="secondary"
+                  className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                >
+                  <Image
+                    width={16}
+                    height={16}
+                    quality={100}
+                    src={`${process.env.NEXT_PUBLIC_PARTYLIST_SKILLS_ICON_PATH}${skill.skill.icon}`}
+                    className="min-w-4 min-h-4 w-4 h-4 mr-2"
+                    alt="skill"
+                  />{skill.skill.name}
+                </Badge>
+              ))}
+            </div>
+
+            <Link
+              href={`/partyList/${partyList.id}`}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            >
+              ทำความรู้จักผู้สมัคร
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-        </div>
-      </Link>
-    </div>
+        </CardContent>
+      </div>
+    </Card>
   );
 };
 

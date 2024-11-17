@@ -1,35 +1,92 @@
-export interface VoteDocument {
-    title: string;
-    fileName: string;
+import { PartyList } from "../PartyList/partylist";
+
+export interface Vote {
+    id: number,
+    title: string,
+    description: string,
+    content: string,
+    refers: VoteRefers[],
+    documents: VoteDocuments[],
+    date: string,
+    result: VoteResult,
 }
 
-export interface RoleData {
-    _id: string;
-    roleId: number;
-    roleTitle: string;
-    __v: number;
+interface VoteRefers {
+    id:number,
+    refer: VoteRefer,
 }
 
-export interface VoteMember {
-    idQuery: number;
-    roleId: number[];
-    displayName: string;
-    profilePicture: string;
-    rolesData: RoleData[];
+interface VoteRefer {
+    id: number,
+    name: string,
 }
 
-export interface VoteData {
-    _id: string;
-    idQuery: number;
-    voteTitle: string;
-    voteDescription: string;
-    voteContent: string;
-    voteRefer: string;
-    voteDate: string;
-    voteDocument: VoteDocument[];
-    voteMaxAttendees: number;
-    voteAgree: VoteMember[];
-    voteDisagree: VoteMember[];
-    voteAbstention: VoteMember[];
-    voteAbstain: VoteMember[];
+interface VoteDocuments {
+    id: number,
+    document: VoteDocument,
+}
+
+interface VoteDocument {
+    id:number,
+    name:string,
+    path:string,
+}
+
+export interface VoteResult {
+    maxAttendees: VoteMaxAttendees,
+    agrees: VoteAgree[],
+    disagrees: VoteDisagree[],
+    abstains: VoteAbstain[],
+    noVotes: NoVote[],
+    total: VoteTotal,
+    percentages: Percentages,
+    summary: VoteSummary,
+}
+
+export interface VoteTotal {
+    maxAttendees: number,
+    agreeCount: number,
+    disagreeCount: number,
+    abstainCount: number,
+    noVoteCount: number,
+    totalPartyListCount: number,
+}
+
+interface Percentages {
+    agreePercentage: number,
+    disagreePercentage: number,
+    abstainPercentage: number
+    noVotePercentage: number,
+}
+
+interface VoteMaxAttendees {
+    id:number,
+    number: number
+}
+
+export interface VoteAgree {
+    id:number,
+    partyList: PartyList,
+}
+
+export interface VoteDisagree {
+    id:number,
+    partyList: PartyList,
+}
+
+export interface VoteAbstain {
+    id:number,
+    partyList: PartyList,
+}
+
+export interface NoVote {
+    id:number,
+    partyList: PartyList,
+}
+
+export interface VoteSummary {
+    type: string,
+    with: number | null,
+    to: number | null,
+    percentage: number | null
 }

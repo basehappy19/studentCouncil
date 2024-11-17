@@ -1,10 +1,10 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router()
 
-const { AllCheckIn,CheckIn,CheckInStatus } = require('../Controllers/CheckInController')
+const { AllCheckIns, CheckIn, CheckInStatus } = require('../Controllers/CheckInController')
 
-router.post("/checkin/list", AllCheckIn)
-router.post("/checkin", CheckIn)
-router.post("/checkin/status", CheckInStatus)
+router.get("/checkIns", AllCheckIns)
+router.post("/checkIn", CheckIn)
+router.post("/checkIn_status", CheckInStatus)
 
-module.exports = router
+module.exports = router;

@@ -1,162 +1,64 @@
-"use client";
 import Link from "next/link";
-import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
-import { styled } from "@mui/material/styles";
-import { FC, useState } from "react";
-import { PolicyTrackCardProps } from "@/app/interfaces/Props/Policy";
+import { Policy, Status } from "@/app/interfaces/Policy/Policy";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
-const PolicyTrackCard: FC<PolicyTrackCardProps> = ({ policies }) => {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-  const LightTooltip = styled(({ className, ...props }) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-  ))(({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.common.white,
-      color: "rgba(0, 0, 0, 0.87)",
-      boxShadow: theme.shadows[1],
-      fontSize: 11,
-    },
-  }));
+import { ArrowRight } from "lucide-react";
+import ProgressStep from "./ProgressStep";
 
-  const splitText = (text) => {
+const PolicyTrackCard = ({ policy, statuses }: { policy: Policy, statuses : Status[] }) => {
+  const splitText = (text: string) => {
     const words = text.split(" ");
     const limitedWords = words.slice(0, 3);
     if (words.length > 3) {
       limitedWords.push("...");
     }
-    return limitedWords;
+    return limitedWords.join(" ");
   };
+
+
   return (
-    <div>
-      <Link href={`/policy/detail/${policies.id}`}>
-        <div className="relative p-5 pb-16 rounded-lg bg-white border border-custom-light-2 my-2 min-h-[235px] transition-all hover:drop-shadow-lg">
-          <div className="text-white font-medium bg-custom-primary py-1 px-[10px] inline-block mb-4 rounded-lg">
-            {policies.categoryData[0]?.title}
-          </div>
-          <div className="text-xl text-primary font-semibold mb-1">
-            {policies.title}
-          </div>
-          <div className="mb-2 text-gray">
-            <p>
-              {splitText(policies.offer).map((word, index) => (
-                <span key={index}>{word}</span>
-              ))}
+    <Link href={`/policy/detail/${policy.id}`} className="block">
+      <Card className="transition-all duration-300 hover:shadow-md bg-white dark:bg-gray-700 group">
+        <CardContent className="p-6 relative min-h-[235px]">
+          <div className="space-y-4">
+            <Badge variant="default">
+              {policy.category.title}
+            </Badge>
+            
+            <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-200 line-clamp-2">
+              {policy.title}
+            </h3>
+            
+            <p className="text-gray-600 dark:text-gray-200 line-clamp-2">
+              {splitText(policy.description.offer)}
             </p>
           </div>
-          <div className="flex absolute items-center left-4 right-4 bottom-4">
-            <ul className="flex p-0 h-[14px] border border-white rounded-2xl m-0 mr-4 overflow-hidden w-full text-white bg-[#eee]">
-              <LightTooltip
-                title="เริ่มนโยบาย"
-                open={isTooltipOpen || policies.statusId === 1}
-                onClose={() => setIsTooltipOpen(false)}
-                onOpen={() => setIsTooltipOpen(true)}
-                arrow
-              >
-                <li
-                  className={`w-[calc(21%-2px)] border-l border-white list-none flex gap-1 items-center justify-center relative ${
-                    policies.statusId >= 1
-                      ? "bg-gradient-to-r from-custom-secondary-light to-custom-secondary"
-                      : "bg-gradient-to-r from-[#eee] to-[#e6e6e6]"
-                  }`}
-                >
-                  <span></span>
-                </li>
-              </LightTooltip>
-              <LightTooltip
-                title="วางแผน"
-                open={isTooltipOpen || policies.statusId === 2}
-                onClose={() => setIsTooltipOpen(false)}
-                onOpen={() => setIsTooltipOpen(true)}
-                arrow
-              >
-                <li
-                  className={`w-[calc(21%-2px)] border-l border-white list-none flex gap-1 items-center justify-center relative ${
-                    policies.statusId >= 2
-                      ? "bg-gradient-to-r from-custom-secondary-light to-custom-secondary"
-                      : "bg-gradient-to-r from-[#eee] to-[#e6e6e6]"
-                  }`}
-                >
-                  <span></span>
-                </li>
-              </LightTooltip>
-              <LightTooltip
-                title="ดำเนินการ"
-                open={isTooltipOpen || policies.statusId === 3}
-                onClose={() => setIsTooltipOpen(false)}
-                onOpen={() => setIsTooltipOpen(true)}
-                arrow
-              >
-                <li
-                  className={`w-[calc(21%-2px)] border-l border-white list-none flex gap-1 items-center justify-center relative ${
-                    policies.statusId >= 3
-                      ? "bg-gradient-to-r from-custom-secondary-light to-custom-secondary"
-                      : "bg-gradient-to-r from-[#eee] to-[#e6e6e6]"
-                  }`}
-                >
-                  <span></span>
-                </li>
-              </LightTooltip>
-              <LightTooltip
-                title="ตรวจสอบ"
-                open={isTooltipOpen || policies.statusId === 4}
-                onClose={() => setIsTooltipOpen(false)}
-                onOpen={() => setIsTooltipOpen(true)}
-                arrow
-              >
-                <li
-                  className={`w-[calc(21%-2px)] border-l border-white list-none flex gap-1 items-center justify-center relative ${
-                    policies.statusId >= 4
-                      ? "bg-gradient-to-r from-custom-secondary-light to-custom-secondary"
-                      : "bg-gradient-to-r from-[#eee] to-[#e6e6e6]"
-                  }`}
-                >
-                  <span></span>
-                </li>
-              </LightTooltip>
-              <LightTooltip
-                title="รอโรงเรียนอนุมัติ"
-                open={isTooltipOpen || policies.statusId === 5}
-                onClose={() => setIsTooltipOpen(false)}
-                onOpen={() => setIsTooltipOpen(true)}
-                arrow
-              >
-                <li
-                  className={`w-[calc(21%-2px)] border-l border-white list-none flex gap-1 items-center justify-center relative ${
-                    policies.statusId >= 5
-                      ? "bg-gradient-to-r from-custom-secondary-light to-custom-secondary"
-                      : "bg-gradient-to-r from-[#eee] to-[#e6e6e6]"
-                  }`}
-                >
-                  <span></span>
-                </li>
-              </LightTooltip>
-              <LightTooltip
-                title="สำเร็จ"
-                open={isTooltipOpen || policies.statusId === 6}
-                onClose={() => setIsTooltipOpen(false)}
-                onOpen={() => setIsTooltipOpen(true)}
-                arrow
-              >
-                <li
-                  className={`w-[calc(21%-2px)] border-l border-white list-none flex gap-1 items-center justify-center relative ${
-                    policies.statusId >= 6
-                      ? "bg-gradient-to-r from-custom-secondary-light to-custom-secondary"
-                      : "bg-gradient-to-r from-[#eee] to-[#e6e6e6]"
-                  }`}
-                >
-                  <span></span>
-                </li>
-              </LightTooltip>
-            </ul>
-            <Link href={`/policy/detail/${policies.id}`}>
-              <button>
-                <i className="fa-solid fa-arrow-right"></i>
-              </button>
-            </Link>
+
+          <div className="absolute bottom-6 left-6 right-6 flex items-center gap-4">
+            <div className="flex-1 grid grid-cols-6 gap-1">
+              {statuses.map((step) => (
+                <ProgressStep
+                  policy={policy}
+                  key={step.step}
+                  step={step.step}
+                  name={step.name}
+                />
+              ))}
+            </div>
+
+            <Button 
+              size="icon" 
+              variant="outline"
+              className="rounded-full h-8 w-8 transition-transform group-hover:translate-x-1 bg-white text-black dark:bg-slate-900 dark:text-white"
+            >
+              <ArrowRight className="h-4 w-4" />
+            </Button>
           </div>
-        </div>
-      </Link>
-    </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 };
 

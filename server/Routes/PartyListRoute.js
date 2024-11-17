@@ -1,11 +1,11 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router()
 
-const { PartyList,AllPartyList,AddPartyList,HomePagePartyList } = require('../Controllers/PartyListController')
+const { PartyList, AllPartyLists, AddPartyList, HomePagePartyLists } = require('../Controllers/PartyListController')
 
-router.get("/partylist", AllPartyList)
-router.get("/partylist/:id", PartyList)
-router.get("/homepage/partylist", HomePagePartyList)
-router.post("/partylist", AddPartyList)
+router.get("/partyLists", AllPartyLists)
+router.get("/partyList", PartyList)
+router.get("/partyList_for_homepages", HomePagePartyLists)
+router.post("/partyList", AddPartyList)
 
-module.exports = router
+module.exports = router;

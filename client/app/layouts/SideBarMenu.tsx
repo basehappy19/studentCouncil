@@ -1,4 +1,4 @@
-import { DashboardIcon, BriefcaseIcon, UsersIcon, TraffyFondueIcon, MoneyIcon } from '../../components/DashBoard/Icon'
+import { DashboardIcon, BriefcaseIcon, UsersIcon, TraffyFondueIcon, MoneyIcon, VoteIcon } from '@/components/DashBoard/Icon'
 
 export const menuItems = [
     {
@@ -15,6 +15,14 @@ export const menuItems = [
         label: 'การทำงาน',
         accessId: [
             "all"
+        ]
+    },
+    {
+        href: '/dashboard/votes',
+        icon: VoteIcon,
+        label: 'การลงมติ',
+        accessId: [
+            3
         ]
     },
     {

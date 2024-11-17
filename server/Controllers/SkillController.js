@@ -1,23 +1,42 @@
-const Skill = require('../Models/SkillModel')
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+const validateRequiredFields = require('../Functions/ValidateRequiredFields');
 
-exports.AllSkill = async(req,res)=>{
+exports.AllSkills = async(req,res)=>{
     try {
-        const All = await Skill.find({})
-        .exec()
-        res.send(All).status(200)
-    } catch (err) {
-        console.log('Skill Error : ' + err);
-        res.status(500).send('Skill Error')
+        const skills = await prisma.skill.findMany({})
+        res.send(skills).status(200)
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error')
     }
 }
 
 exports.AddSkill = async(req,res)=>{
     try {
-        let data = req.body
-        const Add = await Skill(data).save()
-        res.send(Add).status(200)
+        const { name, icon } = req.body
+
+        const requiredFields = {
+            name: "Name",
+            icon: "Icon"
+        }
+
+        const errorMessage = validateRequiredFields(req.body, requiredFields);
+
+        if (errorMessage) {
+            return res.status(400).send(errorMessage);
+        }
+
+        await prisma.skill.create({
+            data: {
+                name: name,
+                icon: icon
+            }
+        })
+
+        res.json({ message: `เพิ่มทักษะ ${name} เรียบร้อยแล้ว`, type: "success" }).status(201)
     } catch (err) {
-        console.log('AddSkill Error : ' + err);
-        res.status(500).send('AddSkill Error')
+        console.log(e);
+        res.status(500).send('Server Error')
     }
 }

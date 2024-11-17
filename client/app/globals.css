@@ -1,212 +1,75 @@
-@import url('https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  font-family: "Prompt", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: auto;
+}
+body {
+  height: auto;
+  overflow: visible;
+}
+
+
 @layer base {
   :root {
-    /* Layout Colors */
-    --color-background: var(--color-light);
-    --color-section-primary: var(--color-primary);
-    --color-section-secondary: var(--color-secondary-light);
-    --color-card: var(--color-white);
-
-    /* Primary Colors */
-    --color-primary: #8ed7ff;
-    --color-primary-light: #cdedff;
-    --color-primary-dark: #2f74b5;
-
-    /* Secondary Colors */
-    --color-secondary: #f8f063;
-    --color-secondary-light: #ffe371;
-    --color-secondary-dark: #e2bf33;
-
-    /* Neutral Colors */
-    --color-light: #f4f4fc;
-    --color-light-2: #e3e5fa;
-    --color-white: #fff;
-    --color-black: #04040c;
-    --color-black-2: #212529;
-    --color-dark: #817a9b;
-
-    /* Gray Shades */
-    --color-gray: #2d2d40;
-    --color-gray-2: #48435b;
-    --color-gray-3: #ffffff4d;
-    --color-gray-4: #4c4c4c;
-
-    /* Gradient Colors */
-    --color-gradient-main: #2f74b5;
-    --color-gradient-1: #1a9e5c3d;
-    --color-gradient-2: #30ffdc7d;
-    --color-gradient-3: #33a8d68c;
-    --color-gradient-4: #61a4e2b0;
-
-    /* Text Shadow Colors */
-    --color-text-shadow: #a1d2db;
-    --color-text-shadow-1: #99c4d8;
-    --color-text-shadow-2: #92c5d5;
-    --color-text-shadow-3: #92c2d5;
-    --color-text-shadow-4: #8ab8d2;
-    --color-text-shadow-5: #83b7cf;
-    --color-text-shadow-6: #7cb3cd;
-    --color-text-shadow-7: #74a8ca;
-    --color-text-shadow-8: #6d97c7;
-    --color-text-shadow-9: #e689890d;
-    --color-text-shadow-10: #89c1e633;
-    --color-text-shadow-11: #8bbde64d;
-    --color-text-shadow-12: #89c9e64d;
-    --color-text-shadow-13: #89c4e64d;
-
-    /* Navbar Colors - Light Theme */
-    --color-nav-scroll-bg: var(--color-gray-3);
-    --color-nav-unscroll-bg: var(--color-light);
-    --color-nav-link-bg: var(--color-primary);
-
-    /* Navbar Colors - Dark Theme */
-    --color-nav-scroll-bg-dark: var(--color-gray-3);
-    --color-nav-unscroll-bg-dark: var(--color-light);
-    --color-nav-link-bg-dark: var(--color-primary);
-
-    /* Navbar Colors - Alternative Theme */
-    --color-nav-scroll-bg-alt: var(--color-gray-3);
-    --color-nav-unscroll-bg-alt: var(--color-primary);
-    --color-nav-link-bg-alt: var(--color-primary-dark);
-
-    /* Navbar Colors - Alternative Dark Theme */
-    --color-nav-scroll-bg-alt-dark: var(--color-gray-3);
-    --color-nav-unscroll-bg-alt-dark: var(--color-secondary);
-    --color-nav-link-bg-alt-dark: var(--color-secondary-dark);
-
-    /* Text Colors */
-    --color-text-heading: var(--color-primary-dark);
-    --color-text-main: var(--color-secondary-dark);
-    --color-text-black: var(--color-gray);
-    --color-text-black-secondary: var(--color-gray-2);
-
-    /* Button Colors */
-    --color-btn-secondary: var(--color-primary);
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
   }
-
   .dark {
-    :root {
-      /* Layout Colors */
-      --color-background: #121212;
-      --color-section-primary: #1a1a1a;
-      --color-section-secondary: #242424;
-      --color-card: #1e1e1e;
-
-      /* Primary Colors */
-      --color-primary: #3a9bd8;
-      --color-primary-light: #5fb8e8;
-      --color-primary-dark: #1c7ab0;
-
-      /* Secondary Colors */
-      --color-secondary: #d6c650;
-      --color-secondary-light: #e8db76;
-      --color-secondary-dark: #b5a62a;
-
-      /* Neutral Colors */
-      --color-light: #2a2a2a;
-      --color-light-2: #333333;
-      --color-white: #e0e0e0;
-      --color-black: #f4f4f4;
-      --color-black-2: #e8e8e8;
-      --color-dark: #a8a8a8;
-
-      /* Gray Shades */
-      --color-gray: #b0b0b0;
-      --color-gray-2: #9a9a9a;
-      --color-gray-3: #ffffff1a;
-      --color-gray-4: #7a7a7a;
-
-      /* Gradient Colors */
-      --color-gradient-main: #1c7ab0;
-      --color-gradient-1: #1a9e5c1a;
-      --color-gradient-2: #30ffdc33;
-      --color-gradient-3: #33a8d640;
-      --color-gradient-4: #61a4e280;
-
-      /* Text Shadow Colors */
-      --color-text-shadow: #2a4a52;
-      --color-text-shadow-1: #264652;
-      --color-text-shadow-2: #234652;
-      --color-text-shadow-3: #234452;
-      --color-text-shadow-4: #214052;
-      --color-text-shadow-5: #1f3e52;
-      --color-text-shadow-6: #1d3c52;
-      --color-text-shadow-7: #1b3652;
-      --color-text-shadow-8: #193052;
-      --color-text-shadow-9: #e68989a1;
-      --color-text-shadow-10: #89c1e680;
-      --color-text-shadow-11: #8bbde6a1;
-      --color-text-shadow-12: #89c9e6a1;
-      --color-text-shadow-13: #89c4e6a1;
-
-      /* Navbar Colors - Dark Theme */
-      --color-nav-scroll-bg: var(--color-gray-3);
-      --color-nav-unscroll-bg: var(--color-background);
-      --color-nav-link-bg: var(--color-primary-dark);
-
-      /* Navbar Colors - Alternative Dark Theme */
-      --color-nav-scroll-bg-alt: var(--color-gray-3);
-      --color-nav-unscroll-bg-alt: var(--color-primary-dark);
-      --color-nav-link-bg-alt: var(--color-primary-light);
-
-      /* Text Colors */
-      --color-text-heading: var(--color-primary-light);
-      --color-text-main: var(--color-secondary-light);
-      --color-text-black: var(--color-gray);
-      --color-text-black-secondary: var(--color-gray-2);
-
-      /* Button Colors */
-      --color-btn-secondary: var(--color-primary-light);
-  
-  }
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -222,25 +85,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-hr {
-  color: #bfc0c7;
-}
-
-* {
-  padding: 0px;
-  margin: 0px;
-  box-sizing: border-box;
-  font-family: "Prompt", sans-serif;
-}
-
-html, body {
-  overflow-x: hidden;
-}
-body {
-  position: relative;
-}
-a {
-  text-decoration: none!important;
 }

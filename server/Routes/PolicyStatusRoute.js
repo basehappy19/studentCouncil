@@ -1,10 +1,11 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router()
 
-const { AllStatus, AddStatus, AllPolicyProgress } = require('../Controllers/PolicyStatusController')
+const { AllPolicyProgresses, AddStatus, StatisticProgresses, AllStatuses } = require('../Controllers/PolicyStatusController');
 
-router.get("/policy/data/status", AllStatus)
-router.get("/policy/data/track", AllPolicyProgress)
-router.post("/policy/data/status", AddStatus)
+router.get("/policy_statuses", AllStatuses)
+router.get("/policy_track", AllPolicyProgresses)
+router.get("/policy_track_statistic", StatisticProgresses)
+router.post("/policy_status", AddStatus)
 
-module.exports = router
+module.exports = router;

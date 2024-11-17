@@ -1,25 +1,24 @@
-export interface SubCategories {
-  idQuery: number;
-  title: string;
-  icon: string;
-  _id: string;
+export interface Category {
+  id:number,
+  title:string,
+  icon:string,
+  thumbnailImage: string,
+  subCategories: SubCategory[]
 }
 
-export interface Categories {
-  _id: string;
-  idQuery: number;
-  title: string;
-  image: string;
-  icon: string;
-  __v: number;
-  subCategories: SubCategories[];
+export interface SubCategories {
+  id:number,
+  subCategory: SubCategory
 }
-export interface CategoryData {
-  _id: string;
-  idQuery: number;
-  title: string;
-  image: string;
-  icon: string;
-  __v: number;
-  subCategories: SubCategories[];
+
+interface SubCategory {
+  id:number,
+  title:string,
+  icon:string,
+}
+
+interface Progress {
+  id:number,
+  description: string,
+  startedAt: string,
 }

@@ -1,110 +1,157 @@
-const PartyList = require('../Models/PartyListModel')
-exports.AllPartyList = async(req,res)=>{
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+
+exports.AllPartyLists = async(req,res)=>{
     try {
-        const All = await PartyList.aggregate([
-            {
-                $lookup: {
-                    from: "roles",
-                    localField: "roleId",
-                    foreignField: "id",
-                    as: "roleData"
-                }
-            },
-            {
-                $lookup: {
-                    from: "skills",
-                    localField: "skillId",
-                    foreignField: "id",
-                    as: "skillData"
+        const partyLists = await prisma.partyList.findMany({
+            include: {
+                contacts: {
+                    include:{
+                        platform:true,
+                    }
+                },
+                roles: {
+                    include:{
+                        role: true
+                    }
+                },
+                bio: {
+                    include:{
+                        skills:{
+                            include:{
+                                skill: true
+                            }
+                        },
+                        experiences:{
+                            include:{
+                                experience: true
+                            }
+                        },
+                    }
                 }
             }
-        ])
-        .exec();
-        res.send(All).status(200)
-    } catch (err) {
-        console.log('AllPartyList Error : ' + err);
-        res.status(500).send('AllPartyList Error')
+        })
+        res.send(partyLists).status(200)
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error')
     }
 }
-
 exports.PartyList = async(req,res)=>{
     try {
-        const id = parseInt(req.params.id)
-        const data = await PartyList.aggregate([
-            {
-                $match: {
-                    id: id,
+        const { id } = req.query
+        const partyList = await prisma.partyList.findFirst({
+            where: {
+                id: parseInt(id)
+            },
+            include:{
+                contacts: {
+                    include:{
+                        platform:true,
+                    }
                 },
-            },
-            {
-                $lookup: {
-                    from: "roles",
-                    localField: "roleId",
-                    foreignField: "id",
-                    as: "roleData"
-                }
-            },
-            {
-                $lookup: {
-                    from: "skills",
-                    localField: "skillId",
-                    foreignField: "id",
-                    as: "skillData"
+                roles: {
+                    include:{
+                        role: true
+                    }
+                },
+                bio: {
+                    include:{
+                        skills:{
+                            include:{
+                                skill: true
+                            }
+                        },
+                        experiences:{
+                            include:{
+                                experience: true
+                            }
+                        },
+                    }
                 }
             }
-        ])
-        .exec();
-        res.send(data).status(200)
-    } catch (err) {
-        console.log('PartyList Error : ' + err);
-        res.status(500).send('PartyList Error')
+        })
+        res.send(partyList).status(200)
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error')
     }
 }
-
-exports.HomePagePartyList = async (req, res) => {
+exports.HomePagePartyLists = async (req, res) => {
     try {
-        const data = await PartyList.aggregate([
-            {
-                $match: {
-                    showInHomepage: true
-                }
+        const partyLists = await prisma.partyList.findMany({
+            where: {
+                showInHomepage: true
             },
-            {
-                $lookup: {
-                    from: "roles",
-                    localField: "roleId",
-                    foreignField: "id",
-                    as: "roleData"
+            include:{
+                contacts: {
+                    include:{
+                        platform:true,
+                    }
+                },
+                roles: {
+                    include:{
+                        role: true
+                    }
+                },
+                bio: {
+                    include:{
+                        skills:{
+                            include:{
+                                skill: true
+                            }
+                        },
+                    }
                 }
-            },
-            {
-                $lookup: {
-                    from: "skills",
-                    localField: "skillId",
-                    foreignField: "id",
-                    as: "skillData"
-                }
-            },
-            {
-                $sort: { orderHomepage: 1 } 
             }
-        ]);
-
-        res.status(200).send(data);
-    } catch (err) {
-        console.log('HomePagePartyList Error : ' + err);
-        res.status(500).send('HomePagePartyList Error');
+        })
+        res.status(200).send(partyLists);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error');
     }
 }
-
 
 exports.AddPartyList = async(req,res)=>{
     try {
-        let data = req.body
-        const Add = await PartyList(data).save()
-        res.send(Add).status(200)
-    } catch (err) {
-        console.log('AddPartyList Error : ' + err);
-        res.status(500).send('AddPartyList Error')
+        const { firstName, middleName, lastName, nickName, shortMessage, classroom, messageToStudent, rank, profileImg, showInHomepage } = req.body
+
+        const requiredFields = {
+            firstName: "First Name",
+            middleName: "Middle Name",
+            lastName: "Last Name",
+            nickName: "Nick Name",
+            shortMessage: "Short Message",
+            classroom: "Classroom",
+            messageToStudent: "Message To Student",
+            rank: "Rank",
+        };
+      
+        const errorMessage = validateRequiredFields(req.body, requiredFields);
+    
+        if (errorMessage) {
+        return res.status(400).json({ message: errorMessage, type: "error" });
+        }
+
+        await prisma.partyList.create({
+            data: {
+                firstName,
+                middleName,
+                lastName,
+                nickName,
+                bio: {
+                    shortMessage,
+                    classroom,
+                    messageToStudent,
+                },
+                rank,
+                profileImg,
+                showInHomepage
+            }
+        }) 
+        res.json({message:`เพื่ม ${firstName} ${middleName} ${lastName} ในบัญชีรายชื่อสมาชิกแล้ว`, type:`success`}).status(201)
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error')
     }
 }

@@ -1,24 +1,42 @@
-const Access = require("../Models/AccessModel");
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+const validateRequiredFields = require('../Functions/ValidateRequiredFields');
 
-exports.AllAccess = async (req, res) => {
+exports.AllAccesses = async (req, res) => {
   try {
-    const All = await Access.find({})
-    .sort({ id: 1 })
-    .exec();
-    res.status(200).send(All);
-  } catch (err) {
-    console.error("AllAccess Error:", err);
-    res.status(500).send("AllAccess Error");
+    const accesses = await prisma.access.findMany();
+    res.status(200).send(accesses);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send("Server Error");
   }
 };
 
 exports.AddAccess = async (req, res) => {
   try {
-    let data = req.body;
-    const Add = await Access(data).save();
-    res.send(Add).status(200);
-  } catch (err) {
-    console.log("AddAccess Error :", err);
-    res.status(500).send("AddAccess Error");
+      if(req.user.access !== 3){
+        return res.status(403).json({ message: 'คุณไม่มีสิทธิ์เพิ่มสิทธิ์เข้าถึง', type: 'error' });
+      }
+      const { name, description } = req.body;
+      const requiredFields = {
+        name: "Name",
+        description: "Description",
+      };
+
+      const errorMessage = validateRequiredFields(req.body, requiredFields);
+
+      if (errorMessage) {
+        return res.status(400).json({ message: errorMessage, type: "error" });
+      }
+
+      await prisma.access.create({
+        data: { name: name, description: description },
+      });
+      res
+        .json({ message: `เพิ่มสิทธิ์ ${name} เรียบร้อยแล้ว`, type: "success" })
+        .status(201);
+  } catch (e) {
+    console.log(e);
+    res.status(500).send("Server Error");
   }
 };

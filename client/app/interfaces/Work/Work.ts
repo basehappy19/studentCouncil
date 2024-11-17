@@ -1,36 +1,34 @@
-export interface WorkData {
-  _id: string;
-  idQuery: number;
-  workTitle: string;
-  workDescription: string;
-  workOperator: number[];
-  workPostBy: string;
-  workImage: string[];
-  workTagId: number;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-  workTagData: WorkTagData[];
-  workOperatorData: WorkOperatorData[];
+import { User } from "../User/User";
+
+export interface Work {
+  id:number,
+  title:string,
+  description:string,
+  postBy: User
+  date: string,
+  images: WorkImages[],
+  operators: WorkOperators[]
+  tags: TagInWorks[],
 }
 
-export interface WorkTagData {
-  _id: string;
-  idQuery: number;
-  tagTitle: string;
-  tagIcon: string;
-  __v: number;
+export interface WorkImages {
+  id:number,
+  path:string,
 }
 
-export interface WorkOperatorData {
-  _id: string;
-  idQuery: number;
-  username: string;
-  password: string;
-  displayName: string;
-  roleId: number[];
-  profilePicture: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+interface WorkOperators {
+  id:number,
+  user:User
+}
+
+interface TagInWorks {
+  id:number,
+  tag: Tag
+}
+
+export interface Tag {
+  id: number,
+  title:string,
+  icon?:string,
+  color?: string,
 }

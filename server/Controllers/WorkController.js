@@ -1,110 +1,158 @@
-const Work = require('../Models/WorkModel')
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+const validateRequiredFields = require('../Functions/ValidateRequiredFields');
 
-exports.AllWork = async(req,res)=>{
-    try {
-        const All = await Work.aggregate([
-            {  
-                $lookup: {
-                    from: "worktags",
-                    localField: "workTagId",
-                    foreignField: "id",
-                    as: "workTagData"
-                }
-            },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "workOperator",
-                    foreignField: "id",
-                    as: "workOperatorData"
-                }
-            },
-            {
-                $sort: {
-                    createdAt: -1
-                }
+exports.AllWorks = async(req,res)=>{
+    try {        
+        const works = await prisma.work.findMany({
+            include:{
+                postBy: {
+                    select:{
+                        id: true,
+                        fullName: true,
+                        displayName: true,
+                        profileImg: true,
+                        sid: true,
+                        partyList: {
+                            select:{
+                                id: true,
+                                firstName: true,
+                                middleName: true,
+                                lastName: true,
+                                nickName: true,
+                                profileImg: true,
+                                roles:{
+                                    select:{
+                                        role: true
+                                    }
+                                }
+                            },
+                        },
+                    }
+                },
+                operators: {
+                    select:{
+                        id: true,
+                        user: {
+                            select:{
+                                id: true,
+                                fullName: true,
+                                displayName: true,
+                                profileImg: true,
+                                sid: true,
+                                partyList: {
+                                    select:{
+                                        id: true,
+                                        firstName: true,
+                                        middleName: true,
+                                        lastName: true,
+                                        nickName: true,
+                                        profileImg: true,
+                                        roles:{
+                                            select:{
+                                                role: true
+                                            }
+                                        }
+                                    },
+                                }
+                            }
+                        }
+                    }
+                },
+                images: {
+                    select:{
+                        id: true,
+                        path: true,
+                    }
+                },
+                tags: {
+                    select:{
+                        id: true,
+                        tag: true,
+                    }
+                },
             }
-        ])
-        .exec()
-        res.send(All).status(200)
-    } catch (err) {
-        console.log('AllWork Error : ' + err);
-        res.status(500).send('AllWork Error')
+        })
+        res.status(200).send(works);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error')
     }
 }
 
 exports.UserWorks = async (req, res) => {
     try {
-        const userId = req.params.userId; 
+        const id = req.user.id
 
-        const userWorks = await Work.aggregate([
-            {
-                $match: {
-                    $or: [
-                        { workOperator: userId },
-                        { workPostBy: userId }
-                    ]
+        const works = await prisma.work.findMany({
+            where: {
+                postBy: {
+                    id: id
                 }
             },
-            {  
-                $lookup: {
-                    from: "worktags",
-                    localField: "workTagId",
-                    foreignField: "id",
-                    as: "workTagData"
-                }
-            },
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "workOperator",
-                    foreignField: "id",
-                    as: "workOperatorData"
-                }
-            },
-            {
-                $sort: {
-                    createdAt: -1
-                }
+            select:{
+                id: true,
+                title: true,
+                description: true,
+                postBy: true,
+                images: true,
+                operators: true,
+                tags:true,
+                date:true,
+                createdAt: true,
+                updatedAt: true,
             }
-        ]).exec();
+        })
 
-        res.status(200).json(userWorks);
-    } catch (err) {
-        console.log('UserWorks Error : ' + err);
-        res.status(500).send('UserWorks Error');
+        res.status(200).json(works);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Server Error');
     }
 }
 
-exports.AddWork = async (req, res) => {
+exports.AddWork = async (req, res, next) => {
     try {
-        var data = req.body;
-        console.log(data);
+        const id = req.user.id;
+        const { title, description, operators, tags } = req.body;
         
-        if (!Array.isArray(data.workOperator)) {
-            data.workOperator = JSON.parse(data.workOperator);
-        }
-        
-        if (data.workTagId > 0) {
-            data.workTagId = parseInt(data.workTagId);
+        const requiredFields = {
+            title: "Title",
+            description: "Description",
+            workOperator: "Work Operator",
         }
 
-        if (Array.isArray(data.workOperator) && data.workOperator) {
-            data.workOperator = data.workOperator.map(operator => parseInt(operator));
-        }
-        
-        if (!Array.isArray(data.workImage) || data.workImage) {
-            data.workImage = [];
-        }
-        
-        if (req.files && req.files.length > 0) {
-            req.files.forEach(file => {
-                data.workImage.push(file.filename);
-            });
+        const errorMessage = validateRequiredFields(req.body, requiredFields);
+
+        if (errorMessage) {
+            return res.status(400).json({ message: errorMessage, type: 'error' });
         }
 
-        const Add = await Work(data).save();
-        res.status(200).send(Add);
+
+        const images = req.files.map(file => file.path);
+
+        await prisma.work.create({
+            data: {
+                title,
+                description,
+                postBy: {
+                    connect: {
+                        id
+                    }
+                },
+                images:{
+                    createMany: {
+                        data: images.map(image => ({
+                            name: image.filename,
+                            path: image.filename
+                        }))
+                    }
+                },
+                operators,
+                tags
+            }
+        })
+        res.status(201).json({message: `เพิ่มโพสต์ ${title} เรียบร้อยแล้ว`, type: 'success'});
     } catch (err) {
         console.log('AddWork Error: ' + err);
         res.status(500).send('AddWork Error: ' + err); 

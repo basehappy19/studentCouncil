@@ -1,10 +1,12 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router()
+const { VerifyAuth } = require('../Middlewares/Verify')
+const { BudgetInDepartment, IncomeExpenseStatistics, IncomeExpenseStatisticsById, IncomeExpenseStatisticsByTime, AllDepartments } = require('../Controllers/BudgetController')
 
-const { AllBudget, AddBudget, Budget } = require('../Controllers/BudgetController')
+router.get("/departments", AllDepartments)
+router.get("/budget", BudgetInDepartment)
+router.post("/statistics/budget/all/income_expense", VerifyAuth, IncomeExpenseStatisticsByTime)
+router.get("/statistics/budget/income_expense", VerifyAuth, IncomeExpenseStatistics)
+router.get("/statistics/budget/income_expense/:id", VerifyAuth, IncomeExpenseStatisticsById)
 
-router.get("/budget", AllBudget)
-router.get("/budget/:id", Budget)
-router.post("/budget", AddBudget)
-
-module.exports = router
+module.exports = router;

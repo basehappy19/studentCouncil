@@ -1,11 +1,11 @@
-export const TransactionById = async (BudgetId: string) => {
-    const response = await fetch(process.env.NEXT_PUBLIC_APP_API + "/transaction/"+BudgetId,{ next: { revalidate: 0 } });
+export const TransactionById = async (BudgetId: number) => {
+    const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/transaction/"+BudgetId,{ next: { revalidate: 0 } });
     return response.json();
 };
 
 export const AddTransaction = async (transactionData) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_APP_API + "/transaction",{
+        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/transaction",{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -24,9 +24,9 @@ export const AddTransaction = async (transactionData) => {
     }
 };
 
-export const UpdateTransaction = async (id,transactionData) => {
+export const UpdateTransaction = async (id : number, transactionData) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_APP_API + "/transaction/"+id,{
+        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/transaction/"+id,{
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -45,14 +45,15 @@ export const UpdateTransaction = async (id,transactionData) => {
     }
 };
 
-export const RemoveTransaction = async (id) => {
+export const RemoveTransaction = async (id : number) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_APP_API + "/transaction/"+id,{
+        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/transaction/"+id,{
             method: 'DELETE',
         });
 
         if (!response.ok) {
-            throw new Error('Failed to RemoveTransaction');
+            const errorText = await response.text();
+            throw new Error(`Failed to RemoveTransaction : ${response.status} - ${errorText}`);
         }
 
         return await response.json();

@@ -1,13 +1,32 @@
+export interface RoleData {
+    id: number;
+    name: string;
+}
+
 export interface CheckIn {
-    _id: string;
+    attendTime: Date;
+    type: number;
+}
+
+export interface Attendee {
     userId: number;
-    attendTime: string;
-    userData: User
+    checkIns: CheckIn[];
+    userData?: {
+        displayName: string;
+        profilePicture: string;
+        rolesData: RoleData[];
+    };
 }
-export interface User {
-    displayName: string,
-    profilePictrue: string,
-    roleId: [number]
+
+export interface CheckInData {
+    attendees: Attendee[];
+    date: Date;
 }
+
+export interface ProcessedData {
+    user: Attendee['userData'];
+    attendance: Map<string, number>;
+}
+
   
   

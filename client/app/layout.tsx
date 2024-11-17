@@ -1,38 +1,34 @@
-import { Inter } from "next/font/google";
-import { ReactNode } from "react";
+import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import Script from "next/script";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const inter = Inter({ subsets: ["latin"] });
-import { Providers } from "./context/Providers";
+import { ThemeProvider } from "./context/Theme-provider";
 
-export const metadata = {
+
+export const metadata: Metadata = {
   title: `หน้าแรก ${process.env.NEXT_PUBLIC_APP_TITLE}`,
   description: "สภานักเรียนโรงเรียนภูเขียว",
 };
 
-interface RootLayoutProps {
-  children: ReactNode;
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
-  
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en">
-      <Script
-        src="https://kit.fontawesome.com/5134196601.js"
-        crossorigin="anonymous"
-      ></Script>
-      <body className={inter.className}>
-        <Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <NextTopLoader color="#331fed" />
-            {children}
+          {children}
           <ToastContainer />
-        </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

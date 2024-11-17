@@ -1,6 +1,6 @@
 export const AllCheckIn = async (filterData: any) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_APP_API + "/checkin/list", {
+        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/checkin/list", {
             method: 'POST',
             body: filterData,
         });
@@ -18,7 +18,7 @@ export const AllCheckIn = async (filterData: any) => {
 
 export const CheckInStatus = async ({ userId }: { userId: number }) => {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_API}/checkin/status`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/checkin/status`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -37,12 +37,14 @@ export const CheckInStatus = async ({ userId }: { userId: number }) => {
     }
 };
 
-
-export const CheckIn = async (userData: any) => {
+export const CheckIn = async (data: any) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_APP_API + "/checkin", {
+        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/checkin", {
             method: 'POST',
-            body: userData,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
         });
 
         if (!response.ok) {

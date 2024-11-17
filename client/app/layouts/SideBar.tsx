@@ -4,7 +4,8 @@ import React, { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { menuItems } from './SideBarMenu'
-import Loading from '../../components/Other/Loading'
+import { Skeleton } from '@/components/ui/skeleton'
+
 const SideBar = () => {
     const pathname = usePathname()
     const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -30,7 +31,7 @@ const SideBar = () => {
                     type="button"
                     className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-custom-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                     <span className="sr-only">Close sidebar</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
                 </button>
                 <div className="h-full px-3 py-4 overflow-y-auto">
                     <ul className="space-y-2 font-medium">
@@ -58,7 +59,12 @@ const SideBar = () => {
                                     </li>
                                 ))
                         ) : (
-                            <Loading />
+                            menuItems
+                                .map((item) => (
+                                    <li key={item.href}>
+                                        <Skeleton className="h-10 w-full rounded-lg" />
+                                    </li>
+                                ))
                         )}
                         {status === 'authenticated' && session.user && (
                             <>
@@ -70,7 +76,7 @@ const SideBar = () => {
                                 </li>
                                 <li>
                                     <div onClick={() => signOut()} className={`cursor-pointer flex items-center p-2 text-gray-900 rounded-lg dark:text-custom-white hover:bg-gray-100 dark:hover:bg-gray-700 group`}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-custom-gray-400 group-hover:text-custom-gray-900 dark:group-hover:text-custom-white"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-custom-gray-400 group-hover:text-custom-gray-900 dark:group-hover:text-custom-white"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></svg>
                                         <span className="ms-3">ออกจากระบบ</span>
                                     </div>
                                 </li>

@@ -1,11 +1,15 @@
-const express = require('express')
-const router = express.Router()
-const { upload } = require('../Middlewares/UploadsMiddlewares')
+const express = require('express');
+const router = express.Router();
+const { upload } = require('../Middlewares/UploadsMiddlewares');
 
-const { AllWork, UserWorks , AddWork } = require('../Controllers/WorkController')
+const { AllWorks, UserWorks , AddWork } = require('../Controllers/WorkController');
 
-router.get("/work", AllWork)
-router.get("/user-works/:id", UserWorks)
-router.post("/work", upload, AddWork)
+router.get("/works", AllWorks)
+router.get("/user_works", UserWorks)
+router.post("/work", (req, res, next) => {
+    req.params.fieldName = 'workImage'; 
+    req.params.type = 'work'; 
+    next(); 
+}, upload, AddWork);
 
-module.exports = router
+module.exports = router;

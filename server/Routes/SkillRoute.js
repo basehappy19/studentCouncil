@@ -1,9 +1,9 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router()
 
-const { AllSkill, AddSkill } = require('../Controllers/SkillController')
+const { AllSkills, AddSkill } = require('../Controllers/SkillController');
 
-router.get("/skill", AllSkill)
+router.get("/skills", AllSkills)
 router.post("/skill", AddSkill)
 
-module.exports = router
+module.exports = router;
