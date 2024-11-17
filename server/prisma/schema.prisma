@@ -257,6 +257,7 @@ model PartyList {
   middleName             String?
   lastName               String
   nickName               String
+  fullName               String
   bio                    Bio?               @relation(fields: [bioId], references: [id])
   bioId                  Int?               @unique
   contacts               Contact[]

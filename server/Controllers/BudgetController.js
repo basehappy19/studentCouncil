@@ -9,7 +9,11 @@ exports.BudgetInDepartment = async (req, res) => {
           where: { department: { id: isNaN(parseInt(departmentId)) ? undefined : parseInt(departmentId) } },
           include: {
             transactions: true,
-            department: true,
+            department: {
+                include:{
+                    leader:true,
+                }
+            },
           },
         })
 
