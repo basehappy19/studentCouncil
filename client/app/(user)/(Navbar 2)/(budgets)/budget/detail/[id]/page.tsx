@@ -1,24 +1,28 @@
-// export async function generateMetadata(props: { params : Promise<{ id: string }> }) {
-//   const params = await props.params
-//   const id = params.id
-//   const budget: interfaceBudget[] = await getBudget(id);
+import { getBudgetInDepartment } from "@/app/functions/Budget";
+import { Budget } from "@/app/interfaces/Budget/Budget";
 
-//   return {
-//     title: `งบประมาณ${budget.budgetTitle} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
-//     description:
-//       "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามงบประมาณเราได้ที่นี้",
-//     openGraph: {
-//       title: `งบประมาณ${budget.budgetTitle} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
-//       description:
-//         "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามงบประมาณเราได้ที่นี้",
-//     },
-//   };
-// }
+export async function generateMetadata(props: { params : Promise<{ id: string }> }) {
+  const params = await props.params
+  const id = params.id
+  const budget: Budget = await getBudgetInDepartment(parseInt(id));
+  return {
+    title: `งบประมาณ${budget.title} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
+    description:
+      "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามงบประมาณเราได้ที่นี้",
+    openGraph: {
+      title: `งบประมาณ${budget.title} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
+      description:
+        "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามงบประมาณเราได้ที่นี้",
+    },
+  };
+}
 
 async function BudgetInDepartment(props: { params : Promise<{ id: string }> }) {
   const params = await props.params
   const id = params.id
-
+  const budget : Budget = await getBudgetInDepartment(parseInt(id))
+  console.log(budget);
+  
   return (
     <div className="min-h-screen
         dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 
@@ -45,7 +49,7 @@ async function BudgetInDepartment(props: { params : Promise<{ id: string }> }) {
                 }}
                 className="text-custom-white text-5xl font-semibold w-full"
               >
-                ฝ่าย{budget.budgetTitle}
+                ฝ่าย{budget.title}
               </h1>
             </div>
           </div>
@@ -57,27 +61,27 @@ async function BudgetInDepartment(props: { params : Promise<{ id: string }> }) {
             <div className={`w-full lg:w-1/2 mx-auto text-center`}>
               <div
                 className={`mb-3 flex justify-center mx-auto w-[250px] h-[250px] border border-[#ccc] rounded-[50%] align-middle items-center`}
-                style={{ backgroundColor: budget.budgetColor }}>
+                style={{ backgroundColor: budget.department.color }}>
                 <div className="text-5xl text-custom-white font-semibold">
-                  {budget.budgetTitle}
+                  {budget.title}
                 </div>
               </div>
             </div>
             <div className="w-full lg:w-1/2 mx-auto text-center items-start">
               <div className="mt-12">
-                {/* <div className={`InfoAmountText`}>
+                <div className={`InfoAmountText`}>
                 จำนวน{" "}
-                <span className={`${budget[0].budgetAmountColor}`}>
-                  {budget[0].budgetAmount}
+                <span className={`${budget.department.color}`}>
+                  {budget.total}
                 </span>{" "}
                 บาท
-              </div> */}
+              </div>
                 <hr />
                 <div className="text-2xl mt-4">
-                  หน้าที่ของฝ่าย{budget.budgetTitle}
+                  หน้าที่ของฝ่าย{budget.department.name}
                 </div>
                 <div className="text-start text-custom-gray">
-                  {budget.budgetDescription}
+                  {budget.department.description}
                 </div>
               </div>
             </div>
@@ -86,7 +90,7 @@ async function BudgetInDepartment(props: { params : Promise<{ id: string }> }) {
         </div>
         <div className="container mx-auto py-8 px-4">
           <h1 className="text-center font-semibold mb-8 text-3xl">
-            บัญชีงบประมาณฝ่าย{budget.budgetTitle}
+            บัญชีงบประมาณฝ่าย{budget.title}
           </h1>
           <div className="bg-custom-white relative overflow-x-auto shadow-md sm:rounded-lg">
             <table className="w-full text-sm text-left rtl:text-right text-gray-500">
@@ -113,30 +117,30 @@ async function BudgetInDepartment(props: { params : Promise<{ id: string }> }) {
                 </tr>
               </thead>
               <tbody>
-                {transaction && transaction.length > 0 ? (
-                  transaction.map((tran, index) => (
+                {budget.transactions.length > 0 ? (
+                  budget.transactions.map((transaction, index) => (
                     <tr
                       className="bg-custom-white border-b border-custom-light-2 hover:bg-gray-300"
-                      key={tran.id}
+                      key={transaction.id}
                     >
                       <td className="px-6 py-4">{index + 1}</td>
                       <th scope="row" className="px-6 py-4">
-                        {tran.transactionTitle}
+                        {transaction.title}
                       </th>
                       <td className="px-6 py-4">
-                        {tran.transactionDescription}
+                        {transaction.description}
                       </td>
                       <td className="px-6 py-4">
-                        {tran.transactionAmount}
+                        {transaction.amount}
                       </td>
                       <td
                         className="px-6 py-4"
                         style={{
                           backgroundColor:
-                            tran.transactionType === 1 ? "#74e5a1" : "#eb344f",
+                            transaction.type === "INCOME" ? "#74e5a1" : "#eb344f",
                         }}
                       >
-                        {tran.transactionType === 1 ? (
+                        {transaction.type === "INCOME" ? (
                           <div className="font-bold text-center text-custom-black">
                             รายรับ
                           </div>
@@ -148,7 +152,7 @@ async function BudgetInDepartment(props: { params : Promise<{ id: string }> }) {
                       </td>
                       <td className="px-6 py-4">
                         {new Date(
-                          new Date(tran.createdAt).getTime()
+                          new Date(transaction.date).getTime()
                         ).toLocaleDateString("th-TH", {
                           year: "numeric",
                           month: "long",

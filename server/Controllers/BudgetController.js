@@ -1,27 +1,12 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-exports.AllDepartments = async (req, res) => {
-    try {
-        const departments = await prisma.department.findMany({
-            include: {
-                budget: true,
-            },
-        });
-    
-        res.status(200).send(departments);
-    } catch (e) {
-        console.error(e);
-        res.status(500).send('Server Error');
-    }
-}
-
 exports.BudgetInDepartment = async (req, res) => {
     try {
         const { departmentId } = req.query;
 
         const budget = await prisma.budget.findFirst({
-          where: { departmentId },
+          where: { department: { id: isNaN(parseInt(departmentId)) ? undefined : parseInt(departmentId) } },
           include: {
             transactions: true,
             department: true,

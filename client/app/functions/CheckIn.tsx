@@ -10,9 +10,9 @@ export const AllCheckIn = async (filterData: any) => {
         }
         
         return await response.json();
-    } catch (error) {
-        console.error('Error AllCheckIn:', error);
-        throw error;
+    } catch (e) {
+        console.error('Error AllCheckIn:', e);
+        throw e;
     }
 };
 
@@ -31,9 +31,9 @@ export const CheckInStatus = async ({ userId }: { userId: number }) => {
         }
 
         return await response.json();
-    } catch (error) {
-        console.error('Error CheckIn:', error);
-        throw error;
+    } catch (e) {
+        console.error('Error CheckIn:', e);
+        throw e;
     }
 };
 
