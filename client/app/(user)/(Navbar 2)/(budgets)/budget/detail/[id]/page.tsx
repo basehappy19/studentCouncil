@@ -55,7 +55,7 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
                 </div>
                 <div className="text-xl font-semibold">
                   หัวหน้วฝ่าย: {' '}
-                  <span className="text-green-600 dark:text-green-400">
+                  <span className="text-blue-600 dark:text-blue-400">
                     {budget.department.leader.firstName} {budget.department.leader.middleName} {budget.department.leader.lastName}
                   </span>
                 </div>

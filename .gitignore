@@ -58,6 +58,7 @@ server/yarn-debug.log*
 server/yarn-error.log*
 
 server/.env*.local
+server/.env*.local
 
 server/.env.development
 server/.env.production
