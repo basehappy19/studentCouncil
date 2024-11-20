@@ -1,6 +1,7 @@
 import { AllCheckIns } from "@/app/functions/CheckIn";
 import { CheckIns } from "@/app/interfaces/CheckIn/CheckIn";
 import TagInHeader from "@/app/layouts/TagInHeader";
+import CheckInTrackingTable from "@/components/PartyList/CheckInTrackingTable";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -19,19 +20,19 @@ const CheckInTrack = async (props: {
 }) => {
     const searchParams = await props.searchParams;
     const startDate =
-        typeof searchParams.search === "string"
-            ? searchParams.search
+        typeof searchParams.startDate === "string"
+            ? searchParams.startDate
             : undefined;
     const endDate =
-        typeof searchParams.search === "string"
-            ? searchParams.search
+        typeof searchParams.endDate === "string"
+            ? searchParams.endDate
             : undefined;
     const search =
         typeof searchParams.search === "string"
             ? searchParams.search
             : undefined;
-    const checkIns : CheckIns = await AllCheckIns({ startDate, endDate, search });
-    
+    const checkIns: CheckIns = await AllCheckIns({ startDate, endDate, search });
+
     return (
         <div
             className="min-h-screen
@@ -63,12 +64,10 @@ const CheckInTrack = async (props: {
                     </div>
                 </div>
             </section>
-            <section>
-                {/* <div className="container mx-auto px-4">
-                  {checkInData.length > 0 && (
-                    <CheckInTable checkInData={checkInData} />
-                  )}
-                </div> */}
+            <section className="relative py-10 overflow-hidden">
+                <div className="relative container mx-auto px-4">
+                    <CheckInTrackingTable checkIns={checkIns} />
+                </div>
             </section>
         </div>
     );

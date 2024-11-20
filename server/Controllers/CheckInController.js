@@ -47,6 +47,15 @@ exports.AllCheckIns = async (req, res) => {
                                     OR: [
                                         { fullName: { contains: search } },
                                         { nickName: { contains: search } },
+                                        {
+                                            roles: {
+                                                some: {
+                                                    role: {
+                                                        name: { contains: search },
+                                                    },
+                                                },
+                                            },
+                                        },
                                     ],
                                 },
                             },
@@ -55,7 +64,7 @@ exports.AllCheckIns = async (req, res) => {
                 },
             },
             orderBy: {
-                dateTime: "asc",
+                dateTime: "desc",
             },
         });
 
@@ -74,6 +83,27 @@ exports.AllCheckIns = async (req, res) => {
                     },
                 },
             },
+            where: {
+                ...(search && {
+                    user: {
+                        partyList: {
+                            OR: [
+                                { fullName: { contains: search } },
+                                { nickName: { contains: search } },
+                                {
+                                    roles: {
+                                        some: {
+                                            role: {
+                                                name: { contains: search },
+                                            },
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                }),
+            },
         })
         res.status(200).json({ partyLists: partyLists, days: days });
     } catch (e) {
@@ -81,7 +111,6 @@ exports.AllCheckIns = async (req, res) => {
         res.status(500).send("Server Error");
     }
 };
-
 
 exports.CheckIn = async (req, res) => {
     try {
@@ -201,3 +230,93 @@ exports.CheckInStatus = async (req, res) => {
         res.status(500).send("Server Error");
     }
 };
+
+exports.CheckInStatistic = async (req, res) => {
+    try {
+        const partyLists = await prisma.partyList.findMany({
+            select: {
+                id: true,
+                fullName: true,
+                nickName: true,
+                profile_image_128x128: true,
+                profile_image_full: true,
+                roles: {
+                    select: {
+                        role: true,
+                    },
+                },
+                user: {
+                    select: {
+                        id: true,
+                        checkIns: {
+                            select: {
+                                id: true,
+                                attendTime: true,
+                                type: true, 
+                                reason: true,
+                                checkInDay: true,
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        const enumTypes = [
+            'NORMAL',
+            'SICK_LEAVE',
+            'PERSONAL_LEAVE',
+            'NOT_CHECKED_IN',
+            'ABSENT',
+            'FORGOT_TO_CHECK_IN',
+            'HOLIDAY',
+            'CLOSED_FOR_CHECK_IN',
+        ];
+
+        const statistics = partyLists.map((party) => {
+            const checkIns = party.user?.checkIns || [];
+            const days = [...new Set(checkIns.map((c) => c.checkInDay))].length;
+
+            const validCheckIns = checkIns.filter(
+                (c) => c.type !== 'HOLIDAY' && c.type !== 'CLOSED_FOR_CHECK_IN'
+            );
+            const averageCheckInTime =
+                validCheckIns.reduce((sum, c) => {
+                    const time = new Date(c.attendTime).getHours() * 60 + new Date(c.attendTime).getMinutes();
+                    return sum + time;
+                }, 0) / (validCheckIns.length || 1);
+
+            const statusCounts = enumTypes.reduce((acc, type) => {
+                acc[type] = 0; 
+                return acc;
+            }, {});
+
+            checkIns.forEach((c) => {
+                statusCounts[c.type] += 1;
+            });
+
+            return {
+                id: party.id,
+                fullName: party.fullName,
+                nickName: party.nickName,
+                profile_image_128x128: party.profile_image_128x128,
+                profile_image_full: party.profile_image_full,
+                roles: party.roles.map((role) => role.role),
+                statistics: {
+                    days,
+                    averageCheckInTime: isNaN(averageCheckInTime)
+                        ? 'No Valid Check-Ins'
+                        : `${Math.floor(averageCheckInTime / 60)}:${Math.floor(averageCheckInTime % 60).toString().padStart(2, '0')}`, // เวลาที่เช็คอินเฉลี่ยในรูปแบบ HH:MM
+                    statusCounts, 
+                },
+            };
+        });
+
+        res.status(200).send(statistics);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send("Server Error");
+    }
+};
+
+
