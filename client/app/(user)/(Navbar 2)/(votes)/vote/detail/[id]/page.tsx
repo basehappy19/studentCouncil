@@ -86,7 +86,7 @@ const VoteResult = async (props: { searchParams: { [key: string]: string | strin
                         <div>
                           <div className="font-medium text-gray-700 dark:text-gray-300">วันที่</div>
                           <div className="text-gray-600 dark:text-gray-200">
-                            {new Date(vote.date).toLocaleDateString("th-TH", {
+                            {new Date(vote.createdAt).toLocaleDateString("th-TH", {
                               year: "numeric",
                               month: "long",
                               day: "2-digit",

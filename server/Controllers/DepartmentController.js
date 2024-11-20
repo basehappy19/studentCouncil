@@ -5,10 +5,13 @@ exports.AllDepartments = async (req, res) => {
     try {
         const departments = await prisma.department.findMany({
             include: {
+                leader: true,
                 budget: true,
             },
             orderBy: {
-                id: 'desc'
+                budget: {
+                    total: 'desc'
+                }
             }
         })
         res.send(departments).status(200);

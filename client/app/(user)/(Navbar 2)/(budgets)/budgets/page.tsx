@@ -27,7 +27,7 @@ async function BudgetInDepartment() {
       <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-yellow-400/20 to-pink-400/20 backdrop-blur-sm" />
       <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <TagInHeader icon="HandCoins" color="text-yellow-400" title="ฝ่ายทั้งหมด" />
+            <TagInHeader icon="HandCoins" color="text-yellow-400" title="บัญชีงบประมาณ" />
             <h1 className="text-5xl md:text-7xl font-bold">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-yellow-500 to-pink-500">
               ติดตามงบประมาณ

@@ -1,18 +1,32 @@
-export const AllCheckIn = async (filterData: any) => {
+export const AllCheckIns = async ({startDate = undefined, endDate = undefined, search = undefined} : {startDate : string | undefined, endDate : string | undefined, search : string | undefined}) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/checkin/list", {
-            method: 'POST',
-            body: filterData,
+        const url = new URL(`${process.env.NEXT_PUBLIC_APP_API_URL}/checkIns`);
+        const params = new URLSearchParams();
+
+        if (startDate) params.append('startDate', startDate);
+        if (endDate) params.append('endDate', endDate);
+        if (search) params.append('search', search);
+
+        url.search = params.toString();
+        const response = await fetch(url.toString(), {
+            next:{
+                revalidate: 0,
+            }
         });
 
         if (!response.ok) {
-            throw new Error('Failed to Query AllCheckIn');
+            throw new Error('Failed To Fetch AllCheckIn');
         }
         
         return await response.json();
-    } catch (e) {
-        console.error('Error AllCheckIn:', e);
-        throw e;
+    } catch (e : unknown) {
+        if (e instanceof Error) {
+            console.error(`Error Fetch AllCheckIn: ${e.message}`);
+            throw new Error("Failed to AllCheckIn");
+        } else {
+            console.error('An unknown error occurred');
+            throw new Error("Failed to AllCheckIn");
+        }
     }
 };
 

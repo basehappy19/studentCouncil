@@ -4,6 +4,7 @@ export interface PartyList {
     middleName: string | null,
     lastName: string,
     nickName: string,
+    fullName: string,
     bioId : number,
     rank: string,
     profile_image_full: string,

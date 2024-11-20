@@ -28,7 +28,7 @@ const VoteCard = ({ vote } : { vote : Vote }) => {
         <CardFooter>
           <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
             <Calendar className="h-4 w-4 mr-2" />
-            {new Date(vote.date).toLocaleDateString("th-TH", {
+            {new Date(vote.createdAt).toLocaleDateString("th-TH", {
               year: "numeric",
               month: "long",
               day: "2-digit",

@@ -24,7 +24,6 @@ exports.AllVotes = async (req, res) => {
                         document: true,
                     }
                 },
-                date: true,
                 result: {
                     select: {
                         maxAttendees: true,
@@ -54,6 +53,8 @@ exports.AllVotes = async (req, res) => {
                         },
                     }
                 },
+                createdAt: true,
+                updatedAt: true,
             }
         });
 
@@ -169,7 +170,6 @@ exports.getVote = async (req, res) => {
                         document: true,
                     }
                 },
-                date: true,
                 result: {
                     select: {
                         maxAttendees: true,
@@ -202,7 +202,9 @@ exports.getVote = async (req, res) => {
                             where: searchFilter 
                         }
                     }
-                }
+                },
+                createdAt: true,
+                updatedAt: true,
             },
             where: { id: parseInt(id) }
         });
@@ -334,7 +336,6 @@ exports.AddVote = async (req, res) => {
                         data: documents,
                     },
                 },
-                date: new Date(),
                 result: {
                     create: {
                         maxAttendees: {

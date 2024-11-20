@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Budget } from "@/app/interfaces/Budget/Budget";
 import { getBudgetInDepartment } from "@/app/functions/Budget";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -53,10 +54,14 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
                     {budget.total.toLocaleString()} บาท
                   </span>
                 </div>
-                <div className="text-xl font-semibold">
+                <div className="flex flex-row items-center gap-x-3">
+                  <Avatar>
+                    <AvatarImage src={`${process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH}/${budget.department.leader.profile_image_128x128}`} />
+                    <AvatarFallback>{budget.department.leader.nickName}</AvatarFallback>
+                  </Avatar>
                   หัวหน้วฝ่าย: {' '}
-                  <span className="text-blue-600 dark:text-blue-400">
-                    {budget.department.leader.firstName} {budget.department.leader.middleName} {budget.department.leader.lastName}
+                  <span className="font-semibold text-blue-600 dark:text-blue-400">
+                    {budget.department.leader.fullName}
                   </span>
                 </div>
                 <Separator className="my-4" />
@@ -125,20 +130,20 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
                           })}
                         </TableCell>
                       </TableRow>
-                ))
-                ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center">
-                    ไม่มีข้อมูล
-                  </TableCell>
-                </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center">
+                        ไม่มีข้อมูล
+                      </TableCell>
+                    </TableRow>
                   )}
-              </TableBody>
-            </Table>
-          </ScrollArea>
-        </CardContent>
-      </Card>
-    </div>
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      </div>
     </div >
   );
 }
