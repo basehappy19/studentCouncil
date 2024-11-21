@@ -1,8 +1,8 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const path = require('path');
-const fs = require('fs');
-const validateRequiredFields = require('../Functions/ValidateRequiredFields');
+const path = require("path");
+const fs = require("fs");
+const validateRequiredFields = require("../Functions/ValidateRequiredFields");
 
 exports.AllVotes = async (req, res) => {
     try {
@@ -16,13 +16,13 @@ exports.AllVotes = async (req, res) => {
                     select: {
                         id: true,
                         refer: true,
-                    }
+                    },
                 },
                 documents: {
                     select: {
                         id: true,
                         document: true,
-                    }
+                    },
                 },
                 result: {
                     select: {
@@ -31,80 +31,104 @@ exports.AllVotes = async (req, res) => {
                             select: {
                                 id: true,
                                 partyList: true,
-                            }
+                            },
                         },
                         disagrees: {
                             select: {
                                 id: true,
                                 partyList: true,
-                            }
+                            },
                         },
                         abstains: {
                             select: {
                                 id: true,
                                 partyList: true,
-                            }
+                            },
                         },
                         noVotes: {
                             select: {
                                 id: true,
                                 partyList: true,
-                            }
+                            },
                         },
-                    }
+                    },
                 },
                 createdAt: true,
                 updatedAt: true,
-            }
+            },
         });
 
-        const formattedVotes = votes.map(vote => {
+        const formattedVotes = votes.map((vote) => {
             const agreeCount = vote.result.agrees.length;
             const disagreeCount = vote.result.disagrees.length;
             const abstainCount = vote.result.abstains.length;
             const noVoteCount = vote.result.noVotes.length;
 
-            const totalPartyListCount = agreeCount + disagreeCount + noVoteCount + abstainCount;
+            const totalPartyListCount =
+                agreeCount + disagreeCount + noVoteCount + abstainCount;
 
-            const agreePercentage = totalPartyListCount > 0 ? ((agreeCount / totalPartyListCount) * 100).toFixed(2) : '0.00';
-            const disagreePercentage = totalPartyListCount > 0 ? ((disagreeCount / totalPartyListCount) * 100).toFixed(2) : '0.00';
-            const abstainPercentage = totalPartyListCount > 0 ? ((abstainCount / totalPartyListCount) * 100).toFixed(2) : '0.00';
-            const noVotePercentage = totalPartyListCount > 0 ? ((noVoteCount / totalPartyListCount) * 100).toFixed(2) : '0.00';
+            const agreePercentage =
+                totalPartyListCount > 0
+                    ? ((agreeCount / totalPartyListCount) * 100).toFixed(2)
+                    : "0.00";
+            const disagreePercentage =
+                totalPartyListCount > 0
+                    ? ((disagreeCount / totalPartyListCount) * 100).toFixed(2)
+                    : "0.00";
+            const abstainPercentage =
+                totalPartyListCount > 0
+                    ? ((abstainCount / totalPartyListCount) * 100).toFixed(2)
+                    : "0.00";
+            const noVotePercentage =
+                totalPartyListCount > 0
+                    ? ((noVoteCount / totalPartyListCount) * 100).toFixed(2)
+                    : "0.00";
 
             let voteResult;
             const effectiveTotal = agreeCount + disagreeCount + noVoteCount;
 
             if (agreeCount > disagreeCount && agreeCount > noVoteCount) {
-                voteResult = { 
+                voteResult = {
                     type: `Agree`,
                     with: agreeCount,
                     to: Math.max(disagreeCount, noVoteCount),
-                    percentage: (agreeCount / effectiveTotal * 100).toFixed(2)
+                    percentage: ((agreeCount / effectiveTotal) * 100).toFixed(
+                        2
+                    ),
                 };
-            } else if (disagreeCount > agreeCount && disagreeCount > noVoteCount) {
-                voteResult = { 
+            } else if (
+                disagreeCount > agreeCount &&
+                disagreeCount > noVoteCount
+            ) {
+                voteResult = {
                     type: `Disagree`,
                     with: disagreeCount,
                     to: Math.max(agreeCount, noVoteCount),
-                    percentage: (disagreeCount / effectiveTotal * 100).toFixed(2)
+                    percentage: (
+                        (disagreeCount / effectiveTotal) *
+                        100
+                    ).toFixed(2),
                 };
-            } else if (abstainCount > agreeCount && disagreeCount > noVoteCount) {
-                voteResult = { 
+            } else if (
+                abstainCount > agreeCount &&
+                disagreeCount > noVoteCount
+            ) {
+                voteResult = {
                     type: `Abstain`,
                     with: abstainCount,
                     to: Math.max(agreeCount, abstainCount),
-                    percentage: (noVoteCount / effectiveTotal * 100).toFixed(2)
+                    percentage: ((noVoteCount / effectiveTotal) * 100).toFixed(
+                        2
+                    ),
                 };
             } else {
                 voteResult = {
                     type: "Tie | no result",
                     with: null,
                     to: null,
-                    percentage: null
+                    percentage: null,
                 };
             }
-
-
 
             return {
                 ...vote,
@@ -124,15 +148,15 @@ exports.AllVotes = async (req, res) => {
                         abstainPercentage,
                         noVotePercentage,
                     },
-                    summary: voteResult
-                }
+                    summary: voteResult,
+                },
             };
         });
 
         res.send(formattedVotes).status(200);
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error');
+        e.status = 400;
+        next(e);
     }
 };
 
@@ -143,13 +167,21 @@ exports.getVote = async (req, res) => {
 
         const searchFilter = search
             ? {
-                OR: [
-                    { partyList: { firstName: { contains: search } } },
-                    { partyList: { middleName: { contains: search } } },
-                    { partyList: { nickName: { contains: search } } },
-                    { partyList: { roles: { some: { role: { name: { contains: search } } } } } }
-                ]
-            }
+                  OR: [
+                      { partyList: { firstName: { contains: search } } },
+                      { partyList: { middleName: { contains: search } } },
+                      { partyList: { nickName: { contains: search } } },
+                      {
+                          partyList: {
+                              roles: {
+                                  some: {
+                                      role: { name: { contains: search } },
+                                  },
+                              },
+                          },
+                      },
+                  ],
+              }
             : {};
 
         const vote = await prisma.vote.findFirst({
@@ -162,51 +194,67 @@ exports.getVote = async (req, res) => {
                     select: {
                         id: true,
                         refer: true,
-                    }
+                    },
                 },
                 documents: {
                     select: {
                         id: true,
                         document: true,
-                    }
+                    },
                 },
                 result: {
                     select: {
                         maxAttendees: true,
-                        agrees: { 
-                            select: { 
-                                id: true, 
-                                partyList: { include: { roles: { include: { role: true } } } } 
+                        agrees: {
+                            select: {
+                                id: true,
+                                partyList: {
+                                    include: {
+                                        roles: { include: { role: true } },
+                                    },
+                                },
                             },
-                            where: searchFilter
+                            where: searchFilter,
                         },
-                        disagrees: { 
-                            select: { 
-                                id: true, 
-                                partyList: { include: { roles: { include: { role: true } } } } 
+                        disagrees: {
+                            select: {
+                                id: true,
+                                partyList: {
+                                    include: {
+                                        roles: { include: { role: true } },
+                                    },
+                                },
                             },
-                            where: searchFilter
+                            where: searchFilter,
                         },
-                        abstains: { 
-                            select: { 
-                                id: true, 
-                                partyList: { include: { roles: { include: { role: true } } } } 
+                        abstains: {
+                            select: {
+                                id: true,
+                                partyList: {
+                                    include: {
+                                        roles: { include: { role: true } },
+                                    },
+                                },
                             },
-                            where: searchFilter
+                            where: searchFilter,
                         },
-                        noVotes: { 
-                            select: { 
-                                id: true, 
-                                partyList: { include: { roles: { include: { role: true } } } } 
+                        noVotes: {
+                            select: {
+                                id: true,
+                                partyList: {
+                                    include: {
+                                        roles: { include: { role: true } },
+                                    },
+                                },
                             },
-                            where: searchFilter 
-                        }
-                    }
+                            where: searchFilter,
+                        },
+                    },
                 },
                 createdAt: true,
                 updatedAt: true,
             },
-            where: { id: parseInt(id) }
+            where: { id: parseInt(id) },
         });
 
         const agreeCount = vote.result.agrees.length;
@@ -214,43 +262,56 @@ exports.getVote = async (req, res) => {
         const abstainCount = vote.result.abstains.length;
         const noVoteCount = vote.result.noVotes.length;
 
-        const totalPartyListCount = agreeCount + disagreeCount + noVoteCount + abstainCount;
+        const totalPartyListCount =
+            agreeCount + disagreeCount + noVoteCount + abstainCount;
 
-        const agreePercentage = totalPartyListCount > 0 ? ((agreeCount / totalPartyListCount) * 100).toFixed(2) : '0.00';
-        const disagreePercentage = totalPartyListCount > 0 ? ((disagreeCount / totalPartyListCount) * 100).toFixed(2) : '0.00';
-        const abstainPercentage = totalPartyListCount > 0 ? ((abstainCount / totalPartyListCount) * 100).toFixed(2) : '0.00';
-        const noVotePercentage = totalPartyListCount > 0 ? ((noVoteCount / totalPartyListCount) * 100).toFixed(2) : '0.00';
+        const agreePercentage =
+            totalPartyListCount > 0
+                ? ((agreeCount / totalPartyListCount) * 100).toFixed(2)
+                : "0.00";
+        const disagreePercentage =
+            totalPartyListCount > 0
+                ? ((disagreeCount / totalPartyListCount) * 100).toFixed(2)
+                : "0.00";
+        const abstainPercentage =
+            totalPartyListCount > 0
+                ? ((abstainCount / totalPartyListCount) * 100).toFixed(2)
+                : "0.00";
+        const noVotePercentage =
+            totalPartyListCount > 0
+                ? ((noVoteCount / totalPartyListCount) * 100).toFixed(2)
+                : "0.00";
 
         let voteResult;
         const effectiveTotal = agreeCount + disagreeCount + noVoteCount;
 
         if (agreeCount > disagreeCount && agreeCount > noVoteCount) {
-            voteResult = { 
+            voteResult = {
                 type: `Agree`,
                 with: agreeCount,
                 to: Math.max(disagreeCount, noVoteCount),
-                percentage: (agreeCount / effectiveTotal * 100).toFixed(2)
+                percentage: ((agreeCount / effectiveTotal) * 100).toFixed(2),
             };
         } else if (disagreeCount > agreeCount && disagreeCount > noVoteCount) {
-            voteResult = { 
+            voteResult = {
                 type: `Disagree`,
                 with: disagreeCount,
                 to: Math.max(agreeCount, noVoteCount),
-                percentage: (disagreeCount / effectiveTotal * 100).toFixed(2)
+                percentage: ((disagreeCount / effectiveTotal) * 100).toFixed(2),
             };
         } else if (abstainCount > agreeCount && disagreeCount > noVoteCount) {
-            voteResult = { 
+            voteResult = {
                 type: `Abstain`,
                 with: abstainCount,
                 to: Math.max(agreeCount, abstainCount),
-                percentage: (noVoteCount / effectiveTotal * 100).toFixed(2)
+                percentage: ((noVoteCount / effectiveTotal) * 100).toFixed(2),
             };
         } else {
             voteResult = {
                 type: "Tie | no result",
                 with: null,
                 to: null,
-                percentage: null
+                percentage: null,
             };
         }
 
@@ -272,18 +333,17 @@ exports.getVote = async (req, res) => {
                     abstainPercentage,
                     noVotePercentage,
                 },
-                summary: voteResult
-            }
+                summary: voteResult,
+            },
         };
         console.log(voteData);
-        
+
         res.send(voteData).status(200);
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error');
+        e.status = 400;
+        next(e);
     }
 };
-
 
 exports.AddVote = async (req, res) => {
     try {
@@ -308,12 +368,14 @@ exports.AddVote = async (req, res) => {
             disagrees_partyLists: "Disagree PartyLists",
             abstentions_partyLists: "Abstentions PartyLists",
             noVotes_partyLists: "NoVotes PartyLists",
-        }
+        };
 
         const errorMessage = validateRequiredFields(req.body, requiredFields);
 
         if (errorMessage) {
-            return res.status(400).json({ message: errorMessage, type: "error" });
+            return res
+                .status(400)
+                .json({ message: errorMessage, type: "error" });
         }
 
         const documents = req.files.map((file) => ({
@@ -369,44 +431,56 @@ exports.AddVote = async (req, res) => {
             },
         });
 
-        res.status(201).json({ message: `เพิ่มการลงมติ ${title} เรียบร้อยแล้ว`, type: 'success' });
+        res.status(201).json({
+            message: `เพิ่มการลงมติ ${title} เรียบร้อยแล้ว`,
+            type: "success",
+        });
     } catch (e) {
-        console.error(e);
-        res.status(500).send('Server Error');
+        e.status = 400;
+        next(e);
     }
 };
 
-exports.RemoveVote = async (req,res) => {
-    const { id } = req.body;
-    
-    const vote = await prisma.vote.findFirst({
-        select: {
-            title: true,
-            documents:{
-                select: {
-                    name: true,
-                    path: true,
-                },
-            }
-        },
-        where: {
-            id: parseInt(id),
-        },
-    });
+exports.RemoveVote = async (req, res) => {
+    try {
+        const { id } = req.body;
 
-    if(!vote) {
-        return res.status(404).json({ message: 'ไม่พบการลงมติ', type: 'error' });
+        const vote = await prisma.vote.findFirst({
+            select: {
+                title: true,
+                documents: {
+                    select: {
+                        name: true,
+                        path: true,
+                    },
+                },
+            },
+            where: {
+                id: parseInt(id),
+            },
+        });
+
+        if (!vote) {
+            return res
+                .status(404)
+                .json({ message: "ไม่พบการลงมติ", type: "error" });
+        }
+
+        vote.documents.forEach((document) => {
+            fs.unlinkSync(path.join(__dirname, "..", document.path));
+        });
+
+        await prisma.vote.delete({
+            where: {
+                id: parseInt(id),
+            },
+        });
+        res.status(200).json({
+            message: `ลบการลงมติ ${vote.title} เรียบร้อยแล้ว`,
+            type: "success",
+        });
+    } catch (e) {
+        e.status = 400;
+        next(e);
     }
-    
-    vote.documents.forEach((document) => {
-        fs.unlinkSync(path.join(__dirname, '..', document.path));
-    });
-    
-    
-    await prisma.vote.delete({
-        where: {
-            id: parseInt(id),
-        },
-    });    
-    res.status(200).json({message: `ลบการลงมติ ${vote.title} เรียบร้อยแล้ว`, type: 'success'});
-}
+};

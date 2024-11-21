@@ -1,0 +1,81 @@
+[
+  {
+    "method": "GET",
+    "endpoint": "/api/partyLists",
+    "status": 400,
+    "responseTime": "61ms",
+    "timestamp": "2024-11-21T05:04:58.759Z",
+    "request": {
+      "headers": {
+        "host": "10.10.8.233:8000",
+        "connection": "keep-alive",
+        "cache-control": "max-age=0",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-encoding": "gzip, deflate",
+        "accept-language": "th,en;q=0.9,en-GB;q=0.8,en-US;q=0.7"
+      },
+      "body": {},
+      "query": {},
+      "ip": "::ffff:10.10.8.233"
+    },
+    "response": {
+      "body": "{\"success\":false,\"error\":{\"status\":400,\"message\":\"Cannot read properties of undefined (reading 'status')\",\"stack\":\"TypeError: Cannot read properties of undefined (reading 'status')\\n    at exports.AllPartyLists (D:\\\\Program\\\\StudentCouncil\\\\server\\\\Controllers\\\\PartyListController.js:34:29)\"}}"
+    }
+  },
+  {
+    "method": "GET",
+    "endpoint": "/api/docs",
+    "status": 404,
+    "responseTime": "11ms",
+    "timestamp": "2024-11-21T05:16:06.448Z",
+    "request": {
+      "headers": {
+        "host": "10.10.8.233:8000",
+        "connection": "keep-alive",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "accept-encoding": "gzip, deflate",
+        "accept-language": "th,en;q=0.9,en-GB;q=0.8,en-US;q=0.7"
+      },
+      "body": {},
+      "query": {},
+      "ip": "::ffff:10.10.8.233"
+    },
+    "response": {}
+  },
+  {
+    "method": "GET",
+    "endpoint": "/api/checkIn_statistics",
+    "status": 304,
+    "responseTime": "63ms",
+    "timestamp": "2024-11-21T05:31:56.134Z",
+    "request": {
+      "headers": {
+        "host": "localhost:8000",
+        "connection": "keep-alive",
+        "sec-ch-ua": "\"Microsoft Edge\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\"",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "sec-fetch-site": "none",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-user": "?1",
+        "sec-fetch-dest": "document",
+        "accept-encoding": "gzip, deflate, br, zstd",
+        "accept-language": "th,en;q=0.9,en-GB;q=0.8,en-US;q=0.7",
+        "if-none-match": "W/\"1149-x6kVzUZ2X41/ThA1va0DJFE3rIs\""
+      },
+      "body": {},
+      "query": {},
+      "ip": "::1"
+    },
+    "response": {
+      "body": "[{\"id\":1,\"fullName\":\"ชื่อ นามสกุล\",\"nickName\":\"A\",\"profile_image_128x128\":\"default-image-partyList_128x128.svg\",\"profile_image_full\":\"default-image-partyList.svg\",\"roles\":[{\"id\":1,\"name\":\"ประธาน\"}],\"statistics\":{\"days\":4,\"averageCheckInTime\":\"6:16\",\"statusCounts\":{\"NORMAL\":0,\"SICK_LEAVE\":0,\"PERSONAL_LEAVE\":0,\"NOT_CHECKED_IN\":2,\"ABSENT\":0,\"FORGOT_TO_CHECK_IN\":1,\"HOLIDAY\":0,\"CLOSED_FOR_CHECK_IN\":1}}},{\"id\":2,\"fullName\":\"ชื่อ นามสกุล\",\"nickName\":\"B\",\"profile_image_128x128\":\"default-image-partyList_128x128.svg\",\"profile_image_full\":\"default-image-partyList.svg\",\"roles\":[{\"id\":2,\"name\":\"รองประธาน\"}],\"statistics\":{\"days\":4,\"averageCheckInTime\":\"6:16\",\"statusCounts\":{\"NORMAL\":0,\"SICK_LEAVE\":0,\"PERSONAL_LEAVE\":0,\"NOT_CHECKED_IN\":3,\"ABSENT\":0,\"FORGOT_TO_CHECK_IN\":0,\"HOLIDAY\":1,\"CLOSED_FOR_CHECK_IN\":0}}},{\"id\":3,\"fullName\":\"ชื่อ นามสกุล\",\"nickName\":\"C\",\"profile_image_128x128\":\"default-image-partyList_128x128.svg\",\"profile_image_full\":\"default-image-partyList.svg\",\"roles\":[{\"id\":3,\"name\":\"เลขานุการ\"}],\"statistics\":{\"days\":0,\"averageCheckInTime\":\"0:00\",\"statusCounts\":{\"NORMAL\":0,\"SICK_LEAVE\":0,\"PERSONAL_LEAVE\":0,\"NOT_CHECKED_IN\":0,\"ABSENT\":0,\"FORGOT_TO_CHECK_IN\":0,\"HOLIDAY\":0,\"CLOSED_FOR_CHECK_IN\":0}}},{\"id\":4,\"fullName\":\"ชื่อ นามสกุล\",\"nickName\":\"D\",\"profile_image_128x128\":\"default-image-partyList_128x128.svg\",\"profile_image_full\":\"default-image-partyList.svg\",\"roles\":[{\"id\":4,\"name\":\"ผู้ช่วยเลขานุการ\"}],\"statistics\":{\"days\":0,\"averageCheckInTime\":\"0:00\",\"statusCounts\":{\"NORMAL\":0,\"SICK_LEAVE\":0,\"PERSONAL_LEAVE\":0,\"NOT_CHECKED_IN\":0,\"ABSENT\":0,\"FORGOT_TO_CHECK_IN\":0,\"HOLIDAY\":0,\"CLOSED_FOR_CHECK_IN\":0}}},{\"id\":5,\"fullName\":\"ชื่อ นามสกุล\",\"nickName\":\"E\",\"profile_image_128x128\":\"default-image-partyList_128x128.svg\",\"profile_image_full\":\"default-image-partyList.svg\",\"roles\":[{\"id\":5,\"name\":\"วิชาการ\"}],\"statistics\":{\"days\":0,\"averageCheckInTime\":\"0:00\",\"statusCounts\":{\"NORMAL\":0,\"SICK_LEAVE\":0,\"PERSONAL_LEAVE\":0,\"NOT_CHECKED_IN\":0,\"ABSENT\":0,\"FORGOT_TO_CHECK_IN\":0,\"HOLIDAY\":0,\"CLOSED_FOR_CHECK_IN\":0}}},{\"id\":6,\"fullName\":\"ชื่อ นามสกุล\",\"nickName\":\"F\",\"profile_image_128x128\":\"default-image-partyList_128x128.svg\",\"profile_image_full\":\"default-image-partyList.svg\",\"roles\":[{\"id\":6,\"name\":\"บัญชี\"}],\"statistics\":{\"days\":0,\"averageCheckInTime\":\"0:00\",\"statusCounts\":{\"NORMAL\":0,\"SICK_LEAVE\":0,\"PERSONAL_LEAVE\":0,\"NOT_CHECKED_IN\":0,\"ABSENT\":0,\"FORGOT_TO_CHECK_IN\":0,\"HOLIDAY\":0,\"CLOSED_FOR_CHECK_IN\":0}}},{\"id\":7,\"fullName\":\"ชื่อ นามสกุล\",\"nickName\":\"G\",\"profile_image_128x128\":\"default-image-partyList_128x128.svg\",\"profile_image_full\":\"default-image-partyList.svg\",\"roles\":[{\"id\":7,\"name\":\"กิจกรรม\"}],\"statistics\":{\"days\":0,\"averageCheckInTime\":\"0:00\",\"statusCounts\":{\"NORMAL\":0,\"SICK_LEAVE\":0,\"PERSONAL_LEAVE\":0,\"NOT_CHECKED_IN\":0,\"ABSENT\":0,\"FORGOT_TO_CHECK_IN\":0,\"HOLIDAY\":0,\"CLOSED_FOR_CHECK_IN\":0}}},{\"id\":8,\"fullName\":\"ชื่อ นามสกุล\",\"nickName\":\"H\",\"profile_image_128x128\":\"default-image-partyList_128x128.svg\",\"profile_image_full\":\"default-image-partyList.svg\",\"roles\":[{\"id\":8,\"name\":\"ประชาสัมพันธ์\"}],\"statistics\":{\"days\":0,\"averageCheckInTime\":\"0:00\",\"statusCounts\":{\"NORMAL\":0,\"SICK_LEAVE\":0,\"PERSONAL_LEAVE\":0,\"NOT_CHECKED_IN\":0,\"ABSENT\":0,\"FORGOT_TO_CHECK_IN\":0,\"HOLIDAY\":0,\"CLOSED_FOR_CHECK_IN\":0}}},{\"id\":9,\"fullName\":\"ชื่อ นามสกุล\",\"nickName\":\"I\",\"profile_image_128x128\":\"default-image-partyList_128x128.svg\",\"profile_image_full\":\"default-image-partyList.svg\",\"roles\":[{\"id\":9,\"name\":\"กิจการ\"}],\"statistics\":{\"days\":0,\"averageCheckInTime\":\"0:00\",\"statusCounts\":{\"NORMAL\":0,\"SICK_LEAVE\":0,\"PERSONAL_LEAVE\":0,\"NOT_CHECKED_IN\":0,\"ABSENT\":0,\"FORGOT_TO_CHECK_IN\":0,\"HOLIDAY\":0,\"CLOSED_FOR_CHECK_IN\":0}}},{\"id\":10,\"fullName\":\"ชื่อ นามสกุล\",\"nickName\":\"O\",\"profile_image_128x128\":\"default-image-partyList_128x128.svg\",\"profile_image_full\":\"default-image-partyList.svg\",\"roles\":[{\"id\":10,\"name\":\"สมาชิก\"}],\"statistics\":{\"days\":0,\"averageCheckInTime\":\"0:00\",\"statusCounts\":{\"NORMAL\":0,\"SICK_LEAVE\":0,\"PERSONAL_LEAVE\":0,\"NOT_CHECKED_IN\":0,\"ABSENT\":0,\"FORGOT_TO_CHECK_IN\":0,\"HOLIDAY\":0,\"CLOSED_FOR_CHECK_IN\":0}}}]"
+    }
+  }
+]

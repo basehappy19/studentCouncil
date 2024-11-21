@@ -1,25 +1,25 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const validateRequiredFields = require('../Functions/ValidateRequiredFields');
+const validateRequiredFields = require("../Functions/ValidateRequiredFields");
 
-exports.AllSkills = async(req,res)=>{
+exports.AllSkills = async (req, res) => {
     try {
-        const skills = await prisma.skill.findMany({})
-        res.send(skills).status(200)
+        const skills = await prisma.skill.findMany({});
+        res.send(skills).status(200);
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error')
+        e.status = 400;
+        next(e);
     }
-}
+};
 
-exports.AddSkill = async(req,res)=>{
+exports.AddSkill = async (req, res) => {
     try {
-        const { name, icon } = req.body
+        const { name, icon } = req.body;
 
         const requiredFields = {
             name: "Name",
-            icon: "Icon"
-        }
+            icon: "Icon",
+        };
 
         const errorMessage = validateRequiredFields(req.body, requiredFields);
 
@@ -30,13 +30,16 @@ exports.AddSkill = async(req,res)=>{
         await prisma.skill.create({
             data: {
                 name: name,
-                icon: icon
-            }
-        })
+                icon: icon,
+            },
+        });
 
-        res.json({ message: `เพิ่มทักษะ ${name} เรียบร้อยแล้ว`, type: "success" }).status(201)
-    } catch (err) {
-        console.log(e);
-        res.status(500).send('Server Error')
+        res.json({
+            message: `เพิ่มทักษะ ${name} เรียบร้อยแล้ว`,
+            type: "success",
+        }).status(201);
+    } catch (e) {
+        e.status = 400;
+        next(e);
     }
-}
+};

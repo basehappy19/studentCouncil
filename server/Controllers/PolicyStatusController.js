@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 const validateRequiredFields = require('../Functions/ValidateRequiredFields');
 
 
-exports.AllStatuses = async (req,res) => {
+exports.AllStatuses = async (req, res, next) => {
     try {
         const statuses = await prisma.status.findMany({
             orderBy:{
@@ -12,8 +12,8 @@ exports.AllStatuses = async (req,res) => {
         })
         res.status(200).send(statuses);
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error')
+        e.status = 400; 
+        next(e);
     }
 }
 
@@ -94,7 +94,7 @@ exports.StatisticProgresses = async (req, res) => {
     }
 };
 
-exports.AddStatus = async(req,res)=>{
+exports.AddStatus = async(req, res, next)=>{
     try {
         const { name, color } = req.body
         const requiredFields = {
@@ -112,8 +112,8 @@ exports.AddStatus = async(req,res)=>{
         })
         res.json({message:`เพิ่มสถานะ ${name} เรียบร้อยแล้ว`, type: "success"}).status(201)
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error')
+        e.status = 400; 
+        next(e);
     }
 }
 

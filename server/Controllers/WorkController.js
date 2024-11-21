@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const validateRequiredFields = require('../Functions/ValidateRequiredFields');
 
-exports.AllWorks = async(req,res)=>{
+exports.AllWorks = async(req, res, next)=>{
     try {        
         const works = await prisma.work.findMany({
             include:{
@@ -75,8 +75,8 @@ exports.AllWorks = async(req,res)=>{
         })
         res.status(200).send(works);
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error')
+        e.status = 400; 
+        next(e);
     }
 }
 
@@ -106,8 +106,8 @@ exports.UserWorks = async (req, res) => {
 
         res.status(200).json(works);
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 }
 
@@ -153,9 +153,9 @@ exports.AddWork = async (req, res, next) => {
             }
         })
         res.status(201).json({message: `เพิ่มโพสต์ ${title} เรียบร้อยแล้ว`, type: 'success'});
-    } catch (err) {
-        console.log('AddWork Error: ' + err);
-        res.status(500).send('AddWork Error: ' + err); 
+    } catch (e) {
+        e.status = 400; 
+        next(e);
     }
 }
 

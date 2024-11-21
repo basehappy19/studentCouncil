@@ -11,17 +11,47 @@ const { readdirSync } = require("fs");
 const morgan = require("morgan");
 const cors = require("cors");
 const bodyParse = require("body-parser");
+const helmet = require("helmet");
+const { RateLimiterMemory } = require("rate-limiter-flexible");
 const { startAddCheckInDay } = require("./Functions/AddCheckInDay");
+const apiLogger = require("./Middlewares/AppLogger");
+const errorHandler = require("./Middlewares/ErrorHandler");
+const rateLimiter = new RateLimiterMemory({ points: 5, duration: 1 });
 const port = process.env.PORT || 8000;
 
 const app = express();
 
+// Middleware
 app.use(morgan("dev"));
 app.use(cors());
+app.use(helmet());
 app.use(bodyParse.json({ limit: "10mb" }));
+
+// Index
+app.use("", require("./Routes/index.js"));
+
+// Static files
 app.use("/uploads", express.static("Uploads"));
 
-readdirSync("./Routes").map((r) => app.use("/api", require("./Routes/" + r)));
+// Logs
+app.use(apiLogger);
+
+// Rate Limiter Middleware
+app.use(async (req, res, next) => {
+    try {
+        await rateLimiter.consume(req.ip);
+        next();
+    } catch {
+        res.status(429).send("Too Many Requests");
+    }
+});
+
+// Dynamic route import
+readdirSync("./Routes")
+    .filter((file) => file !== "index.js") 
+    .forEach((r) => app.use("/api", require("./Routes/" + r)));
+
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log("Server Is Running On Port " + port);

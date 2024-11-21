@@ -1,7 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-exports.AllPartyLists = async(req,res)=>{
+exports.AllPartyLists = async(req, res, next)=>{
     try {
         const partyLists = await prisma.partyList.findMany({
             include: {
@@ -33,11 +33,11 @@ exports.AllPartyLists = async(req,res)=>{
         })
         res.send(partyLists).status(200)
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error')
+        e.status = 400; 
+        next(e);
     }
 }
-exports.PartyList = async(req,res)=>{
+exports.PartyList = async(req, res, next)=>{
     try {
         const { id } = req.query
         const partyList = await prisma.partyList.findFirst({
@@ -73,8 +73,8 @@ exports.PartyList = async(req,res)=>{
         })
         res.send(partyList).status(200)
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error')
+        e.status = 400; 
+        next(e);
     }
 }
 exports.HomePagePartyLists = async (req, res) => {
@@ -112,7 +112,7 @@ exports.HomePagePartyLists = async (req, res) => {
     }
 }
 
-exports.AddPartyList = async(req,res)=>{
+exports.AddPartyList = async(req, res, next)=>{
     try {
         const { firstName, middleName, lastName, nickName, shortMessage, classroom, messageToStudent, rank, profileImg, showInHomepage } = req.body
 
@@ -151,7 +151,7 @@ exports.AddPartyList = async(req,res)=>{
         }) 
         res.json({message:`เพื่ม ${firstName} ${middleName} ${lastName} ในบัญชีรายชื่อสมาชิกแล้ว`, type:`success`}).status(201)
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error')
+        e.status = 400; 
+        next(e);
     }
 }

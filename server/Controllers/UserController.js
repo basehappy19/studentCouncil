@@ -15,8 +15,8 @@ exports.AllUsers = async (req, res) => {
 
         res.status(200).send(users);
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 }
 
@@ -36,8 +36,8 @@ exports.User = async (req, res) => {
 
         res.status(200).send(user);
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 }
 
@@ -95,8 +95,8 @@ exports.updateUser = async(req, res) => {
 
         res.status(204).json({ message: `อัพเดทข้อมูลของ ${username} เรียบร้อยแล้ว`, type: 'success' });
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 };
 
@@ -137,8 +137,8 @@ exports.updateUserProfile = async (req, res, next) => {
         })
         res.status(200).json({ message: `อัพเดทรูปโปรไฟล์ของ ${user.username} เรียบร้อยแล้ว`, type: 'success' });
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 };
 
@@ -173,8 +173,8 @@ exports.RemoveUser = async (req, res) => {
 
         res.status(200).json({ message: `ลบ ${user.username} เรียบร้อยแล้ว`, type: 'success' });
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 }
 

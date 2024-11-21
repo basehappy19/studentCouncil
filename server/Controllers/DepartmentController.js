@@ -16,7 +16,7 @@ exports.AllDepartments = async (req, res) => {
         })
         res.send(departments).status(200);
     } catch (e) {
-        console.error(e);
-        res.send('Server Error').status(500)
+        e.status = 400; 
+        next(e);
     }
 }

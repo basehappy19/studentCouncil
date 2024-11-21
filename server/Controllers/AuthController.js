@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-exports.AddUser = async (req,res) => {
+exports.AddUser = async (req, res, next) => {
     try {
         if(req.user.accessId !== 3){
             return res.status(401).json({ message: "คุณไม่มีสิทธิ์เพื่มผู้ใช้", type: "error" });
@@ -62,8 +62,8 @@ exports.AddUser = async (req,res) => {
 
         res.status(200).json({ message: `เพิ่ม ${username} เรียบร้อยแล้ว`, type: "success"});
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 }
 
@@ -117,8 +117,8 @@ exports.Login = async (req, res) => {
         });
 
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 };
 

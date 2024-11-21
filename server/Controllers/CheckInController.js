@@ -107,8 +107,8 @@ exports.AllCheckIns = async (req, res) => {
         })
         res.status(200).json({ partyLists: partyLists, days: days });
     } catch (e) {
-        console.error(e);
-        res.status(500).send("Server Error");
+        e.status = 400; 
+        next(e);
     }
 };
 
@@ -174,8 +174,8 @@ exports.CheckIn = async (req, res) => {
             type: "success",
         });
     } catch (e) {
-        console.log(e);
-        res.status(500).send("Server Error");
+        e.status = 400; 
+        next(e);
     }
 };
 
@@ -314,8 +314,8 @@ exports.CheckInStatistic = async (req, res) => {
 
         res.status(200).send(statistics);
     } catch (e) {
-        console.error(e);
-        res.status(500).send("Server Error");
+        e.status = 400; 
+        next(e);
     }
 };
 

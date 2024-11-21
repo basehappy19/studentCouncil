@@ -2,17 +2,17 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const validateRequiredFields = require('../Functions/ValidateRequiredFields');
 
-exports.AllWorkTags = async(req,res)=>{
+exports.AllWorkTags = async(req, res, next)=>{
     try {
         const tags = await prisma.workTag.findMany()
         res.send(tags).status(200)
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error')
+        e.status = 400; 
+        next(e);
     }
 }
 
-exports.AddWorkTag = async(req,res)=>{
+exports.AddWorkTag = async(req, res, next)=>{
     try {
         const { title, icon, color } = req.body;
 
@@ -36,7 +36,7 @@ exports.AddWorkTag = async(req,res)=>{
 
         res.json({ message: `เพิ่มแท็กงาน ${title} เรียบร้อยแล้ว`, type:'success' }).status(201);
     } catch (e) {
-        console.log(e);
-        res.status(500).send('Server Error')
+        e.status = 400; 
+        next(e);
     }
 }

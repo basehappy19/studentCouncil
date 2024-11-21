@@ -23,8 +23,8 @@ exports.BudgetInDepartment = async (req, res) => {
 
         res.status(200).send(budget); 
     } catch (e) {
-        console.error(e);  
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 };
 
@@ -112,7 +112,7 @@ exports.IncomeExpenseStatistics = async (req, res) => {
         }) 
         res.status(200).send(summary); 
     } catch (e) {
-        console.error(e);  
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 };

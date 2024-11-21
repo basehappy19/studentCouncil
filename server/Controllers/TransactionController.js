@@ -12,8 +12,8 @@ exports.Transactions = async (req, res) => {
         })
         res.status(200).send(transactions); 
     } catch (e) {
-        console.error(e);
-        res.status(500).send('Server Error');
+        e.status = 400; 
+        next(e);
     }
 };
 
@@ -81,8 +81,8 @@ exports.AddTransaction = async (req, res) => {
             type: 'success',
         });
     } catch (e) {
-        console.log(e);
-        res.status(500).send("Server Error");
+        e.status = 400; 
+        next(e);
     }
 };
 
@@ -175,9 +175,9 @@ exports.UpdateTransaction = async (req, res) => {
             message: `แก้ไขรายการ ${transaction.title} เรียบร้อยแล้ว`,
             type: "success",
         });
-    } catch (err) {
-        console.error('UpdateTransaction Error:', err);
-        res.status(500).send('UpdateTransaction Error');
+    } catch (e) {
+        e.status = 400; 
+        next(e);
     }
 };
 
@@ -252,9 +252,9 @@ exports.RemoveTransaction = async (req, res) => {
         });
 
         res.status(204).json({ message: `ลบรายการ ${transactionToDelete.title} เรียบร้อยแล้ว`, type: 'success' });
-    } catch (err) {
-        console.error('Delete Transaction Error:', err);
-        res.status(500).send('Internal Server Error');
+    } catch (e) {
+        e.status = 400; 
+        next(e);
     }
 };
 

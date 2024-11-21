@@ -1,7 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-exports.AllCategories = async(req,res)=>{
+exports.AllCategories = async(req, res, next)=>{
     try {
         const categories = await prisma.category.findMany({
             orderBy: {
@@ -9,13 +9,13 @@ exports.AllCategories = async(req,res)=>{
             }
         })
         res.send(categories).status(200)
-    } catch (err) {
-        console.log('Server Error : ' + err);
-        res.status(500).send('Server Error')
+    } catch (e) {
+        e.status = 400; 
+        next(e);
     }
 }
 
-exports.Category = async(req,res)=>{
+exports.Category = async(req, res, next)=>{
     try {
         const { id } = req.query
         const category = await prisma.category.findFirst({
@@ -27,8 +27,8 @@ exports.Category = async(req,res)=>{
             }
         })
         res.send(category).status(200)
-    } catch (err) {
-        console.log('PolicyCategories Error : ' + err);
-        res.status(500).send('PolicyCategories Error')
+    } catch (e) {
+        e.status = 400; 
+        next(e);
     }
 }
