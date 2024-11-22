@@ -11,7 +11,8 @@ exports.AllWorks = async(req, res, next)=>{
                         id: true,
                         fullName: true,
                         displayName: true,
-                        profileImg: true,
+                        profile_image_128x128: true,
+                        profile_image_full: true,
                         sid: true,
                         partyList: {
                             select:{
@@ -20,7 +21,8 @@ exports.AllWorks = async(req, res, next)=>{
                                 middleName: true,
                                 lastName: true,
                                 nickName: true,
-                                profileImg: true,
+                                profile_image_128x128: true,
+                                profile_image_full: true,
                                 roles:{
                                     select:{
                                         role: true
@@ -38,7 +40,8 @@ exports.AllWorks = async(req, res, next)=>{
                                 id: true,
                                 fullName: true,
                                 displayName: true,
-                                profileImg: true,
+                                profile_image_128x128: true,
+                                profile_image_full: true,
                                 sid: true,
                                 partyList: {
                                     select:{
@@ -47,7 +50,8 @@ exports.AllWorks = async(req, res, next)=>{
                                         middleName: true,
                                         lastName: true,
                                         nickName: true,
-                                        profileImg: true,
+                                        profile_image_128x128: true,
+                                        profile_image_full: true,
                                         roles:{
                                             select:{
                                                 role: true

@@ -20,9 +20,7 @@ import { Calendar, FileText, Users } from 'lucide-react';
 
 const WorkCard = ({ work }: { work: Work }) => {
   const [hoveredOperatorId, setHoveredOperatorId] = useState<number | null>(null);
-  const workIconSrc = process.env.NEXT_PUBLIC_WORK_ICON_PATH || "";
-  const profileImgSrc = process.env.NEXT_PUBLIC_USER_PROFILE_IMG_FULL_PATH || "";
-
+  
   return (
     <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg bg-gradient-to-br from-blue-50 to-pink-50 dark:bg-none dark:border-none dark:bg-slate-700 border-2 border-blue-200">
       <div className="relative">
@@ -35,14 +33,14 @@ const WorkCard = ({ work }: { work: Work }) => {
           {work.tags.map((tag) => (
             <Badge
               key={tag.id}
-              className="flex items-center gap-1 px-3 py-1 bg-blue-500/90 hover:bg-blue-600 backdrop-blur-sm"
+              className="flex flex-row items-center gap-1 px-3 py-1 bg-blue-500/90 hover:bg-blue-600 backdrop-blur-sm"
             >
               <Image
                 loading = 'lazy'
-                className="w-4 h-4"
-                src={workIconSrc + tag.tag.icon}
+                width={16}
+                height={16}
+                src={`${process.env.NEXT_PUBLIC_WORK_ICON_PATH}${tag.tag.icon}`}
                 alt={tag.tag.title}
-                fill={true}
               />
               <span className="text-white font-medium">{tag.tag.title}</span>
             </Badge>
@@ -103,7 +101,7 @@ const WorkCard = ({ work }: { work: Work }) => {
                       <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-pink-200">
                         <Image
                           fill={true}
-                          src={profileImgSrc + operator.user.profileImg}
+                          src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + operator.user.partyList.profile_image_128x128}
                           alt={`profile-${operator.id}`}
                           className="object-cover"
                         />
@@ -111,9 +109,7 @@ const WorkCard = ({ work }: { work: Work }) => {
                     </TooltipTrigger>
                     <TooltipContent className="bg-white border border-blue-100 shadow-lg">
                       <p className="text-sm text-gray-700">
-                        {operator.user.partyList.firstName}{" "}
-                        {operator.user.partyList.middleName}{" "}
-                        {operator.user.partyList.lastName}
+                        {operator.user.partyList.fullName}
                       </p>
                     </TooltipContent>
                   </Tooltip>

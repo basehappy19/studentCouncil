@@ -42,7 +42,9 @@ exports.PartyList = async(req, res, next)=>{
         const { id } = req.query
         const partyList = await prisma.partyList.findFirst({
             where: {
-                id: parseInt(id)
+                id: isNaN(parseInt(id))
+                ? undefined
+                : parseInt(id),
             },
             include:{
                 contacts: {

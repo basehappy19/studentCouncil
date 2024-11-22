@@ -1,3 +1,5 @@
+'use server'
+
 export const AllCheckIns = async ({startDate = undefined, endDate = undefined, search = undefined} : {startDate : string | undefined, endDate : string | undefined, search : string | undefined}) => {
     try {
         const url = new URL(`${process.env.NEXT_PUBLIC_APP_API_URL}/checkIns`);
@@ -71,3 +73,34 @@ export const CheckIn = async (data: any) => {
         throw error;
     }
 };
+
+export const CheckInStatistics = async ({search = undefined} : { search: string | undefined }) => {
+    try {
+        const url = new URL(`${process.env.NEXT_PUBLIC_APP_API_URL}/checkIn_statistics`);
+        const params = new URLSearchParams();
+
+        if (search) params.append('search', search);
+
+        url.search = params.toString();
+        
+        const res = await fetch(url.toString(), {
+            next:{
+                revalidate: 0,
+            }
+        })
+
+        if(!res.ok) {
+            throw new Error('Failed To Fetch CheckIn Statistics');
+        }
+
+        return res.json()
+    } catch (e : unknown) {
+        if (e instanceof Error) {
+            console.error(`Error Fetch CheckIn Statistics: ${e.message}`);
+            throw new Error("Failed to CheckIn Statistics");
+        } else {
+            console.error('An unknown error occurred');
+            throw new Error("Failed to CheckIn Statistics");
+        }
+    }
+}

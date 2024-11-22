@@ -18,8 +18,6 @@ export const metadata : Metadata = {
 async function page() {
   const works: Work[] = await AllWorks();
 
-  console.log(works);
-
   return (
     <div className="min-h-screen
         dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 

@@ -1,0 +1,4 @@
+{
+    "ignore": ["Uploads", "node_modules","logs"]
+}
+  

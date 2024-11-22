@@ -2,6 +2,7 @@ const dotenv = require("dotenv");
 
 if (process.env.NODE_ENV === "production") {
     dotenv.config({ path: ".env.production" });
+    app.use(helmet());
 } else {
     dotenv.config({ path: ".env.development" });
 }
@@ -16,7 +17,7 @@ const { RateLimiterMemory } = require("rate-limiter-flexible");
 const { startAddCheckInDay } = require("./Functions/AddCheckInDay");
 const apiLogger = require("./Middlewares/AppLogger");
 const errorHandler = require("./Middlewares/ErrorHandler");
-const rateLimiter = new RateLimiterMemory({ points: 5, duration: 1 });
+const rateLimiter = new RateLimiterMemory({ points: 20, duration: 1 });
 const port = process.env.PORT || 8000;
 
 const app = express();
@@ -24,14 +25,22 @@ const app = express();
 // Middleware
 app.use(morgan("dev"));
 app.use(cors());
-app.use(helmet());
 app.use(bodyParse.json({ limit: "10mb" }));
+
+// Middleware
+const corsOptions = {
+    origin: process.env.CLIENT_URL || "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 
 // Index
 app.use("", require("./Routes/index.js"));
 
 // Static files
-app.use("/uploads", express.static("Uploads"));
+app.use("/Uploads", cors(corsOptions), express.static("Uploads"));
 
 // Logs
 app.use(apiLogger);

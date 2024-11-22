@@ -14,22 +14,25 @@ exports.AllCheckIns = async (req, res) => {
 
         const days = await prisma.checkInDay.findMany({
             where: {
-                ...(start && end && {
-                    dateTime: {
-                        gte: start,
-                        lte: end,
-                    },
-                }),
-                ...(start && !end && {
-                    dateTime: {
-                        gte: start,
-                    },
-                }),
-                ...(!start && end && {
-                    dateTime: {
-                        lte: end,
-                    },
-                }),
+                ...(start &&
+                    end && {
+                        dateTime: {
+                            gte: start,
+                            lte: end,
+                        },
+                    }),
+                ...(start &&
+                    !end && {
+                        dateTime: {
+                            gte: start,
+                        },
+                    }),
+                ...(!start &&
+                    end && {
+                        dateTime: {
+                            lte: end,
+                        },
+                    }),
             },
             include: {
                 checkIns: {
@@ -51,7 +54,9 @@ exports.AllCheckIns = async (req, res) => {
                                             roles: {
                                                 some: {
                                                     role: {
-                                                        name: { contains: search },
+                                                        name: {
+                                                            contains: search,
+                                                        },
                                                     },
                                                 },
                                             },
@@ -104,10 +109,10 @@ exports.AllCheckIns = async (req, res) => {
                     },
                 }),
             },
-        })
+        });
         res.status(200).json({ partyLists: partyLists, days: days });
     } catch (e) {
-        e.status = 400; 
+        e.status = 400;
         next(e);
     }
 };
@@ -174,7 +179,7 @@ exports.CheckIn = async (req, res) => {
             type: "success",
         });
     } catch (e) {
-        e.status = 400; 
+        e.status = 400;
         next(e);
     }
 };
@@ -231,8 +236,10 @@ exports.CheckInStatus = async (req, res) => {
     }
 };
 
-exports.CheckInStatistic = async (req, res) => {
+exports.CheckInStatistics = async (req, res) => {
     try {
+        const { search } = req.query;
+
         const partyLists = await prisma.partyList.findMany({
             select: {
                 id: true,
@@ -252,7 +259,7 @@ exports.CheckInStatistic = async (req, res) => {
                             select: {
                                 id: true,
                                 attendTime: true,
-                                type: true, 
+                                type: true,
                                 reason: true,
                                 checkInDay: true,
                             },
@@ -260,17 +267,32 @@ exports.CheckInStatistic = async (req, res) => {
                     },
                 },
             },
+            ...(search && {
+                OR: [
+                    { fullName: { contains: search } },
+                    { nickName: { contains: search } },
+                    {
+                        roles: {
+                            some: {
+                                role: {
+                                    name: { contains: search },
+                                },
+                            },
+                        },
+                    },
+                ],
+            }),
         });
 
         const enumTypes = [
-            'NORMAL',
-            'SICK_LEAVE',
-            'PERSONAL_LEAVE',
-            'NOT_CHECKED_IN',
-            'ABSENT',
-            'FORGOT_TO_CHECK_IN',
-            'HOLIDAY',
-            'CLOSED_FOR_CHECK_IN',
+            "NORMAL",
+            "SICK_LEAVE",
+            "PERSONAL_LEAVE",
+            "NOT_CHECKED_IN",
+            "ABSENT",
+            "FORGOT_TO_CHECK_IN",
+            "HOLIDAY",
+            "CLOSED_FOR_CHECK_IN",
         ];
 
         const statistics = partyLists.map((party) => {
@@ -278,16 +300,18 @@ exports.CheckInStatistic = async (req, res) => {
             const days = [...new Set(checkIns.map((c) => c.checkInDay))].length;
 
             const validCheckIns = checkIns.filter(
-                (c) => c.type !== 'HOLIDAY' && c.type !== 'CLOSED_FOR_CHECK_IN'
+                (c) => c.type !== "HOLIDAY" && c.type !== "CLOSED_FOR_CHECK_IN"
             );
             const averageCheckInTime =
                 validCheckIns.reduce((sum, c) => {
-                    const time = new Date(c.attendTime).getHours() * 60 + new Date(c.attendTime).getMinutes();
+                    const time =
+                        new Date(c.attendTime).getHours() * 60 +
+                        new Date(c.attendTime).getMinutes();
                     return sum + time;
                 }, 0) / (validCheckIns.length || 1);
 
             const statusCounts = enumTypes.reduce((acc, type) => {
-                acc[type] = 0; 
+                acc[type] = 0;
                 return acc;
             }, {});
 
@@ -305,18 +329,20 @@ exports.CheckInStatistic = async (req, res) => {
                 statistics: {
                     days,
                     averageCheckInTime: isNaN(averageCheckInTime)
-                        ? 'No Valid Check-Ins'
-                        : `${Math.floor(averageCheckInTime / 60)}:${Math.floor(averageCheckInTime % 60).toString().padStart(2, '0')}`, // เวลาที่เช็คอินเฉลี่ยในรูปแบบ HH:MM
-                    statusCounts, 
+                        ? "No Valid Check-Ins"
+                        : `${Math.floor(averageCheckInTime / 60)}:${Math.floor(
+                              averageCheckInTime % 60
+                          )
+                              .toString()
+                              .padStart(2, "0")}`, // เวลาที่เช็คอินเฉลี่ยในรูปแบบ HH:MM
+                    statusCounts,
                 },
             };
         });
 
         res.status(200).send(statistics);
     } catch (e) {
-        e.status = 400; 
+        e.status = 400;
         next(e);
     }
 };
-
-
