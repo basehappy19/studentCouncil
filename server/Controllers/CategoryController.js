@@ -8,7 +8,7 @@ exports.AllCategories = async(req, res, next)=>{
                 id: 'asc',
             }
         })
-        res.send(categories).status(200)
+        res.status(200).send(categories)
     } catch (e) {
         e.status = 400; 
         next(e);
@@ -26,7 +26,7 @@ exports.Category = async(req, res, next)=>{
                 id:isNaN(parseInt(id)) ? undefined : parseInt(id),
             }
         })
-        res.send(category).status(200)
+        res.status(200).send(category)
     } catch (e) {
         e.status = 400; 
         next(e);

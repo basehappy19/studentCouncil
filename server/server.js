@@ -22,30 +22,16 @@ const port = process.env.PORT || 8000;
 
 const app = express();
 
-// Middleware
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParse.json({ limit: "10mb" }));
 
-// Middleware
-const corsOptions = {
-    origin: process.env.CLIENT_URL || "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    allowedHeaders: ["Content-Type", "Authorization"],
-};
-
-app.use(cors(corsOptions));
-
-// Index
 app.use("", require("./Routes/index.js"));
 
-// Static files
-app.use("/Uploads", cors(corsOptions), express.static("Uploads"));
+app.use("/Uploads", express.static("Uploads"));
 
-// Logs
 app.use(apiLogger);
 
-// Rate Limiter Middleware
 app.use(async (req, res, next) => {
     try {
         await rateLimiter.consume(req.ip);
@@ -55,7 +41,6 @@ app.use(async (req, res, next) => {
     }
 });
 
-// Dynamic route import
 readdirSync("./Routes")
     .filter((file) => file !== "index.js") 
     .forEach((r) => app.use("/api", require("./Routes/" + r)));

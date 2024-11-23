@@ -1,19 +1,26 @@
 const fs = require("fs");
 const path = require("path");
 
-const logFilePath = path.join(__dirname, "../logs/api-log.json");
+const logFilePath = "./logs/api-log.json";
 
 const writeLogToFile = (logData) => {
     fs.readFile(logFilePath, "utf-8", (err, data) => {
         let logs = [];
         if (!err && data) {
-            logs = JSON.parse(data);
+            try {
+                logs = JSON.parse(data);
+            } catch (parseError) {
+                console.error("Invalid JSON in log file. Resetting logs:", parseError);
+                logs = [];
+            }
         }
 
         logs.push(logData);
 
-        fs.writeFile(logFilePath, JSON.stringify(logs, null, 2), (err) => {
-            if (err) console.error("Error writing log:", err);
+        fs.writeFile(logFilePath, JSON.stringify(logs, null, 2), (writeErr) => {
+            if (writeErr) {
+                console.error("Error writing log:", writeErr);
+            }
         });
     });
 };

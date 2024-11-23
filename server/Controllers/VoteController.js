@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const validateRequiredFields = require("../Functions/ValidateRequiredFields");
 
-exports.AllVotes = async (req, res) => {
+exports.AllVotes = async (req, res, next) => {
     try {
         const votes = await prisma.vote.findMany({
             select: {
@@ -153,14 +153,14 @@ exports.AllVotes = async (req, res) => {
             };
         });
 
-        res.send(formattedVotes).status(200);
+        res.status(200).send(formattedVotes)
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
-exports.getVote = async (req, res) => {
+exports.getVote = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { search } = req.query;
@@ -345,7 +345,7 @@ exports.getVote = async (req, res) => {
     }
 };
 
-exports.AddVote = async (req, res) => {
+exports.AddVote = async (req, res, next) => {
     try {
         const {
             title,
@@ -441,7 +441,7 @@ exports.AddVote = async (req, res) => {
     }
 };
 
-exports.RemoveVote = async (req, res) => {
+exports.RemoveVote = async (req, res, next) => {
     try {
         const { id } = req.body;
 

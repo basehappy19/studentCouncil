@@ -13,7 +13,7 @@ export async function generateMetadata(props: { params: { slug: string[] } }) {
   const categoryData: Category = await getCategory(slug.length >= 1 ? slug[0] : undefined);
   const categorySrc = process.env.NEXT_PUBLIC_POLICY_CATEGORY_IMG_PATH || "";
   const policies: Policy[] = await AllPolicies({ category: slug.length >= 1 ? slug[0] : undefined, subCategory: slug.length >= 2 ? slug[1] : undefined });
-
+  
   return {
     title: `นโยบายหมวด${categoryData.title} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
     description: `พรรคเราได้คิดนโยบายหมวด ${categoryData.title} ออกมา ${policies.length} นโยบาย`,
@@ -37,7 +37,7 @@ async function PolicyCollection( props : { params: { slug: string[] } }) {
   const policies: Policy[] = await AllPolicies({ category: slug.length >= 1 ? slug[0] : undefined, subCategory: slug.length >= 2 ? slug[1] : undefined });
   const categorySrc =
     process.env.NEXT_PUBLIC_POLICY_CATEGORY_IMG_PATH || "";
-
+  
   return (
     <div className="min-h-screen
         dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 

@@ -3,19 +3,20 @@ const prisma = new PrismaClient();
 const validateRequiredFields = require("../Functions/ValidateRequiredFields");
 const _ = require("lodash");
 
-exports.RecommendPolicies = async (req, res) => {
+exports.RecommendPolicies = async (req, res, next) => {
     try {
         const allPolicies = await prisma.policy.findMany({
-            include: {
+            select: {
                 category: true,
                 description: true,
                 subCategories: {
-                    include: {
+                    include:{
                         subCategory: true,
-                    },
+                    }
                 },
                 progresses: {
-                    include: {
+                    select: {
+                        id: true,
                         status: true,
                     },
                 },
@@ -23,39 +24,27 @@ exports.RecommendPolicies = async (req, res) => {
         });
 
         const policies = _.sampleSize(allPolicies, 10);
-
-        res.send(policies);
+        
+        res.send(policies).status(200);
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
-exports.AllPolicies = async (req, res) => {
+exports.AllPolicies = async (req, res, next) => {
     try {
-        const { category, subcategory } = req.query;
+        const { category,  subCategory } = req.query;
+        console.log(category, subCategory);
+        
         const policies = await prisma.policy.findMany({
-            where: {
-                category: {
-                    id: isNaN(parseInt(category))
-                        ? undefined
-                        : parseInt(category),
-                },
-                subCategories: {
-                    some: {
-                        subCategoryId: isNaN(parseInt(subcategory))
-                            ? undefined
-                            : parseInt(subcategory),
-                    },
-                },
-            },
             include: {
                 category: true,
                 description: true,
                 subCategories: {
-                    include: {
+                    include:{
                         subCategory: true,
-                    },
+                    }
                 },
                 progresses: {
                     include: {
@@ -63,14 +52,36 @@ exports.AllPolicies = async (req, res) => {
                     },
                 },
             },
+            where: {
+                AND: [
+                    {
+                        category: {
+                            id: isNaN(parseInt(category))
+                            ? undefined
+                            : parseInt(category),
+                        },
+                    },
+                    {
+                        subCategories: {
+                            some: {
+                                subCategory: {
+                                    id: isNaN(parseInt(subCategory))
+                                    ? undefined
+                                    : parseInt(subCategory),
+                                },
+                            },
+                        },
+                    },
+                ],
+            },
         });
-        res.send(policies).status(200);
+        res.status(200).send(policies);
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
-exports.Policy = async (req, res) => {
+exports.Policy = async (req, res, next) => {
     try {
         const policy = await prisma.policy.findFirst({
             where: {
@@ -80,10 +91,9 @@ exports.Policy = async (req, res) => {
                 category: true,
                 description: true,
                 subCategories: {
-                    select: {
-                        id: true,
+                    include:{
                         subCategory: true,
-                    },
+                    }
                 },
                 progresses: {
                     select: {
@@ -118,7 +128,7 @@ exports.Policy = async (req, res) => {
     }
 };
 
-exports.AddPolicy = async (req, res) => {
+exports.AddPolicy = async (req, res, next) => {
     try {
         const {
             rank,

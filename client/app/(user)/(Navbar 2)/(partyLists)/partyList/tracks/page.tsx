@@ -1,5 +1,5 @@
 import { AllCheckIns, CheckInStatistics } from "@/app/functions/CheckIn";
-import { CheckIns } from "@/app/interfaces/CheckIn/CheckIn";
+import { CheckIns, CheckInStatistic } from "@/app/interfaces/CheckIn/CheckIn";
 import TagInHeader from "@/app/layouts/TagInHeader";
 import CheckInTrackingTable from "@/components/PartyList/CheckInTrackingTable";
 import type { Metadata } from "next";
@@ -37,8 +37,8 @@ const CheckInTrack = async (props: {
             ? searchParams.search_statistic
             : undefined;
     const checkIns: CheckIns = await AllCheckIns({ startDate, endDate, search });
-    const statistics = await CheckInStatistics({ search: search_statistic })
-    console.log(statistics);
+    const statistics : CheckInStatistic[] = await CheckInStatistics({ search: search_statistic })    
+    console.log(statistics[0].statistics.statusCounts);
     
     return (
         <div
@@ -78,7 +78,7 @@ const CheckInTrack = async (props: {
             </section>
             <section className="relative py-10 overflow-hidden">
                 <div className="relative container mx-auto px-4">
-                    <StatisticPartyLists />
+                    <StatisticPartyLists checkInStatistics={statistics} />
                 </div>
             </section>
         </div>

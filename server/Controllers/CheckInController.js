@@ -236,7 +236,7 @@ exports.CheckInStatus = async (req, res) => {
     }
 };
 
-exports.CheckInStatistics = async (req, res) => {
+exports.CheckInStatistics = async (req, res, next) => {
     try {
         const { search } = req.query;
 
@@ -285,39 +285,36 @@ exports.CheckInStatistics = async (req, res) => {
         });
 
         const enumTypes = [
-            "NORMAL",
-            "SICK_LEAVE",
-            "PERSONAL_LEAVE",
-            "NOT_CHECKED_IN",
-            "ABSENT",
-            "FORGOT_TO_CHECK_IN",
-            "HOLIDAY",
-            "CLOSED_FOR_CHECK_IN",
+            { type: "NORMAL", name: "ปกติ" },
+            { type: "SICK_LEAVE", name: "ลาป่วย" },
+            { type: "PERSONAL_LEAVE", name: "ลากิจ" },
+            { type: "NOT_CHECKED_IN", name: "ไม่ได้เช็คอิน" },
+            { type: "ABSENT", name: "ขาด" },
+            { type: "FORGOT_TO_CHECK_IN", name: "ลืมเช็คอิน" },
+            { type: "HOLIDAY", name: "วันหยุด" },
+            { type: "CLOSED_FOR_CHECK_IN", name: "ปิดการเช็คอิน" },
         ];
 
         const statistics = partyLists.map((party) => {
             const checkIns = party.user?.checkIns || [];
             const days = [...new Set(checkIns.map((c) => c.checkInDay))].length;
 
-            const validCheckIns = checkIns.filter(
-                (c) => c.type !== "HOLIDAY" && c.type !== "CLOSED_FOR_CHECK_IN"
-            );
             const averageCheckInTime =
-                validCheckIns.reduce((sum, c) => {
-                    const time =
-                        new Date(c.attendTime).getHours() * 60 +
-                        new Date(c.attendTime).getMinutes();
-                    return sum + time;
-                }, 0) / (validCheckIns.length || 1);
+                checkIns.reduce((sum, c) => {
+                    if (c.attendTime) {
+                        const time =
+                            new Date(c.attendTime).getHours() * 60 +
+                            new Date(c.attendTime).getMinutes();
+                        return sum + time;
+                    }
+                    return sum;
+                }, 0) / (checkIns.length || 1);
 
-            const statusCounts = enumTypes.reduce((acc, type) => {
-                acc[type] = 0;
-                return acc;
-            }, {});
-
-            checkIns.forEach((c) => {
-                statusCounts[c.type] += 1;
-            });
+            const statusCounts = enumTypes.map(({ type, name }) => ({
+                type,
+                name,
+                count: checkIns.filter((c) => c.type === type).length,
+            }));
 
             return {
                 id: party.id,
@@ -325,7 +322,7 @@ exports.CheckInStatistics = async (req, res) => {
                 nickName: party.nickName,
                 profile_image_128x128: party.profile_image_128x128,
                 profile_image_full: party.profile_image_full,
-                roles: party.roles.map((role) => role.role),
+                roles: party.roles,
                 statistics: {
                     days,
                     averageCheckInTime: isNaN(averageCheckInTime)
@@ -334,7 +331,7 @@ exports.CheckInStatistics = async (req, res) => {
                               averageCheckInTime % 60
                           )
                               .toString()
-                              .padStart(2, "0")}`, // เวลาที่เช็คอินเฉลี่ยในรูปแบบ HH:MM
+                              .padStart(2, "0")}`,
                     statusCounts,
                 },
             };
@@ -346,3 +343,4 @@ exports.CheckInStatistics = async (req, res) => {
         next(e);
     }
 };
+

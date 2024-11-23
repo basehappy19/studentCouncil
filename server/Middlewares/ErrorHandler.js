@@ -20,7 +20,7 @@ const errorHandler = (err, req, res, next) => {
             success: false,
             error: {
                 status: statusCode,
-                message: statusCode === 500 ? "Something went wrong!" : message, // ซ่อนรายละเอียดใน production
+                message: statusCode === 500 ? "Something went wrong!" : message,
             },
         });
     }

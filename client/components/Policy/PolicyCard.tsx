@@ -12,7 +12,8 @@ const PolicyCard = ({ policy }: { policy: Policy }) => {
   const policySrc = process.env.NEXT_PUBLIC_POLICY_IMG_PATH || "";
   const subcategoryIconSrc = process.env.NEXT_PUBLIC_POLICY_ICON_PATH || "";
   const categoryIconSrc = process.env.NEXT_PUBLIC_POLICY_CATEGORY_ICON_PATH || "";
-
+  console.log(policy);
+  
   return (
     <Card 
       className={cn(
@@ -46,7 +47,8 @@ const PolicyCard = ({ policy }: { policy: Policy }) => {
           <div className="flex items-center gap-1.5 text-sm">
             <div className="relative w-4 h-4">
               <Image
-                fill
+                width={16}
+                height={16}
                 src={categoryIconSrc + policy.category.icon}
                 alt={policy.category.title}
                 className="object-contain"
@@ -64,7 +66,8 @@ const PolicyCard = ({ policy }: { policy: Policy }) => {
             >
               <div className="relative w-4 h-4">
                 <Image
-                  fill
+                  width={16}
+                  height={16}
                   src={subcategoryIconSrc + subCategory.subCategory.icon}
                   alt={subCategory.subCategory.title}
                   className="object-contain"
