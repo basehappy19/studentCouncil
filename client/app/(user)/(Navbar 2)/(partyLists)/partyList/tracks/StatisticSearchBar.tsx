@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { usePathname } from 'next/navigation'
 
-const SearchBar = () => {
+const StatisticSearchBar = () => {
     const pathname = usePathname()
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -15,9 +15,9 @@ const SearchBar = () => {
             const params = new URLSearchParams(searchParams.toString());
 
             if (text && text.trim() !== '') {
-                params.set('search', text); 
+                params.set('search_statistic', text); 
             } else {
-                params.delete('search');
+                params.delete('search_statistic');
             }
 
             router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -39,4 +39,4 @@ const SearchBar = () => {
     )
 }
 
-export default SearchBar
+export default StatisticSearchBar

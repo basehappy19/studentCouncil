@@ -103,6 +103,7 @@ model User {
   displayName  String
   profile_image_full String @default("default-image-user_full.png")
   profile_image_128x128 String @default("default-image-partyList_128x128.png")
+  order        Int
   sid          Int
   accessId     Int
   access       Access     @relation(fields: [accessId], references: [id])
@@ -296,7 +297,7 @@ model NoVote {
 }
 
 model PartyList {
-  id                      Int                @id @default(autoincrement())
+  id                     Int                @id @default(autoincrement())
   firstName              String
   middleName             String?
   lastName               String
@@ -310,6 +311,8 @@ model PartyList {
   profile_image_128x128  String             @default("default-image-partyList_128x128.png")
   roles                  RoleForPartyList[]
   showInHomepage         Boolean            @default(false)
+  order                  Int
+  orderInHomepage        Int?
   user                   User?              @relation 
   voteAgrees             VoteAgree[]
   voteDisagrees          VoteDisagree[]
@@ -347,8 +350,6 @@ model Bio {
 model Experience {
   id Int @id @default(autoincrement())
   title String
-  description String  @db.Text
-  date DateTime
   owners      ExperienceOwnPartyList[]
 }
 

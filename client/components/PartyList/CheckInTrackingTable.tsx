@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CheckIns } from "@/app/interfaces/CheckIn/CheckIn";
 import SearchBar from '@/app/(user)/(Navbar 2)/(partyLists)/partyList/tracks/SearchBar';
+import DateFilter from '@/app/(user)/(Navbar 2)/(partyLists)/partyList/tracks/DateFilter';
 
 const CheckInTrackingTable = ({ checkIns }: { checkIns: CheckIns }) => {
   return (
@@ -29,6 +30,7 @@ const CheckInTrackingTable = ({ checkIns }: { checkIns: CheckIns }) => {
         <CardDescription>
           ภาพรวมการเข้าทำงานของสภานักเรียน
         </CardDescription>
+        <DateFilter />
         <SearchBar />
       </CardHeader>
       <CardContent>

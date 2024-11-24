@@ -31,7 +31,7 @@ exports.AllPartyLists = async(req, res, next)=>{
                 }
             }
         })
-        res.send(partyLists).status(200)
+        res.status(200).send(partyLists)
     } catch (e) {
         e.status = 400; 
         next(e);
@@ -73,7 +73,7 @@ exports.PartyList = async(req, res, next)=>{
                 }
             }
         })
-        res.send(partyList).status(200)
+        res.status(200).send(partyList)
     } catch (e) {
         e.status = 400; 
         next(e);
@@ -105,7 +105,10 @@ exports.HomePagePartyLists = async (req, res) => {
                         },
                     }
                 }
-            }
+            },
+            orderBy: {
+                orderInHomepage: 'asc',
+            },
         })
         res.status(200).send(partyLists);
     } catch (e) {

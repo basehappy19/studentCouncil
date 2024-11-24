@@ -50,9 +50,7 @@ async function AboutPartyList(props: { params: { id: string } }) {
             <div className="flex flex-col-reverse md:flex-row-reverse items-center gap-y-20 md:gap-x-20">
               <div className="flex-1 w-full">
                 <div className="relative">
-
                   <PartyListCard partyList={partyList} />
-
                 </div>
               </div>
 
@@ -96,7 +94,7 @@ async function AboutPartyList(props: { params: { id: string } }) {
                 ชื่อ
               </h3>
               <span className="text-xl md:text-3xl text-gray-600">
-                {partyList.firstName} {partyList.middleName} {partyList.lastName}
+                {partyList.fullName}
               </span>
             </div>
             <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-blue-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
@@ -105,10 +103,10 @@ async function AboutPartyList(props: { params: { id: string } }) {
           <div className="group relative overflow-hidden rounded-xl p-8 mb-8 bg-white/90 dark:bg-stone-200 shadow-md dark:shadow-none transition-colors duration-300">
             <div className="flex flex-col md:flex-row md:items-center gap-4">
               <h3 className="text-2xl md:text-4xl font-bold text-gray-800 min-w-[120px]">
-                การศึกษา
+                ระดับชั้น
               </h3>
               <span className="text-xl md:text-3xl text-gray-600">
-                {partyList.bio.classroom}
+                ม.{partyList.bio.classroom}
               </span>
             </div>
             <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-blue-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
@@ -128,24 +126,6 @@ async function AboutPartyList(props: { params: { id: string } }) {
                     <h4 className="text-xl font-semibold text-gray-800">
                       {experience.experience.title}
                     </h4>
-                    <p className="text-gray-600">
-                      {experience.experience.description}
-                    </p>
-                    <span className="text-sm text-gray-500 mt-1 block">
-                      {(() => {
-                        if (experience.experience.date !== null && experience.experience.date !== undefined) {
-                          const date = new Date(experience.experience.date);
-                          const thaiDate = date.toLocaleDateString('th-TH', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          });
-                          return `(${thaiDate})`;
-                        }
-                        return null;
-                      })()}
-
-                    </span>
                   </div>
                 ))}
               </div>

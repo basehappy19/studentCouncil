@@ -38,7 +38,6 @@ const CheckInTrack = async (props: {
             : undefined;
     const checkIns: CheckIns = await AllCheckIns({ startDate, endDate, search });
     const statistics : CheckInStatistic[] = await CheckInStatistics({ search: search_statistic })    
-    console.log(statistics[0].statistics.statusCounts);
     
     return (
         <div

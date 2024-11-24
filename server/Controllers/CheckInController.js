@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-exports.AllCheckIns = async (req, res) => {
+exports.AllCheckIns = async (req, res, next) => {
     try {
         const { startDate, endDate, search } = req.query;
 
@@ -89,27 +89,61 @@ exports.AllCheckIns = async (req, res) => {
                 },
             },
             where: {
-                ...(search && {
-                    user: {
-                        partyList: {
-                            OR: [
-                                { fullName: { contains: search } },
-                                { nickName: { contains: search } },
-                                {
-                                    roles: {
-                                        some: {
-                                            role: {
-                                                name: { contains: search },
-                                            },
-                                        },
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                }),
+                AND: [
+                    ...(search
+                        ? [
+                              {
+                                  OR: [
+                                      {
+                                          fullName: {
+                                              contains: search,
+                                          },
+                                      },
+                                      {
+                                          nickName: {
+                                              contains: search,
+                                          },
+                                      },
+                                      {
+                                          roles: {
+                                              some: {
+                                                  role: {
+                                                      name: {
+                                                          contains: search,
+                                                      },
+                                                  },
+                                              },
+                                          },
+                                      },
+                                  ],
+                              },
+                          ]
+                        : []),
+
+                    ...(start || end
+                        ? [
+                              {
+                                  user: {
+                                      checkIns: {
+                                          some: {
+                                              attendTime: {
+                                                  ...(start && {
+                                                      gte: new Date(start),
+                                                  }),
+                                                  ...(end && {
+                                                      lte: new Date(end),
+                                                  }),
+                                              },
+                                          },
+                                      },
+                                  },
+                              },
+                          ]
+                        : []),
+                ],
             },
         });
+
         res.status(200).json({ partyLists: partyLists, days: days });
     } catch (e) {
         e.status = 400;
@@ -267,21 +301,23 @@ exports.CheckInStatistics = async (req, res, next) => {
                     },
                 },
             },
-            ...(search && {
-                OR: [
-                    { fullName: { contains: search } },
-                    { nickName: { contains: search } },
-                    {
-                        roles: {
-                            some: {
-                                role: {
-                                    name: { contains: search },
+            where: {
+                ...(search && {
+                    OR: [
+                        { fullName: { contains: search } },
+                        { nickName: { contains: search } },
+                        {
+                            roles: {
+                                some: {
+                                    role: {
+                                        name: { contains: search },
+                                    },
                                 },
                             },
                         },
-                    },
-                ],
-            }),
+                    ],
+                }),
+            },
         });
 
         const enumTypes = [
@@ -291,8 +327,6 @@ exports.CheckInStatistics = async (req, res, next) => {
             { type: "NOT_CHECKED_IN", name: "ไม่ได้เช็คอิน" },
             { type: "ABSENT", name: "ขาด" },
             { type: "FORGOT_TO_CHECK_IN", name: "ลืมเช็คอิน" },
-            { type: "HOLIDAY", name: "วันหยุด" },
-            { type: "CLOSED_FOR_CHECK_IN", name: "ปิดการเช็คอิน" },
         ];
 
         const statistics = partyLists.map((party) => {
@@ -343,4 +377,3 @@ exports.CheckInStatistics = async (req, res, next) => {
         next(e);
     }
 };
-

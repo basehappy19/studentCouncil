@@ -44,8 +44,6 @@ export interface Experience {
     experience:{
         id:number,
         title:string,
-        description: string,
-        date: string | null,
     }
 }
 export interface Contact {

@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CheckInStatistic, StatusCountType } from '@/app/interfaces/CheckIn/CheckIn';
+import StatisticSearchBar from './StatisticSearchBar';
 
 const StatisticPartyLists = ({ checkInStatistics }: { checkInStatistics: CheckInStatistic[] }) => {
 
@@ -39,13 +40,14 @@ const StatisticPartyLists = ({ checkInStatistics }: { checkInStatistics: CheckIn
                 <CardTitle className="text-2xl">ภาพรวมการเช็คอิน</CardTitle>
             </CardHeader>
             <CardContent>
+                <StatisticSearchBar />
                 <ScrollArea className="h-[600px] pr-4">
                     <Table>
                         <TableHeader className="sticky top-0 bg-background">
                             <TableRow>
                                 <TableHead className="w-[300px]">ชื่อ</TableHead>
                                 <TableHead>ล็อคอินเฉลี่ย</TableHead>
-                                <TableHead className="text-center">จาก {checkInStatistics[0]?.statistics.days} วัน</TableHead>
+                                <TableHead className="text-center">จากทั้งหมด {checkInStatistics[0]?.statistics.days} วัน</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
