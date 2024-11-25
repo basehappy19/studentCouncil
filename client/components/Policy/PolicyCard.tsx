@@ -32,7 +32,7 @@ const PolicyCard = ({ policy }: { policy: Policy }) => {
           />
           <Badge 
             variant="secondary" 
-            className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm"
+            className="absolute top-4 right-4 bg-white/90 dark:bg-black backdrop-blur-sm"
           >
             {policy.rank}
           </Badge>

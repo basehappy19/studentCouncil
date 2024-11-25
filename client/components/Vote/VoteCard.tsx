@@ -10,7 +10,7 @@ const VoteCard = ({ vote } : { vote : Vote }) => {
 
   return (
     <Link href={`/vote/detail/${vote.id}`}>
-      <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-blue-50 to-pink-50 dark:from-blue-950 dark:to-pink-950 border-blue-200 dark:border-blue-800">
+      <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-blue-50 to-pink-50 dark:from-blue-950 dark:to-pink-950 border-blue-200 dark:border-blue-400">
         <CardHeader className="space-y-2">
           <div className="flex justify-between items-start gap-4">
             <h3 className="font-semibold text-lg text-blue-950 dark:text-blue-100">

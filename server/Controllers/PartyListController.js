@@ -29,7 +29,10 @@ exports.AllPartyLists = async(req, res, next)=>{
                         },
                     }
                 }
-            }
+            },
+            orderBy: {
+                order: 'asc',
+            },
         })
         res.status(200).send(partyLists)
     } catch (e) {

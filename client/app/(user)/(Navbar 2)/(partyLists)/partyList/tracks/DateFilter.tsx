@@ -4,13 +4,21 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from 'next/navigation';
 
+const formatDate = (date : Date): string => {
+    return date.toISOString().split('T')[0];
+};
+
 const DateFilter = () => {
     const pathname = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const today = new Date();
+    const lastWeek = new Date();
+    lastWeek.setDate(today.getDate() - 7);
+
+    const [startDate, setStartDate] = useState(formatDate(lastWeek)); 
+    const [endDate, setEndDate] = useState(formatDate(today)); 
 
     useEffect(() => {
         const debounceTimer = setTimeout(() => {

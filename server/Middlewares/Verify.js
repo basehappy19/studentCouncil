@@ -17,21 +17,19 @@ exports.VerifyAuth = async (req,res,next) => {
         const user = await prisma.user.findUnique({
             select:{
                 id: true,
-                email: true,
                 username: true,
                 fullName: true,
                 displayName: true,
-                profileImg: true,
-                sid: true,
+                profile_image_128x128: true,
+                profile_image_full: true,
                 access: true,
-                partylist: true,
             },
             where:{id:id}
         });
         if(!user){
             return res.status(401).json({ message: 'คุณไม่มีสิทธิ์เข้าถึง', type: 'error' });
         }
-        req.user = user;
+        req.user = user;        
         next();
     } catch (e) {
         console.error(e);

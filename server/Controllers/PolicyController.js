@@ -35,7 +35,6 @@ exports.RecommendPolicies = async (req, res, next) => {
 exports.AllPolicies = async (req, res, next) => {
     try {
         const { category,  subCategory } = req.query;
-        console.log(category, subCategory);
         
         const policies = await prisma.policy.findMany({
             include: {

@@ -3,7 +3,7 @@ import { signOut } from "next-auth/react"
 
 const SignOut = () => {
     return (
-        <button onClick={() => signOut()} className="font-semibold cursor-pointer">
+        <button onClick={() => signOut({ callbackUrl: '/' })} className="font-semibold cursor-pointer">
             ออกจากระบบ
         </button>
     )

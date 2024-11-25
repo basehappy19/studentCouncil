@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
-export const metadata : Metadata = {
+export const metadata: Metadata = {
   title: `เกี่ยวกับ ${process.env.NEXT_PUBLIC_APP_TITLE}`,
   description:
     "ทุกคนสามารถติดตามการทำงาน นโยบาย สภานักเรียน งบประมาณ หรือแม้กระทั่งมติที่ประชุมได้ที่นี้",
@@ -18,25 +18,7 @@ function About() {
         <div className="container px-0 md:px-4 mx-auto scale-[0.75] md:scale-95 -rotate-[-3deg] -translate-y-20 md:-translate-y-0">
           <div className="text-custom-black flex flex-col h-screen items-center justify-center">
             <div className="mb-8">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="200"
-                height="200"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="icon icon-tabler icons-tabler-outline icon-tabler-gavel"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M13 10l7.383 7.418c.823 .82 .823 2.148 0 2.967a2.11 2.11 0 0 1 -2.976 0l-7.407 -7.385" />
-                <path d="M6 9l4 4" />
-                <path d="M13 10l-4 -4" />
-                <path d="M3 21h7" />
-                <path d="M6.793 15.793l-3.586 -3.586a1 1 0 0 1 0 -1.414l2.293 -2.293l.5 .5l3 -3l-.5 -.5l2.293 -2.293a1 1 0 0 1 1.414 0l3.586 3.586a1 1 0 0 1 0 1.414l-2.293 2.293l-.5 -.5l-3 3l.5 .5l-2.293 2.293a1 1 0 0 1 -1.414 0z" />
-              </svg>
+              {/* SVG */}
             </div>
             <div className="drop-shadow-lg text-center text-3xl font-semibold">
               สภาโปร่งใส คืออะไร
@@ -59,23 +41,7 @@ function About() {
         <div className="container px-0 md:px-4 mx-auto scale-[0.75] md:scale-95 -rotate-[-3deg] -translate-y-20 md:-translate-y-0">
           <div className="text-custom-black flex flex-col h-screen items-center justify-center">
             <div className="mb-8">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="200"
-                height="200"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="icon icon-tabler icons-tabler-outline icon-tabler-user-heart"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h.5" />
-                <path d="M18 22l3.35 -3.284a2.143 2.143 0 0 0 .005 -3.071a2.242 2.242 0 0 0 -3.129 -.006l-.224 .22l-.223 -.22a2.242 2.242 0 0 0 -3.128 -.006a2.143 2.143 0 0 0 -.006 3.071l3.355 3.296z" />
-              </svg>
+              {/* SVG */}
             </div>
             <div className="drop-shadow-lg text-center text-3xl font-semibold">
               ขายคุณภาพชีวิต ไม่ได้ขายฝัน
@@ -104,24 +70,7 @@ function About() {
         <div className="container px-0 md:px-4 mx-auto scale-[0.75] md:scale-95 -rotate-[-3deg] -translate-y-20 md:-translate-y-0">
           <div className="text-custom-black flex flex-col h-screen items-center justify-center">
             <div className="mb-8">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="200"
-                height="200"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="icon icon-tabler icons-tabler-outline icon-tabler-eye-question"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                <path d="M14.071 17.764a8.989 8.989 0 0 1 -2.071 .236c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.346 0 6.173 1.727 8.482 5.182" />
-                <path d="M19 22v.01" />
-                <path d="M19 19a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483" />
-              </svg>
+              {/* SVG */}
             </div>
             <div className="drop-shadow-lg text-center text-3xl font-semibold">
               ติดตามความคืบหน้านโยบาย
@@ -150,24 +99,7 @@ function About() {
         <div className="container px-0 md:px-4 mx-auto scale-[0.75] md:scale-95 -rotate-[-3deg] -translate-y-20 md:-translate-y-0">
           <div className="text-custom-black flex flex-col h-screen items-center justify-center">
             <div className="mb-8">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="200"
-                height="200"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="icon icon-tabler icons-tabler-outline icon-tabler-run"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M13 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                <path d="M4 17l5 1l.75 -1.5" />
-                <path d="M15 21l0 -4l-4 -3l1 -6" />
-                <path d="M7 12l0 -3l5 -1l3 3l3 1" />
-              </svg>
+              {/* SVG */}
             </div>
             <div className="drop-shadow-lg text-center text-3xl font-semibold">
               ทำความรู้จักสมาชิกพรรค
@@ -191,26 +123,7 @@ function About() {
         <div className="container px-0 md:px-4 mx-auto scale-[0.75] md:scale-95 -rotate-[-3deg] -translate-y-20 md:-translate-y-0">
           <div className="text-custom-black flex flex-col h-screen items-center justify-center">
             <div className="mb-8">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="200"
-                height="200"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="icon icon-tabler icons-tabler-outline icon-tabler-certificate"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" />
-                <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
-                <path d="M6 9l12 0" />
-                <path d="M6 12l3 0" />
-                <path d="M6 15l2 0" />
-              </svg>
+              {/* SVG */}
             </div>
             <div className="drop-shadow-lg text-center text-3xl font-semibold">
               หน้าตาไม่ใช่ตัววัด การทำงานล้วนๆ
@@ -277,21 +190,7 @@ function About() {
         <div className="container px-0 md:px-4 mx-auto scale-[0.75] md:scale-95 -rotate-[-3deg] -translate-y-20 md:-translate-y-0">
           <div className="text-custom-black flex flex-col h-screen items-center justify-center">
             <div className="mb-8">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="200"
-                height="200"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="icon icon-tabler icons-tabler-outline icon-tabler-brand-cashapp"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M17.1 8.648a.568 .568 0 0 1 -.761 .011a5.682 5.682 0 0 0 -3.659 -1.34c-1.102 0 -2.205 .363 -2.205 1.374c0 1.023 1.182 1.364 2.546 1.875c2.386 .796 4.363 1.796 4.363 4.137c0 2.545 -1.977 4.295 -5.204 4.488l-.295 1.364a.557 .557 0 0 1 -.546 .443h-2.034l-.102 -.011a.568 .568 0 0 1 -.432 -.67l.318 -1.444a7.432 7.432 0 0 1 -3.273 -1.784v-.011a.545 .545 0 0 1 0 -.773l1.137 -1.102c.214 -.2 .547 -.2 .761 0a5.495 5.495 0 0 0 3.852 1.5c1.478 0 2.466 -.625 2.466 -1.614c0 -.989 -1 -1.25 -2.886 -1.954c-2 -.716 -3.898 -1.728 -3.898 -4.091c0 -2.75 2.284 -4.091 4.989 -4.216l.284 -1.398a.545 .545 0 0 1 .545 -.432h2.023l.114 .012a.544 .544 0 0 1 .42 .647l-.307 1.557a8.528 8.528 0 0 1 2.818 1.58l.023 .022c.216 .228 .216 .569 0 .773l-1.057 1.057z" />
-              </svg>
+              {/* SVG */}
             </div>
             <div className="drop-shadow-lg text-center text-3xl font-semibold">
               เปิดเผยงบประมาณ

@@ -49,6 +49,7 @@ exports.AllWorks = async(req, res, next)=>{
                                         firstName: true,
                                         middleName: true,
                                         lastName: true,
+                                        fullName: true,
                                         nickName: true,
                                         profile_image_128x128: true,
                                         profile_image_full: true,

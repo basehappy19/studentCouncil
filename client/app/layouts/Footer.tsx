@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { Menu } from "./Menu";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/auth-options";
 import SignOut from "@/components/SignOutButton";
 import { ChevronRight, User } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { getUserData } from "../functions/Auth";
+import { UserData } from "../interfaces/Auth/User";
 
 const Footer = async () => {
-  const session = await getServerSession(authOptions);
-  const currentYear = new Date().getFullYear() + 543;
+  const user: UserData | null = await getUserData()
 
   return (
     <footer className="text-gray-700 bg-none bg-white dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 dark:text-gray-200">
@@ -23,15 +22,8 @@ const Footer = async () => {
               target="_blank"
               className="transition-transform hover:scale-110"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-pink-400 dark:hover:text-pink-300 hover:text-pink-500 inline-flex icon icon-tabler icons-tabler-outline icon-tabler-brand-facebook"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" /></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-pink-400 dark:hover:text-pink-300 hover:text-pink-500 inline-flex icon icon-tabler icons-tabler-outline icon-tabler-brand-instagram"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" /><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M16.5 7.5l0 .01" /></svg>
 
-            </Link>
-            <Link
-              href=""
-              target="_blank"
-              className="transition-transform hover:scale-110"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-blue-400 dark:hover:text-blue-300 hover:text-blue-500 inline-flex icon icon-tabler icons-tabler-outline icon-tabler-brand-instagram"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" /><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M16.5 7.5l0 .01" /></svg>
 
             </Link>
           </div>
@@ -70,11 +62,11 @@ const Footer = async () => {
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-400 dark:border-gray-700 bg-blue-400/50 dark:bg-gray-900/50 p-6 backdrop-blur-sm md:flex-row">
-          <p>© {currentYear} พรรค - สงวนลิขสิทธิ์</p>
+          <p>© {new Date().getFullYear() + 543} พรรค - สงวนลิขสิทธิ์</p>
 
-          {!session ? (
+          {!user ? (
             <Link
-              href="/login"
+              href="/auth"
               className="flex items-center gap-2 rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600"
             >
               <User className="h-4 w-4" />
@@ -84,12 +76,12 @@ const Footer = async () => {
             <div className="flex items-center gap-4 text-sm">
               <span className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                {session.user?.username}
+                {user.data?.displayName}
               </span>
               <Separator orientation="vertical" className="h-4 bg-gray-700" />
               <Link
                 href="/dashboard"
-                className="text-blue-400 hover:text-blue-300"
+                className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
               >
                 เข้าหลังบ้าน
               </Link>

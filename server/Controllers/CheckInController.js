@@ -87,6 +87,45 @@ exports.AllCheckIns = async (req, res, next) => {
                         role: true,
                     },
                 },
+                user: {
+                    select: {
+                        id: true,
+                        checkIns: {
+                            select: {
+                                id: true,
+                                attendTime: true,
+                                checkInDay: {
+                                    select: {
+                                        dateTime: true,
+                                    },
+                                },
+                            },
+                            where: {
+                                checkInDay: {
+                                    ...(start &&
+                                        end && {
+                                            dateTime: {
+                                                gte: start,
+                                                lte: end,
+                                            },
+                                        }),
+                                    ...(start &&
+                                        !end && {
+                                            dateTime: {
+                                                gte: start,
+                                            },
+                                        }),
+                                    ...(!start &&
+                                        end && {
+                                            dateTime: {
+                                                lte: end,
+                                            },
+                                        }),
+                                },
+                            },
+                        },
+                    },
+                },
             },
             where: {
                 AND: [
@@ -119,28 +158,39 @@ exports.AllCheckIns = async (req, res, next) => {
                               },
                           ]
                         : []),
-
-                    ...(start || end
-                        ? [
-                              {
-                                  user: {
-                                      checkIns: {
-                                          some: {
-                                              attendTime: {
-                                                  ...(start && {
-                                                      gte: new Date(start),
-                                                  }),
-                                                  ...(end && {
-                                                      lte: new Date(end),
-                                                  }),
-                                              },
-                                          },
-                                      },
-                                  },
-                              },
-                          ]
-                        : []),
+                    {
+                        user: {
+                            checkIns: {
+                                some: {
+                                    checkInDay: {
+                                        ...(start &&
+                                            end && {
+                                                dateTime: {
+                                                    gte: start,
+                                                    lte: end,
+                                                },
+                                            }),
+                                        ...(start &&
+                                            !end && {
+                                                dateTime: {
+                                                    gte: start,
+                                                },
+                                            }),
+                                        ...(!start &&
+                                            end && {
+                                                dateTime: {
+                                                    lte: end,
+                                                },
+                                            }),
+                                    },
+                                },
+                            },
+                        },
+                    },
                 ],
+            },
+            orderBy: {
+                order: "asc",
             },
         });
 
