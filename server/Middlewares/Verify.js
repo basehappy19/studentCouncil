@@ -2,20 +2,20 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const jwt = require('jsonwebtoken');
 
-exports.VerifyAuth = async (req,res,next) => {
-    const token = req.header('Authorization');
-
-    if (!token) {
-        return res.status(401).json({ message: 'การเข้าถึงถูกปฏิเสธ', type: 'error' });
-    }
+const VerifyAuth = async (req, res, next) => {
     try {
-        const decoded = jwt.verify(token, process.env.SECRET_KEY);
-        if(!decoded.user){
-            return res.status(401).json({ message: 'คุณไม่มีสิทธิ์เข้าถึง', type: 'error' });
+        const token = req.header('Authorization');
+
+        if (!token) {
+            req.user = null;
+            return next();
         }
+
+        const decoded = jwt.verify(token, process.env.SECRET_KEY); 
+
         const { id } = decoded.user;
-        const user = await prisma.user.findUnique({
-            select:{
+        const user = await prisma.user.findFirst({
+            select: {
                 id: true,
                 username: true,
                 fullName: true,
@@ -24,15 +24,16 @@ exports.VerifyAuth = async (req,res,next) => {
                 profile_image_full: true,
                 access: true,
             },
-            where:{id:id}
+            where: { id: id }
         });
-        if(!user){
-            return res.status(401).json({ message: 'คุณไม่มีสิทธิ์เข้าถึง', type: 'error' });
-        }
-        req.user = user;        
-        next();
+
+        req.user = user || null; 
+        
+        next(); 
     } catch (e) {
         console.error(e);
         res.status(401).json({ message: 'การเข้าถึงถูกปฏิเสธ', type: 'error' });
     }
 }
+
+module.exports = VerifyAuth;

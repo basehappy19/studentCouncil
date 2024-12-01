@@ -3,6 +3,8 @@ import SideBar from "../../layouts/SideBar";
 import { getUserData } from "@/app/functions/Auth";
 import type { Metadata } from "next" 
 import { UserData } from "@/app/interfaces/Auth/User";
+import { RequestData } from "@/app/interfaces/CheckIn/CheckIn";
+import { getForgetCheckInRequests } from "@/app/functions/CheckIn";
 
 export const metadata : Metadata = {
     title: `แดชบอร์ด ${process.env.NEXT_PUBLIC_APP_TITLE}`,
@@ -17,9 +19,10 @@ export const metadata : Metadata = {
 
 export default async function Layout({ children }: { children: ReactNode }) {
     const user : UserData | null = await getUserData();
+    const badgeCount: RequestData = await getForgetCheckInRequests();
     return (
         <main>
-            <SideBar user={user} />
+            <SideBar badgeCount={badgeCount.count} user={user} />
             <div className="p-4 sm:ml-64 min-h-screen">
                 {children}
             </div>

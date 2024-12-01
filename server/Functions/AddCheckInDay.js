@@ -1,11 +1,36 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const cron = require('node-cron');
+const cron = require("node-cron");
 
 const checkAndAddCheckInDay = async () => {
     try {
-        const today = new Date();
-        const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+        const dateNow = new Date();
+        const dayOfWeek = dateNow.getDay(); 
+        const hours = dateNow.getHours();
+
+        const startOfToday = new Date(
+            dateNow.getFullYear(),
+            dateNow.getMonth(),
+            dateNow.getDate(),
+            0,
+            0,
+            0
+        );
+
+        const latestSettingTime = await prisma.setting.findFirst({
+            select: {
+                checkInStartDay: true,
+                checkInEndDay: true,
+                checkInStartTime: true,
+                checkInEndTime: true,
+                requestStartTime: true,
+                requestEndTime: true,
+                checkInOpen: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
 
         const existingCheckInDay = await prisma.checkInDay.findFirst({
             where: {
@@ -13,17 +38,8 @@ const checkAndAddCheckInDay = async () => {
             },
         });
 
-        if (!existingCheckInDay) {
-            const skipDay = await prisma.skipDay.findFirst({
-                where: {
-                    date: {
-                        gte: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0), // เริ่มต้นวัน
-                        lt: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0), // สิ้นสุดวัน
-                    },
-                },
-            });
-
-            if (skipDay) {
+        if (dayOfWeek === 6 || dayOfWeek === 0) {
+            if (!existingCheckInDay) {
                 const checkInDay = await prisma.checkInDay.create({
                     data: {
                         dateTime: startOfToday,
@@ -38,9 +54,9 @@ const checkAndAddCheckInDay = async () => {
                 });
 
                 const checkIns = allUsers.map((user) => ({
-                    attendTime: startOfToday,
-                    type: skipDay.type,
-                    reason: skipDay.reason,
+                    attendTime: null,
+                    type: "HOLIDAY",
+                    reason: null, 
                     userId: user.id,
                     checkInDayId: checkInDay.id,
                 }));
@@ -48,15 +64,89 @@ const checkAndAddCheckInDay = async () => {
                 await prisma.checkIn.createMany({
                     data: checkIns,
                 });
+            }
+        } else {
+            if (existingCheckInDay) {
+                if (
+                    hours >= latestSettingTime.requestStartTime &&
+                    hours < latestSettingTime.requestEndTime &&
+                    latestSettingTime.checkInOpen
+                ) {
+                    await prisma.checkIn.updateMany({
+                        where: {
+                            checkInDayId: existingCheckInDay.id,
+                            type: "NOT_CHECKED_IN", 
+                            attendTime: null,
+                        },
+                        data: {
+                            type: "REQUEST_FOR_CHECK_IN",
+                        },
+                    });
+                }
 
+                if (
+                    hours >= latestSettingTime.checkInEndTime &&
+                    hours >= latestSettingTime.requestEndTime &&
+                    latestSettingTime.checkInOpen
+                ) {
+                                        
+                    await prisma.checkIn.updateMany({
+                        where: {
+                            checkInDayId: existingCheckInDay.id,
+                            type: {
+                                in: ["NOT_CHECKED_IN", "REQUEST_FOR_CHECK_IN"]
+                            },
+                            attendTime: null,
+                        },
+                        data: {
+                            type: "ABSENT",
+                        },
+                    });
+                }                
+
+                if (
+                    dayOfWeek >= latestSettingTime.checkInStartDay &&
+                    dayOfWeek <= latestSettingTime.checkInEndDay &&
+                    hours >= latestSettingTime.checkInStartTime &&
+                    hours < latestSettingTime.checkInEndTime &&
+                    latestSettingTime.checkInOpen
+                ) {                    
+                    await prisma.checkIn.updateMany({
+                        where: {
+                            checkInDayId: existingCheckInDay.id,
+                            type: "CLOSED_FOR_CHECK_IN",
+                        },
+                        data: {
+                            type: "NOT_CHECKED_IN",
+                            reason: null,
+                        },
+                    });
+                }
             } else {
-                const latestSetting = await prisma.setting.findFirst({
-                    orderBy: {
-                        createdAt: "desc",
+                const skipDay = await prisma.skipDay.findFirst({
+                    where: {
+                        date: {
+                            gte: new Date(
+                                dateNow.getFullYear(),
+                                dateNow.getMonth(),
+                                dateNow.getDate(),
+                                0,
+                                0,
+                                0
+                            ),
+                            lt: new Date(
+                                dateNow.getFullYear(),
+                                dateNow.getMonth(),
+                                dateNow.getDate() + 1,
+                                0,
+                                0,
+                                0
+                            ),
+                        },
                     },
                 });
 
-                if (latestSetting && !latestSetting.checkInOpen) {
+                if (skipDay) {
                     const checkInDay = await prisma.checkInDay.create({
                         data: {
                             dateTime: startOfToday,
@@ -72,8 +162,8 @@ const checkAndAddCheckInDay = async () => {
 
                     const checkIns = allUsers.map((user) => ({
                         attendTime: startOfToday,
-                        type: "CLOSED_FOR_CHECK_IN",
-                        reason: "ระบบปิด",
+                        type: skipDay.type,
+                        reason: skipDay.reason,
                         userId: user.id,
                         checkInDayId: checkInDay.id,
                     }));
@@ -81,7 +171,6 @@ const checkAndAddCheckInDay = async () => {
                     await prisma.checkIn.createMany({
                         data: checkIns,
                     });
-
                 } else {
                     const checkInDay = await prisma.checkInDay.create({
                         data: {
@@ -96,13 +185,25 @@ const checkAndAddCheckInDay = async () => {
                         },
                     });
 
-                    const checkIns = allUsers.map((user) => ({
-                        attendTime: null,
-                        type: "NOT_CHECKED_IN",
-                        reason: null,
-                        userId: user.id,
-                        checkInDayId: checkInDay.id,
-                    }));
+                    let checkIns;
+
+                    if (latestSettingTime && !latestSettingTime.checkInOpen) {
+                        checkIns = allUsers.map((user) => ({
+                            attendTime: startOfToday,
+                            type: "CLOSED_FOR_CHECK_IN",
+                            reason: "ระบบปิด",
+                            userId: user.id,
+                            checkInDayId: checkInDay.id,
+                        }));
+                    } else {
+                        checkIns = allUsers.map((user) => ({
+                            attendTime: null,
+                            type: "CLOSED_FOR_CHECK_IN",
+                            reason: `เปิดระบบเวลา ${latestSettingTime.checkInStartTime} นาฬิกา`,
+                            userId: user.id,
+                            checkInDayId: checkInDay.id,
+                        }));
+                    }
 
                     await prisma.checkIn.createMany({
                         data: checkIns,
@@ -115,18 +216,49 @@ const checkAndAddCheckInDay = async () => {
     }
 };
 
-cron.schedule('0 0 * * *', async () => {
-    await checkAndAddCheckInDay();
-});
-
-const startAddCheckInDay = async () => {
+const scheduleCronJobs = async () => {
     try {
-        await checkAndAddCheckInDay();
+        const latestSettingTime = await prisma.setting.findFirst({
+            select: {
+                checkInStartTime: true,
+                checkInEndTime: true,
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+        });
+
+        const startTime = latestSettingTime.checkInStartTime;
+        const endTime = latestSettingTime.checkInEndTime;
+        const requestStartTime = latestSettingTime.requestStartTime;
+        const requestEndTime = latestSettingTime.requestEndTime;
+
+        cron.schedule(`${startTime} * * * *`, async () => {
+            await checkAndAddCheckInDay();
+        });
+
+        cron.schedule(`${endTime} * * * *`, async () => {
+            await checkAndAddCheckInDay();
+        });
+
+        cron.schedule(`${requestStartTime} * * * *`, async () => {
+            console.log("Starting Request Check-In Process...");
+            await checkAndAddCheckInDay();
+        });
+
+        cron.schedule(`${requestEndTime} * * * *`, async () => {
+            console.log("Ending Request Check-In Process...");
+            await checkAndAddCheckInDay();
+        });
+
     } catch (error) {
-        console.error("Error on server start checkAndAddCheckInDay:", error);
+        console.error("Error scheduling cron jobs:", error);
     }
 };
 
+const startAddCheckInDay = async () => {
+    await checkAndAddCheckInDay();
+};
 module.exports = {
     startAddCheckInDay,
 };

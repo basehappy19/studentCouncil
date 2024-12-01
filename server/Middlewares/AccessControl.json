@@ -1,0 +1,374 @@
+{
+    "routes": [
+        {
+            "path": "/accesses",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/access",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/add_user",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1
+            ]
+        },
+        {
+            "path": "/user/data",
+            "method": "GET",
+            "requiresAuth": true,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/auth/login",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/budget/department",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/statistics/budget/all/income_expense",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1,
+                4
+            ]
+        },
+        {
+            "path": "/statistics/budget/income_expense",
+            "method": "GET",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1,
+                4
+            ]
+        },
+        {
+            "path": "/statistics/budget/income_expense/:id",
+            "method": "GET",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1,
+                4
+            ]
+        },
+        {
+            "path": "/categories",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/category",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/checkIns",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/checkIn",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/checkInUser",
+            "method": "GET",
+            "requiresAuth": true,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/checkIn_statistics",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/departments",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/partyLists",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/partyList",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/partyList_for_homepages",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/partyList",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/policy",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/policies_recommend",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/policies",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/policy",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1
+            ]
+        },
+        {
+            "path": "/policy_statuses",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/policy_track",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/policy_track_statistic",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/policy_status",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1
+            ]
+        },
+        {
+            "path": "/roles",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/role",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1
+            ]
+        },
+        {
+            "path": "/skills",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/skill",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1
+            ]
+        },
+        {
+            "path": "/transactions",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/transaction",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1,
+                4
+            ]
+        },
+        {
+            "path": "/transaction",
+            "method": "PUT",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1,
+                4
+            ]
+        },
+        {
+            "path": "/transaction",
+            "method": "DELETE",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1,
+                4
+            ]
+        },
+        {
+            "path": "/users",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/user",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/user",
+            "method": "PUT",
+            "requiresAuth": true,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/user",
+            "method": "DELETE",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1
+            ]
+        },
+        {
+            "path": "/votes",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/vote/:id",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/vote",
+            "method": "DELETE",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "path": "/vote",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "path": "/works",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/work",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/work_tags",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/work_tag",
+            "method": "POST",
+            "requiresAuth": true,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/checkInRequests",
+            "method": "GET",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "path": "/checkInRequest",
+            "method": "GET",
+            "requiresAuth": true,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/actionRequestCheckIn",
+            "method": "PUT",
+            "requiresAuth": true,
+            "allowedAccessIds": [
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "path": "/userWorkStatistics",
+            "method": "GET",
+            "requiresAuth": true,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/userWorks",
+            "method": "GET",
+            "requiresAuth": true,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/optionsForAddWork",
+            "method": "GET",
+            "requiresAuth": true,
+            "allowedAccessIds": []
+        }
+    ]
+}

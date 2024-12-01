@@ -6,11 +6,11 @@ const { AllUsers, RemoveUser, updateUser, updateUserProfile, User } = require('.
 router.get("/users", AllUsers)
 router.get("/user", User)
 router.put("/user", updateUser)
-router.put("/user_profile", (req, res, next) => {
-    req.params.fieldName = 'profileImage';
-    req.params.type = 'profile';
-    next();
-}, upload, updateUserProfile);
+// router.put("/user_profile", (req, res, next) => {
+//     req.params.fieldName = 'profileImage';
+//     req.params.type = 'profile';
+//     next();
+// }, upload, updateUserProfile);
 router.delete("/user", RemoveUser)
 
 module.exports = router;

@@ -1,52 +1,61 @@
-import { DashboardIcon, BriefcaseIcon, UsersIcon, TraffyFondueIcon, MoneyIcon, VoteIcon } from '@/components/Backend/Icon'
+import { Backpack, BadgeDollarSign, BellRing, LayoutDashboard, Monitor, UserCog, Vote } from 'lucide-react'
 
 export const menuItems = [
     {
         href: '/dashboard',
-        icon: DashboardIcon,
+        icon: <LayoutDashboard className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'แดชบอร์ด',
         accessId: [
             0
         ]
     },
     {
-        href: '/dashboard/work',
-        icon: BriefcaseIcon,
+        href: '/dashboard/works',
+        icon: <Backpack className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'การทำงาน',
         accessId: [
             0
         ]
     },
     {
+        href: '/dashboard/checkInForgetRequests',
+        icon: <BellRing className='w-5 h-5 text-gray-500 dark:text-white'/>,
+        label: 'คำขอลืมเช็คอิน',
+        accessId: [
+            1, 2
+        ],
+        badgeCount: 12,
+    },
+    {
         href: '/dashboard/votes',
-        icon: VoteIcon,
+        icon: <Vote className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'การลงมติ',
         accessId: [
-            3
+            1
         ]
     },
     {
         href: '/dashboard/traffy-fondue',
-        icon: TraffyFondueIcon,
+        icon: <Monitor className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'Traffy Fondue',
         accessId: [
-            3,4
+            1,4
         ]
     },
     {
         href: '/dashboard/budget',
-        icon: MoneyIcon,
+        icon: <BadgeDollarSign className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'งบประมาณ',
         accessId: [
-            0,3,2
+            0,1,2
         ]
     },
     {
         href: '/dashboard/users',
-        icon: UsersIcon,
+        icon: <UserCog className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'สมาชิกสภานักเรียน',
         accessId: [
-            3
+            1
         ]
     }
     

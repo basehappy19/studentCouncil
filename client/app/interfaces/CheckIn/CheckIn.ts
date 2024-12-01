@@ -1,12 +1,13 @@
 import { PartyList } from "../PartyList/partylist";
 import { User } from "../User/User";
 
-type CheckInType =
+export type CheckInType =
     | "NORMAL"
     | "SICK_LEAVE"
     | "PERSONAL_LEAVE"
     | "NOT_CHECKED_IN"
     | "ABSENT"
+    | "REQUEST_FOR_CHECK_IN"
     | "FORGOT_TO_CHECK_IN"
     | "HOLIDAY"
     | "CLOSED_FOR_CHECK_IN";
@@ -32,8 +33,9 @@ interface Day {
     checkIns: CheckIn[];
 }
 
-interface CheckIn {
+export interface CheckIn {
     id: number;
+    message: string;
     attendTime: string | null;
     type: CheckInType;
     reason: string | null;
@@ -67,4 +69,25 @@ interface StatusCount {
     type: StatusCountType; 
     count: number;
     name: StatusName;
+}
+
+export interface RequestData {
+    count: number,
+    requests: Request[]
+}
+
+export type StatusRequest = 
+    "PENDING"
+    | "APPROVED"
+    | "REJECTED"
+
+export interface Request {
+    id: number,
+    userId: number,
+    checkInDayId: number,
+    timeRequested: string,
+    status: StatusRequest,
+    createdAt: string,
+    updatedAt: string,
+    user: User
 }

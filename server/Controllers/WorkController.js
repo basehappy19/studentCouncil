@@ -1,13 +1,13 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const validateRequiredFields = require('../Functions/ValidateRequiredFields');
+const validateRequiredFields = require("../Functions/ValidateRequiredFields");
 
-exports.AllWorks = async(req, res, next)=>{
-    try {        
+exports.AllWorks = async (req, res, next) => {
+    try {
         const works = await prisma.work.findMany({
-            include:{
+            include: {
                 postBy: {
-                    select:{
+                    select: {
                         id: true,
                         fullName: true,
                         displayName: true,
@@ -15,7 +15,7 @@ exports.AllWorks = async(req, res, next)=>{
                         profile_image_full: true,
                         sid: true,
                         partyList: {
-                            select:{
+                            select: {
                                 id: true,
                                 firstName: true,
                                 middleName: true,
@@ -23,20 +23,20 @@ exports.AllWorks = async(req, res, next)=>{
                                 nickName: true,
                                 profile_image_128x128: true,
                                 profile_image_full: true,
-                                roles:{
-                                    select:{
-                                        role: true
-                                    }
-                                }
+                                roles: {
+                                    select: {
+                                        role: true,
+                                    },
+                                },
                             },
                         },
-                    }
+                    },
                 },
                 operators: {
-                    select:{
+                    select: {
                         id: true,
                         user: {
-                            select:{
+                            select: {
                                 id: true,
                                 fullName: true,
                                 displayName: true,
@@ -44,7 +44,7 @@ exports.AllWorks = async(req, res, next)=>{
                                 profile_image_full: true,
                                 sid: true,
                                 partyList: {
-                                    select:{
+                                    select: {
                                         id: true,
                                         firstName: true,
                                         middleName: true,
@@ -53,117 +53,373 @@ exports.AllWorks = async(req, res, next)=>{
                                         nickName: true,
                                         profile_image_128x128: true,
                                         profile_image_full: true,
-                                        roles:{
-                                            select:{
-                                                role: true
-                                            }
-                                        }
+                                        roles: {
+                                            select: {
+                                                role: true,
+                                            },
+                                        },
                                     },
-                                }
-                            }
-                        }
-                    }
+                                },
+                            },
+                        },
+                    },
                 },
                 images: {
-                    select:{
+                    select: {
                         id: true,
                         path: true,
-                    }
+                    },
                 },
                 tags: {
-                    select:{
+                    select: {
                         id: true,
                         tag: true,
-                    }
+                    },
                 },
-            }
-        })
+            },
+        });
         res.status(200).send(works);
     } catch (e) {
-        e.status = 400; 
+        e.status = 400;
         next(e);
     }
-}
+};
 
-exports.UserWorks = async (req, res) => {
+exports.UserWorkStatistics = async (req, res, next) => {
     try {
-        const id = req.user.id
-
-        const works = await prisma.work.findMany({
+        const id = req.user.id;
+        const workPosts = await prisma.work.findMany({
             where: {
                 postBy: {
-                    id: id
-                }
+                    id: isNaN(parseInt(id)) ? undefined : parseInt(id),
+                },
             },
-            select:{
+            select: {
                 id: true,
                 title: true,
                 description: true,
                 postBy: true,
                 images: true,
                 operators: true,
-                tags:true,
-                date:true,
-                createdAt: true,
+                tags: true,
+                date: true,
                 updatedAt: true,
-            }
-        })
+            },
+        });
 
-        res.status(200).json(works);
+        const workParticipated = await prisma.work.findMany({
+            where: {
+                AND: [
+                    {
+                        operators: {
+                            some: {
+                                userId: isNaN(parseInt(id))
+                                    ? undefined
+                                    : parseInt(id),
+                            },
+                        },
+                    },
+                    {
+                        NOT: {
+                            postById: isNaN(parseInt(id))
+                                ? undefined
+                                : parseInt(id),
+                        },
+                    },
+                ],
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                postBy: true,
+                images: true,
+                operators: true,
+                tags: true,
+                date: true,
+                updatedAt: true,
+            },
+        });
+
+        const result = {
+            workPostsCount: workPosts.length,
+            workParticipatedCount: workParticipated.length,
+            totalWorks: workPosts.length + workParticipated.length,
+            workPosts: workPosts,
+            workParticipated: workParticipated,
+        };
+
+        res.status(200).send(result);
     } catch (e) {
-        e.status = 400; 
+        e.status = 400;
         next(e);
     }
-}
+};
 
+exports.UserWorks = async (req, res, next) => {
+    try {
+        const { search, page = 1, pageSize = 5, filter = "" } = req.query;
+        const id = req.user.id;
+
+        const pageNumber = parseInt(page);
+        const size = parseInt(pageSize);
+
+        const skip = (pageNumber - 1) * size;
+
+        const parsedId = isNaN(parseInt(id)) ? undefined : parseInt(id);
+
+        const searchFilter = search
+            ? {
+                  OR: [
+                      {
+                          title: {
+                              contains: search,
+                          },
+                      },
+                      {
+                          description: {
+                              contains: search,
+                          },
+                      },
+                  ].filter(Boolean),
+              }
+            : {};
+
+        let whereCondition = {};
+
+        if (filter === "owner") {
+            whereCondition = {
+                postBy: {
+                    id: parsedId,
+                },
+            };
+        } else if (filter === "participated") {
+            whereCondition = {
+                NOT: {
+                    postById: parsedId,
+                },
+                operators: {
+                    some: {
+                        userId: parsedId,
+                    },
+                },
+            };
+        } else {
+            whereCondition = {
+                OR: [
+                    {
+                        postById: parsedId,
+                    },
+                    {
+                        NOT: {
+                            postById: parsedId,
+                        },
+                        operators: {
+                            some: {
+                                userId: parsedId,
+                            },
+                        },
+                    },
+                ],
+            };
+        }
+
+        whereCondition = {
+            ...whereCondition,
+            ...searchFilter,
+        };
+
+        const [works, totalRecords, totalOwned, totalParticipated] =
+            await Promise.all([
+                prisma.work.findMany({
+                    where: whereCondition,
+                    select: {
+                        id: true,
+                        title: true,
+                        description: true,
+                        postBy: true,
+                        images: true,
+                        operators: {
+                            select: {
+                                id: true,
+                                user: true,
+                            },
+                        },
+                        tags: {
+                            select: {
+                                id: true,
+                                tag: true,
+                            },
+                        },
+                        date: true,
+                        updatedAt: true,
+                    },
+                    skip: skip,
+                    take: size,
+                }),
+
+                prisma.work.count({
+                    where: whereCondition,
+                }),
+
+                prisma.work.count({
+                    where: {
+                        postById: parsedId,
+                    },
+                }),
+
+                prisma.work.count({
+                    where: {
+                        NOT: {
+                            postById: parsedId,
+                        },
+                        operators: {
+                            some: {
+                                userId: parsedId,
+                            },
+                        },
+                    },
+                }),
+            ]);
+
+        const totalPages = Math.ceil(totalRecords / size);
+        
+        res.status(200).json({
+            data: works,
+            pagination: {
+                totalRecords,
+                totalPages,
+                currentPage: pageNumber,
+                pageSize: size,
+            },
+            additionalData: {
+                totalOwned,       
+                totalParticipated, 
+                totalWorks: totalOwned + totalParticipated,      
+            },
+        });
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+};
 exports.AddWork = async (req, res, next) => {
     try {
         const id = req.user.id;
-        const { title, description, operators, tags } = req.body;
+        const data = req.body;
+        const images = req.files;
         
-        const requiredFields = {
-            title: "Title",
-            description: "Description",
-            workOperator: "Work Operator",
-        }
+        const tagIds = JSON.parse(data.tags)
+        const operatorIds = JSON.parse(data.operators)
 
-        const errorMessage = validateRequiredFields(req.body, requiredFields);
+        const existingTags = await prisma.workTag.findMany({
+            where: {
+                id: {
+                    in: tagIds, 
+                },
+            },
+        });
 
-        if (errorMessage) {
-            return res.status(400).json({ message: errorMessage, type: 'error' });
-        }
+        const newTagIds = tagIds.filter(tagId => 
+            !existingTags.some(existingTag => existingTag.id === tagId)
+        );
 
-
-        const images = req.files.map(file => file.path);
+        const newTags = newTagIds.length > 0 ? await prisma.workTag.createMany({
+            data: newTagIds.map(tagId => ({ id: tagId })),
+        }) : [];
 
         await prisma.work.create({
             data: {
-                title,
-                description,
+                title: data.title,
+                description: data.description,
                 postBy: {
                     connect: {
-                        id
-                    }
+                        id,
+                    },
                 },
-                images:{
+                images: {
                     createMany: {
-                        data: images.map(image => ({
-                            name: image.filename,
-                            path: image.filename
+                        data: images.map((file) => ({
+                            path: file.filename,
                         }))
                     }
                 },
-                operators,
-                tags
+                tags: {
+                    connect: existingTags.map((tag) => ({ id: tag.id })),
+                    create: newTags.map((tag) => ({ id: tag.id })), 
+                },
+                operators: {
+                    create: {
+                        userId: id,
+                    },
+                    createMany: {
+                        data: operatorIds.map((operatorId) => ({
+                            userId: operatorId,
+                        }))
+                    }
+                },
+            }
+        });
+
+        res.status(200).json({ message: 'โพสต์งานเรียบร้อยแล้ว', type: 'success' });
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+};
+
+
+
+exports.OptionsForAddWork = async (req, res, next) => {
+    try {
+        const users = await prisma.user.findMany({
+            select:{
+                id: true,
+                fullName: true,
+                partyList: {
+                    select: {
+                        id: true,
+                        fullName: true,
+                        nickName: true,
+                        profile_image_128x128: true,
+                        profile_image_full: true,
+                        roles: {
+                            select:{
+                                id: true,
+                                role: true
+                            }
+                        },
+                        order: true,
+                    }
+                }
+            },
+            orderBy: {
+                partyList: {
+                    order: "asc",
+                }
             }
         })
-        res.status(201).json({message: `เพิ่มโพสต์ ${title} เรียบร้อยแล้ว`, type: 'success'});
+
+        const tags = await prisma.workTag.findMany({
+            select: {
+                id: true,
+                title: true,
+                icon: true,
+                color: true,
+            },
+            orderBy: {
+                id: "asc",
+            },
+        })
+
+        const options = {
+            users,
+            tags,
+        }
+
+        res.status(200).send(options);
     } catch (e) {
-        e.status = 400; 
+        e.status = 400;
         next(e);
     }
 }
-
-
-
-

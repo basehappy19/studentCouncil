@@ -1,12 +1,4 @@
 const dotenv = require("dotenv");
-
-if (process.env.NODE_ENV === "production") {
-    dotenv.config({ path: ".env.production" });
-    app.use(helmet());
-} else {
-    dotenv.config({ path: ".env.development" });
-}
-
 const express = require("express");
 const { readdirSync } = require("fs");
 const morgan = require("morgan");
@@ -18,17 +10,30 @@ const { startAddCheckInDay } = require("./Functions/AddCheckInDay");
 const apiLogger = require("./Middlewares/AppLogger");
 const errorHandler = require("./Middlewares/ErrorHandler");
 const rateLimiter = new RateLimiterMemory({ points: 20, duration: 1 });
+const VerifyToken = require("./Middlewares/Verify");
+const AccessControlMiddleware = require("./Middlewares/AccessControlMiddleware.js");
 const port = process.env.PORT || 8000;
 
 const app = express();
 
+if (process.env.NODE_ENV === "production") {
+    dotenv.config({ path: ".env.production" });
+    app.use(helmet());
+} else {
+    dotenv.config({ path: ".env.development" });
+}
+
 app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParse.json({ limit: "10mb" }));
-
-app.use("", require("./Routes/index.js"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/Uploads", express.static("Uploads"));
+app.use("", require("./Routes/index.js"));
+
+app.use(VerifyToken);  
+app.use(AccessControlMiddleware);
 
 app.use(apiLogger);
 
@@ -45,6 +50,7 @@ readdirSync("./Routes")
     .filter((file) => file !== "index.js") 
     .forEach((r) => app.use("/api", require("./Routes/" + r)));
 
+// ใช้ Error Handler
 app.use(errorHandler);
 
 app.listen(port, () => {

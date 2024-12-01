@@ -13,6 +13,7 @@ export interface PartyList {
     contacts: Contact[],
     roles: Role[],
     bio: Bio,
+    order: number,
 }
 
 export interface Role {

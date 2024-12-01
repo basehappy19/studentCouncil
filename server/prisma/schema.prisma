@@ -63,6 +63,7 @@ enum CheckInType {
   PERSONAL_LEAVE   
   NOT_CHECKED_IN   
   ABSENT
+  REQUEST_FOR_CHECK_IN
   FORGOT_TO_CHECK_IN
   HOLIDAY          
   CLOSED_FOR_CHECK_IN
@@ -75,13 +76,20 @@ enum SkipType {
 }
 
 model Setting {
-  id          Int      @id @default(autoincrement())
-  checkInOpen Boolean  @default(true)
-  byUserId    Int
-  ByUser      User?    @relation("SettingSystem", fields: [byUserId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                Int      @id @default(autoincrement())
+  checkInOpen       Boolean  @default(true)
+  checkInStartTime  Int      @default(7) 
+  checkInEndTime    Int      @default(12)
+  checkInStartDay   Int      @default(1) 
+  checkInEndDay     Int      @default(5)
+  requestStartTime  Int      @default(9)
+  requestEndTime    Int      @default(12)
+  byUserId          Int
+  ByUser            User?    @relation("SettingSystem", fields: [byUserId], references: [id])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
+
 
 model SkipDay {
   id         Int       @id @default(autoincrement())
@@ -116,6 +124,7 @@ model User {
   transactionsEdited Transaction[] @relation("TransactionsEdited")
   settings Setting[] @relation("SettingSystem")
   createSkipDay SkipDay[] @relation("SkipDay")
+  checkInRequests   CheckInRequest[]
 }
 
 model Work {
@@ -125,16 +134,17 @@ model Work {
   postById    Int           
   postBy      User          @relation(fields: [postById], references: [id]) 
   date  DateTime @default(now())
-  images      WorkImages[]  
-  operators   WorkOperators[] 
+  images      WorkImages[]
+  operators   WorkOperators[]
   tags        TagInWorks[]
+  updatedAt   DateTime   @updatedAt
 }
 
 model WorkImages {
   id      Int   @id @default(autoincrement())
   path    String
   workId  Int   
-  work    Work  @relation(fields: [workId], references: [id])
+  work    Work  @relation(fields: [workId], references: [id], onDelete: Cascade)
 }
 
 model WorkOperators {
@@ -142,7 +152,7 @@ model WorkOperators {
   userId  Int   
   workId  Int   
   user    User  @relation(fields: [userId], references: [id])
-  work    Work  @relation(fields: [workId], references: [id])
+  work    Work  @relation(fields: [workId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workId]) 
 }
@@ -159,7 +169,7 @@ model TagInWorks {
   id      Int   @id @default(autoincrement())
   workId  Int   
   tagId   Int   
-  work    Work  @relation(fields: [workId], references: [id])
+  work    Work  @relation(fields: [workId], references: [id], onDelete: Cascade)
   tag     WorkTag @relation(fields: [tagId], references: [id])
 
   @@unique([workId, tagId])
@@ -171,6 +181,7 @@ model CheckInDay {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   checkIns    CheckIn[] 
+  checkInRequests CheckInRequest[]
 }
 
 model CheckIn {
@@ -184,6 +195,23 @@ model CheckIn {
   checkInDay   CheckInDay  @relation(fields: [checkInDayId], references: [id])
 }
 
+enum CheckInRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model CheckInRequest {
+  id           Int                @id @default(autoincrement())
+  userId       Int                
+  user         User               @relation(fields: [userId], references: [id])
+  checkInDayId Int        
+  checkInDay   CheckInDay  @relation(fields: [checkInDayId], references: [id])       
+  timeRequested DateTime         
+  status       CheckInRequestStatus @default(PENDING)
+  createdAt    DateTime           @default(now()) 
+  updatedAt    DateTime           @updatedAt    
+}
 
 model Access {
   id  Int @id @default(autoincrement())
@@ -379,7 +407,7 @@ model SkillOwnPartyList {
 
 model Contact {
   id          Int        @id @default(autoincrement())
-  username    String     
+  username    String?     
   link        String     
   partyListId Int        
   partyList   PartyList  @relation(fields: [partyListId], references: [id])
