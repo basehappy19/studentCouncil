@@ -25,7 +25,7 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
   };
 }
 
-const VoteResult = async (props: { searchParams: { [key: string]: string | string[] | undefined }, params: Promise<{ id: string }> }) => {
+const VoteResult = async (props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }>, params: Promise<{ id: string }> }) => {
   const params = await props.params
   const searchParams = await props.searchParams
   const id = params.id

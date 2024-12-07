@@ -4,11 +4,20 @@ const path = require('path');
 const fs = require('fs');
 const validateRequiredFields = require('../Functions/ValidateRequiredFields');
 
-exports.AllUsers = async (req, res) => {
+exports.AllUsers = async (req, res, next) => {
     try {
         const users = await prisma.user.findMany({
             include: {
-                role: true,
+                partyList: {
+                    include:{
+                        bio: true,
+                        roles:{
+                            include:{
+                                role:true
+                            }
+                        }
+                    }
+                },
                 access: true
             }
         })
@@ -20,7 +29,7 @@ exports.AllUsers = async (req, res) => {
     }
 }
 
-exports.User = async (req, res) => {
+exports.User = async (req, res, next) => {
     try {
         const { id } = req.user.id;        
         
@@ -29,7 +38,15 @@ exports.User = async (req, res) => {
                 id: id
             },
             include: {
-                role: true,
+                partyList: {
+                    include:{
+                        roles:{
+                            include:{
+                                role:true
+                            }
+                        }
+                    }
+                },
                 access: true
             }
         })
@@ -41,7 +58,7 @@ exports.User = async (req, res) => {
     }
 }
 
-exports.updateUser = async(req, res) => {
+exports.updateUser = async(req, res, next) => {
     try {
         const { id } = req.query;
         const { email, username, password, fullName, displayName, profileImg, accessId, partylistId} = req.body;
@@ -142,7 +159,7 @@ exports.updateUserProfile = async (req, res, next) => {
     }
 };
 
-exports.RemoveUser = async (req, res) => {
+exports.RemoveUser = async (req, res, next) => {
     try {
         const { id } = req.query;
 

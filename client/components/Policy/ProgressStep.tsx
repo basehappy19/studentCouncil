@@ -12,10 +12,11 @@ import { useState } from "react";
 const ProgressStep = ({ policy, step, name }: { policy : Policy, step: number; name: string }) => {
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
     const isCompleted = policy.progresses.length >= step;
+    const isCurrent = policy.progresses.length === step;
     
     return (
       <TooltipProvider>
-        <Tooltip open={isTooltipOpen || isCompleted}>
+        <Tooltip open={isTooltipOpen || isCurrent}>
           <TooltipTrigger
             className="h-full"
             onMouseEnter={() => setIsTooltipOpen(true)}

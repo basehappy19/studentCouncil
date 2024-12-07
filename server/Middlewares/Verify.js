@@ -14,6 +14,7 @@ const VerifyAuth = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.SECRET_KEY); 
 
         const { id } = decoded.user;
+        
         const user = await prisma.user.findFirst({
             select: {
                 id: true,

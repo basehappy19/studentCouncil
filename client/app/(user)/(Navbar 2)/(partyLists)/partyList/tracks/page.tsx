@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 };
 
 const CheckInTrack = async (props: {
-    searchParams: { [key: string]: string | string[] | undefined };
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) => {
     const searchParams = await props.searchParams;
     const startDate =

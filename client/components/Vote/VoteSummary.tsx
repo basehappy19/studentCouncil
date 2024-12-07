@@ -34,7 +34,7 @@ const VoteSummary = ({ summary }: { summary: TypeSummary }) => {
       variant="outline"
       className={`${getStatusColor(summary.type)} text-white`}
     >
-      <span className="flex items-center">
+      <span className="flex items-center text-nowrap">
         {getStatusIcon(summary.type)}
         {summary.type === 'Agree' ? 'เห็นด้วย' :
           summary.type === 'Disagree' ? 'ไม่เห็นด้วย' :

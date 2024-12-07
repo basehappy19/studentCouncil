@@ -7,7 +7,7 @@ import { CheckCircle, PlusCircle } from "lucide-react";
 import { AllPolicies } from "@/app/functions/Policy";
 import { Policy } from "@/app/interfaces/Policy/Policy";
 
-export async function generateMetadata(props: { params: { slug: string[] } }) {
+export async function generateMetadata(props: { params: Promise<{ slug: string[] }> }) {
   const params = await props.params
   const slug = params.slug
   const categoryData: Category = await getCategory(slug.length >= 1 ? slug[0] : undefined);
@@ -29,7 +29,7 @@ export async function generateMetadata(props: { params: { slug: string[] } }) {
   };
 }
 
-async function PolicyCollection( props : { params: { slug: string[] } }) {
+async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }) {
   const params = await props.params
   const slug = params.slug
   const categoryData: Category = await getCategory(slug.length >= 1 ? slug[0] : undefined);
@@ -143,7 +143,7 @@ async function PolicyCollection( props : { params: { slug: string[] } }) {
           </div>
         </div>
         <p className="text-gray-600 dark:text-gray-100 my-3 font-medium">หมวดหมู่เพิ่มเติม</p>
-        <div className="grid grid-cols-1 items-center justify-center">
+        <div className="grid grid-cols-1 items-center justify-center space-y-6">
           {policies.map((policy) => (
             <div className="col-span-1" key={policy.id}>
               <PolicyCard policy={policy} />

@@ -6,7 +6,8 @@ export interface Policy {
   title: string;
   thumbnailImage: string;
   category: Category;
-  description: Description
+  isApproved: boolean;
+  description: Description;
   subCategories: SubCategories[];
   progresses: Progresses[];
   currentProgress: Progresses;

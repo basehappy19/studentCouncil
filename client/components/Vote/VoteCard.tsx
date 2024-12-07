@@ -5,8 +5,8 @@ import { Vote } from '@/app/interfaces/Vote/Vote';
 import VoteStatistics from "./VoteStatistics";
 import VoteSummary from "./VoteSummary";
 
-const VoteCard = ({ vote } : { vote : Vote }) => {
-  
+const VoteCard = ({ vote }: { vote: Vote }) => {
+
 
   return (
     <Link href={`/vote/detail/${vote.id}`}>
@@ -14,12 +14,12 @@ const VoteCard = ({ vote } : { vote : Vote }) => {
         <CardHeader className="space-y-2">
           <div className="flex justify-between items-start gap-4">
             <h3 className="font-semibold text-lg text-blue-950 dark:text-blue-100">
-              {vote.description}
+              หัวข้อ : {vote.title}
             </h3>
-            <VoteSummary summary={vote.result.summary}/>
+            <VoteSummary summary={vote.result.summary} />
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-300">
-            {vote.content}
+            เนื้อหา : {vote.content}
           </p>
         </CardHeader>
 

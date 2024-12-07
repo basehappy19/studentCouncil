@@ -1,3 +1,5 @@
+'use server'
+
 export const AllCategories = async () => {
   try {
     const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/categories", { next: { revalidate: 0 } });

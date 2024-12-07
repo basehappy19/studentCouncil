@@ -89,7 +89,7 @@ exports.AddUser = async (req, res, next) => {
 exports.Login = async (req, res, next) => {
     try {
         const { username, password } = req.body;
-
+        
         const requiredFields = {
             username: "Username",
             password: "Password",
@@ -111,16 +111,16 @@ exports.Login = async (req, res, next) => {
 
         if (!user) {
             return res
-                .status(404)
-                .json({ message: `ไม่พบผู้ใช้ ${username}`, type: "error" });
+                .status(200)
+                .json({ message: "ชื่อผู้ใช้ไม่ถูกต้อง หรือ รหัสผ่านไม่ถูกต้อง", type: "error" });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
             return res
-                .status(400)
-                .json({ message: "รหัสผ่านไม่ถูกต้อง", type: "error" });
+                .status(200)
+                .json({ message: "ชื่อผู้ใช้ไม่ถูกต้อง หรือ รหัสผ่านไม่ถูกต้อง", type: "error" });
         }
 
         const payload = {

@@ -22,16 +22,19 @@ import StatisticSearchBar from './StatisticSearchBar';
 const StatisticPartyLists = ({ checkInStatistics }: { checkInStatistics: CheckInStatistic[] }) => {
 
     const getStatusColor = (status: StatusCountType) => {
-        const colors = {
+        const colors: { [key in StatusCountType]: string } = {
             NORMAL: "bg-green-500",
             SICK_LEAVE: "bg-orange-500",
             PERSONAL_LEAVE: "bg-yellow-500",
             NOT_CHECKED_IN: "bg-red-500",
             ABSENT: "bg-red-700",
             FORGOT_TO_CHECK_IN: "bg-purple-500",
+            REQUEST_FOR_CHECK_IN: "bg-blue-500", 
         };
-        return colors[status];
+        
+        return colors[status] || "bg-gray-500";  
     };
+    
 
 
     return (

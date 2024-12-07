@@ -1,9 +1,7 @@
 'use server'
-
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/auth-options";
 import { CheckInType, StatusRequest } from "../interfaces/CheckIn/CheckIn";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 
 export const AllCheckIns = async ({ startDate = undefined, endDate = undefined, search = undefined }: { startDate: string | undefined, endDate: string | undefined, search: string | undefined }) => {
     try {
@@ -39,12 +37,12 @@ export const AllCheckIns = async ({ startDate = undefined, endDate = undefined, 
 
 export const getCheckInStatus = async () => {
     try {
-        const session = await getServerSession(authOptions);
-
+        const session = await auth()
         if (!session) {
             return null;
         }
-        const token = session.token
+        const token = session?.user?.token
+
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/checkInUser`, {
             next: {
@@ -52,8 +50,8 @@ export const getCheckInStatus = async () => {
             },
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token,
-            }
+                'Authorization': token
+            },
         })
         if (!res.ok) {
             return null
@@ -77,18 +75,17 @@ export const getCheckInStatus = async () => {
 
 export const CheckIn = async ({ type, reason = null }: { type: CheckInType, reason: string | null }) => {
     try {
-        const session = await getServerSession(authOptions);
-
+        const session = await auth();
         if (!session) {
             return null;
         }
-        const token = session.token
+        const token = session?.user?.token
 
         const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/checkIn", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token,
+                'Authorization': token
             },
             body: JSON.stringify({
                 type,
@@ -144,25 +141,18 @@ export const CheckInStatistics = async ({ search = undefined }: { search: string
 
 export const getForgetCheckInRequests = async () => {
     try {
-        const session = await getServerSession(authOptions);
-
-        if (!session) {
+        const session = await auth();
+        if(!session){
             return null;
         }
-        const token = session.token
+        const token = session?.user?.token || ''
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/checkInRequests`, {
-            next: {
-                revalidate: 0,
-            },
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token,
-            }
+                'Authorization': token
+            },
         })
-        if (!res.ok) {
-            return null
-        }
 
         if (!res.ok) {
             throw new Error('Failed to Fetch CheckIn Requests');
@@ -170,30 +160,23 @@ export const getForgetCheckInRequests = async () => {
 
         return await res.json();
     } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Error CheckIn Requests: ${e.message}`);
-            throw new Error("Failed to CheckIn Requests");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed to CheckIn Requests");
-        }
+        console.error(`Failed to fetch user data: ${e instanceof Error ? e.message : 'Unknown error'}`);
+        return null;
     }
 };
 
 export const checkInRequestExist = async () => {
     try {
-        const session = await getServerSession(authOptions);
-    
+        const session = await auth();
         if (!session) {
             return null;
         }
-    
-        const token = session.token;
-    
+        const token = session?.user?.token;
+
         const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/checkInRequest", {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token,
+                'Authorization': token
             },
         });
     
@@ -226,18 +209,17 @@ export const checkInRequestExist = async () => {
 
 export const ActionCheckInRequest = async ({ requestId, status }: { requestId: number, status: StatusRequest }) => {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await auth();
 
         if (!session) {
             return null;
         }
-        const token = session.token
-
+        const token = session.user.token
         const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/actionRequestCheckIn", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token,
+                'Authorization': token
             },
             body: JSON.stringify({
                 requestId,

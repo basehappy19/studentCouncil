@@ -12,7 +12,6 @@ const PolicyCard = ({ policy }: { policy: Policy }) => {
   const policySrc = process.env.NEXT_PUBLIC_POLICY_IMG_PATH || "";
   const subcategoryIconSrc = process.env.NEXT_PUBLIC_POLICY_ICON_PATH || "";
   const categoryIconSrc = process.env.NEXT_PUBLIC_POLICY_CATEGORY_ICON_PATH || "";
-  console.log(policy);
   
   return (
     <Card 

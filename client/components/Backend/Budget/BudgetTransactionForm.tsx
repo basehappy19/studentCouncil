@@ -5,26 +5,41 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { useForm, Controller } from 'react-hook-form';
 import { Textarea } from "../../ui/textarea";
 
-const BudgetTransactionForm = ({ transaction , budgetId, userId, onSubmit }) => {
-  const { register, handleSubmit, control, formState: { errors } } = useForm({
+const BudgetTransactionForm = ({
+  transaction,
+  budgetId,
+  userId,
+  onSubmit,
+}: {
+  transaction: any;
+  budgetId: any;
+  userId: any;
+  onSubmit: any;
+}) => {
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       transactionTitle: transaction.transactionTitle || "",
       transactionDescription: transaction.transactionDescription || "",
       transactionAmount: transaction.transactionAmount || "",
-      transactionType: transaction.transactionType !== undefined ? transaction.transactionType.toString() : "", 
+      transactionType: transaction.transactionType !== undefined ? transaction.transactionType.toString() : "",
     },
   });
 
-  const onSubmitForm = (data : any) => {
+  const onSubmitForm = (data: any) => {
     const parsedData = {
       ...data,
       transactionAmount: parseFloat(data.transactionAmount),
       transactionType: parseInt(data.transactionType),
       budgetId,
       userId,
-      transactionId: transaction.id || undefined, 
+      transactionId: transaction.id || undefined,
     };
-    
+
     onSubmit(parsedData);
   };
 
@@ -36,13 +51,12 @@ const BudgetTransactionForm = ({ transaction , budgetId, userId, onSubmit }) => 
           {...register("transactionTitle", { required: "กรุณาระบุชื่อรายการ" })}
           placeholder="ชื่อรายการ"
         />
-        {errors.transactionTitle && <p className="text-red-600">{errors.transactionTitle.message}</p>}
+        {errors.transactionTitle && (
+          <p className="text-red-600">{(errors.transactionTitle as any).message}</p>
+        )}
       </div>
       <div>
-        <Textarea
-          {...register("transactionDescription")}
-          placeholder="รายละเอียด"
-        />
+        <Textarea {...register("transactionDescription")} placeholder="รายละเอียด" />
       </div>
       <div>
         <Input
@@ -50,7 +64,9 @@ const BudgetTransactionForm = ({ transaction , budgetId, userId, onSubmit }) => 
           {...register("transactionAmount", { required: "กรุณาระบุจำนวนเงิน" })}
           placeholder="จำนวนเงิน"
         />
-        {errors.transactionAmount && <p className="text-red-600">{errors.transactionAmount.message}</p>}
+        {errors.transactionAmount && (
+          <p className="text-red-600">{(errors.transactionAmount as any).message}</p>
+        )}
       </div>
       <div>
         <Controller
@@ -69,9 +85,14 @@ const BudgetTransactionForm = ({ transaction , budgetId, userId, onSubmit }) => 
             </Select>
           )}
         />
-        {errors.transactionType && <p className="text-red-600">{errors.transactionType.message}</p>}
+        {errors.transactionType && (
+          <p className="text-red-600">{(errors.transactionType as any).message}</p>
+        )}
       </div>
-      <Button className="transition-all ease-in-out duration-300 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400" type="submit">
+      <Button
+        className="transition-all ease-in-out duration-300 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400"
+        type="submit"
+      >
         {transaction.id ? "อัปเดตรายการ" : "บันทึกรายการ"}
       </Button>
     </form>

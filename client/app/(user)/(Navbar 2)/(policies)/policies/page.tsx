@@ -41,7 +41,7 @@ async function PolicyCategories() {
             </h1>
 
             <p className={`text-xl md:text-2xl dark:text-gray-300 text-gray-600`}>
-              4 ด้าน 4 มุม เพื่อการพัฒนาที่ยั่งยืน
+              4 ด้าน 4 มุม
             </p>
           </div>
         </div>

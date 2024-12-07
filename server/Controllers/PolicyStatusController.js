@@ -60,39 +60,51 @@ exports.AllPolicyProgresses = async (req, res) => {
 
 exports.StatisticProgresses = async (req, res) => {
     try {
-        const policyCount = await prisma.policy.count();
+        // นับจำนวน Policy ที่ได้รับการอนุมัติ
+        const policyCount = await prisma.policy.count({
+            where: {
+                isApproved: true, // เฉพาะ Policy ที่ได้รับการอนุมัติ
+            },
+        });
 
-        // Retrieve all statuses
+        // ดึงข้อมูลทั้งหมดของสถานะ
         const allStatuses = await prisma.status.findMany();
 
-        // Get the grouped counts for statuses that have progress
+        // ดึงการนับจำนวน progress สำหรับ Policy ที่ได้รับการอนุมัติ
         const statusCounts = await prisma.progressPolicy.groupBy({
             by: ['statusId'],
+            where: {
+                policy: {
+                    isApproved: true, // เฉพาะ Policy ที่ได้รับการอนุมัติ
+                },
+            },
             _count: {
                 policyId: true,
             },
         });
 
-        // Create a result that includes all statuses, setting count to 0 if no progress
+        // สร้างผลลัพธ์ที่รวมข้อมูลสถานะทั้งหมด โดยตั้งค่าการนับเป็น 0 หากไม่มี progress
         const result = await Promise.all(
             allStatuses.map(async (status) => {
-                // Find the count for this status from `statusCounts`
+                // หา matchedGroup จาก statusCounts
                 const matchedGroup = statusCounts.find((group) => group.statusId === status.id);
                 
                 return {
                     statusId: status.id,
-                    count: matchedGroup ? matchedGroup._count.policyId : 0, // Set count to 0 if no match
-                    status: status, 
+                    count: matchedGroup ? matchedGroup._count.policyId : 0, // กำหนด count เป็น 0 หากไม่มี progress
+                    status: status,
                 };
             })
         );
 
+        // ส่งผลลัพธ์กลับ
         res.status(200).json({ statistic: result, policies: policyCount });
     } catch (e) {
         console.log(e);
         res.status(500).send('Server Error');
     }
 };
+
 
 exports.AddStatus = async(req, res, next)=>{
     try {

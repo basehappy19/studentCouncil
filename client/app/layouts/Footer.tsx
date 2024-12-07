@@ -3,8 +3,8 @@ import { Menu } from "./Menu";
 import SignOut from "@/components/SignOutButton";
 import { ChevronRight, User } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { getUserData } from "../functions/Auth";
 import { UserData } from "../interfaces/Auth/User";
+import { getUserData } from "../functions/Auth";
 
 const Footer = async () => {
   const user: UserData | null = await getUserData()
@@ -80,7 +80,7 @@ const Footer = async () => {
               </span>
               <Separator orientation="vertical" className="h-4 bg-gray-700" />
               <Link
-                href="/dashboard"
+                href="/dashboard/home"
                 className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
               >
                 เข้าหลังบ้าน

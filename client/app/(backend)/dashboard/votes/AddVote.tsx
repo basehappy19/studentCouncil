@@ -1,15 +1,33 @@
 "use client";
 import React, { useCallback, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Button } from '../../ui/button';
-import { Input } from '../../ui/input';
-import { Label } from '../../ui/label';
-import VoteDistributionForm from './VoteDistributionForm';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { Vote } from '@/app/interfaces/Vote/Vote';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import ResultSwitch from './ResultSwitch';
+import { User } from '@/app/interfaces/User/User';
+import { Button } from '@/components/ui/button';
 
-const VoteForm = ({ onSubmit }) => {
-    const [filePreviews, setFilePreviews] = useState([]);
-    const [fileTitle, setFileTitle] = useState("");
-    const [voteDistribution, setVoteDistribution] = useState({
+// Define types for file preview
+interface FilePreview {
+    title: string;
+    fileName: string;
+    size: string;
+    sizeBytes: number;
+    file: File;
+}
+
+interface VoteDistribution {
+    agree: { id: string }[] | User[];
+    disagree: { id: string }[] | User[];
+    abstain: { id: string }[] | User[];
+    noVote: { id: string }[] | User[];
+}
+
+const AddVote: React.FC<{ users: User[] }> = ({ users }) => {
+    const [filePreviews, setFilePreviews] = useState<FilePreview[]>([]);
+    const [fileTitle, setFileTitle] = useState<string>("");
+    const [voteDistribution, setVoteDistribution] = useState<VoteDistribution>({
         agree: [],
         disagree: [],
         abstain: [],
@@ -19,9 +37,11 @@ const VoteForm = ({ onSubmit }) => {
     const defaultFormValues = {
         title: "",
         description: "",
+        content: "",
         refer: "",
         date: "",
-        documents: [{ title: "", fileName: "", size: "" }],
+        documents: [{ title: "", fileName: "", size: 0 }],
+        documentsFile: [] as File[],
         agree: [{ id: "" }],
         disagree: [{ id: "" }],
         abstain: [{ id: "" }],
@@ -29,7 +49,13 @@ const VoteForm = ({ onSubmit }) => {
         maxAttendees: "",
     };
 
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset, setValue } = useForm({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+        setValue
+    } = useForm<typeof defaultFormValues>({
         defaultValues: defaultFormValues,
     });
 
@@ -39,9 +65,9 @@ const VoteForm = ({ onSubmit }) => {
         setFileTitle("");
     }, [reset]);
 
-    const handleFileChange = (e) => {
-        const files = Array.from(e.target.files);        
-        const previews = files.map(file => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files ? Array.from(e.target.files) : [];
+        const previews: FilePreview[] = files.map(file => {
             let size = file.size;
             let sizeLabel = '';
 
@@ -64,39 +90,60 @@ const VoteForm = ({ onSubmit }) => {
         setFileTitle("");
     };
 
-    const handleRemoveFile = (index) => {
+    const handleRemoveFile = (index: number) => {
         setFilePreviews(prevPreviews => prevPreviews.filter((_, i) => i !== index));
     };
 
-    const handleFileNameChange = (index, newTitle) => {
+    const handleFileNameChange = (index: number, newTitle: string) => {
         const updatedPreviews = [...filePreviews];
         updatedPreviews[index].title = newTitle;
         setFilePreviews(updatedPreviews);
     };
 
-    const handleVoteDistributionChange = useCallback((distribution) => {
-        setVoteDistribution(distribution);
+    const handleVoteDistributionChange = useCallback((distribution: VoteDistribution) => {
+        const mappedDistribution = {
+            agree: distribution.agree.map(user => ({ id: user.id.toString() })),
+            disagree: distribution.disagree.map(user => ({ id: user.id.toString() })),
+            abstain: distribution.abstain.map(user => ({ id: user.id.toString() })),
+            noVote: distribution.noVote.map(user => ({ id: user.id.toString() }))
+        };
+        setVoteDistribution(mappedDistribution);
     }, []);
-    
-    
-    const handleFormSubmit = (values) => {        
+
+    const onSubmit: SubmitHandler<typeof defaultFormValues> = (vote) => {
+        console.log(vote);
+    }
+
+    const handleFormSubmit = (values: typeof defaultFormValues) => {
         const formData = new FormData();
         formData.append('voteTitle', values.title)
+
         values.documents = filePreviews.map(file => ({
             title: file.title,
             fileName: file.fileName,
             size: file.sizeBytes,
         }));
+
         values.documentsFile = filePreviews.map(filePreview => filePreview.file);
-        values.agree = voteDistribution.agree.map(item => Number(item.id));
-        values.disagree = voteDistribution.disagree.map(item => Number(item.id));
-        values.abstain = voteDistribution.abstain.map(item => Number(item.id));
-        values.abstention = voteDistribution.noVote.map(item => Number(item.id));
-        values.maxAttendees = values.agree.length + values.disagree.length + values.abstain.length + values.abstention.length;
+
+        values.agree = voteDistribution.agree.map(item => ({ id: item.id.toString() }));
+        values.disagree = voteDistribution.disagree.map(item => ({ id: item.id.toString() }));
+        values.abstain = voteDistribution.abstain.map(item => ({ id: item.id.toString() }));
+        values.abstention = voteDistribution.noVote.map(item => ({ id: item.id.toString() }));
+
+
+        values.maxAttendees = (
+            values.agree.length +
+            values.disagree.length +
+            values.abstain.length +
+            values.abstention.length
+        ).toString();
+
         onSubmit(values);
     };
 
     return (
+
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             <div>
                 <Label className='text-lg text-gray-700 font-semibold' htmlFor="title">หัวข้อ *</Label>
@@ -141,7 +188,7 @@ const VoteForm = ({ onSubmit }) => {
             </div>
             <div>
                 <Label className='text-lg text-gray-700 font-semibold' htmlFor="vote">คะแนนการลงมติ</Label>
-                <VoteDistributionForm onChange={handleVoteDistributionChange} />
+                <ResultSwitch users={users} onChange={handleVoteDistributionChange} />
             </div>
             <div>
                 <h3 className="text-xl mb-5 font-semibold text-gray-900">เอกสารการประชุม</h3>
@@ -223,11 +270,12 @@ const VoteForm = ({ onSubmit }) => {
                     </div>
                 </div>
             </div>
-            <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "กำลังบันทึก..." : "ยืนยัน"}
+            <Button className="w-full transition-all ease-in-out duration-300 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-400 whitespace-nowrap" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "กำลังบันทึก..." : "เพิ่มบันทึกการลงมติ"}
             </Button>
         </form>
+
     );
 };
 
-export default VoteForm;
+export default AddVote;

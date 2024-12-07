@@ -225,11 +225,11 @@ model Vote {
   title       String
   description String         @db.Text
   content     String
-  refers      VoteRefer[]    
-  documents   VoteDocument[] 
+  refers      VoteRefer[]
+  documents   VoteDocument[]
   result      VoteResult?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 }
 
 model Refer {
@@ -242,15 +242,15 @@ model Document {
   id     Int        @id @default(autoincrement())
   name   String
   path   String
-  votes  VoteDocument[] 
+  votes  VoteDocument[]
 }
 
 model VoteRefer {
   id      Int     @id @default(autoincrement())
   voteId  Int     
   referId Int     
-  vote    Vote    @relation(fields: [voteId], references: [id])
-  refer   Refer   @relation(fields: [referId], references: [id])
+  vote    Vote    @relation(fields: [voteId], references: [id], onDelete: Cascade) 
+  refer   Refer   @relation(fields: [referId], references: [id], onDelete: Cascade)
 
   @@unique([voteId, referId])
 }
@@ -259,35 +259,35 @@ model VoteDocument {
   id         Int     @id @default(autoincrement())
   voteId     Int     
   documentId Int     
-  vote       Vote      @relation(fields: [voteId], references: [id])
-  document   Document  @relation(fields: [documentId], references: [id])
+  vote       Vote      @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade) 
 
   @@unique([voteId, documentId])
 }
 
 model VoteResult {
   id              Int               @id @default(autoincrement())
-  maxAttendees    VoteMaxAttendees? @relation(fields: [maxAttendeesId], references: [id])
+  maxAttendees    VoteMaxAttendees? @relation(fields: [maxAttendeesId], references: [id], onDelete: Cascade) // ใช้ onDelete ที่นี่
   maxAttendeesId  Int?              @unique
-  agrees          VoteAgree[]       
-  disagrees       VoteDisagree[]    
+  agrees          VoteAgree[]
+  disagrees       VoteDisagree[]   
   abstains        VoteAbstain[]     
-  noVotes     NoVote[]  
-  vote            Vote              @relation(fields: [voteId], references: [id]) 
+  noVotes         NoVote[]          
+  vote            Vote              @relation(fields: [voteId], references: [id], onDelete: Cascade)
   voteId          Int               @unique
 }
 
 model VoteMaxAttendees {
   id     Int @id @default(autoincrement())
   number Int
-  result VoteResult? @relation
+  result VoteResult? @relation() 
 }
 
 model VoteAgree {
   id          Int        @id @default(autoincrement())
   partyListId Int        
   resultId    Int        
-  result      VoteResult @relation(fields: [resultId], references: [id])
+  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade) 
   partyList   PartyList  @relation(fields: [partyListId], references: [id]) 
 
   @@unique([partyListId, resultId]) 
@@ -297,8 +297,8 @@ model VoteDisagree {
   id          Int        @id @default(autoincrement())
   partyListId Int        
   resultId    Int        
-  result      VoteResult @relation(fields: [resultId], references: [id])
-  partyList   PartyList  @relation(fields: [partyListId], references: [id]) 
+  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade) 
+  partyList   PartyList  @relation(fields: [partyListId], references: [id])
 
   @@unique([partyListId, resultId]) 
 }
@@ -307,8 +307,8 @@ model VoteAbstain {
   id          Int        @id @default(autoincrement())
   partyListId Int        
   resultId    Int        
-  result      VoteResult @relation(fields: [resultId], references: [id])
-  partyList   PartyList  @relation(fields: [partyListId], references: [id]) 
+  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade) 
+  partyList   PartyList  @relation(fields: [partyListId], references: [id])
 
   @@unique([partyListId, resultId]) 
 }
@@ -318,7 +318,7 @@ model NoVote {
   partyListId Int        
   reason      String?    @default("ไม่อยู่ลงคะแนน")
   resultId    Int        
-  result      VoteResult @relation(fields: [resultId], references: [id])
+  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade) 
   partyList   PartyList  @relation(fields: [partyListId], references: [id]) 
 
   @@unique([partyListId, resultId]) 
@@ -450,6 +450,7 @@ model Policy {
   thumbnailImage  String
   categoryId      Int              
   category        Category           @relation(fields: [categoryId], references: [id])
+  isApproved      Boolean            @default(true)
   subCategories   PolicySubCategory[]
   progresses      ProgressPolicy[] 
   description     PolicyDescription @relation(fields: [descriptionId], references: [id])

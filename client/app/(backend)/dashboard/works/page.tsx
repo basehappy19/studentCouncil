@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 async function WorkPage(props: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const searchParams = await props.searchParams;
   const filter =

@@ -3,6 +3,7 @@ import PartyListCard from "@/components/PartyList/PartyListCard";
 import { PartyList } from "@/app/interfaces/PartyList/partylist";
 import { ArrowRight } from "lucide-react";
 import { getPartyListInHomepages } from '@/app/functions/PartyList';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: `หน้าแรก ${process.env.NEXT_PUBLIC_APP_TITLE}`,
@@ -24,7 +25,7 @@ async function Home() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              <span className="text-blue-500 dark:text-blue-400">ผู้แทน</span>
+              <span className="text-blue-500 dark:text-blue-400"><span className='line-through'>สมาชิก</span><span>ผู้แทน</span></span>
               <span className="text-yellow-500 dark:text-amber-300"> นักเรียนของเรา</span>
             </h1>
             <h2 className="text-3xl md:text-4xl font-bold mb-8">
@@ -32,13 +33,13 @@ async function Home() {
               <span className="text-yellow-500 dark:text-amber-300">ความสามารถเฉพาะทาง</span>
             </h2>
             <p className="text-gray-600 dark:text-gray-300 text-lg mb-8">
-              ร่วมติดตามการทำงานของสภานักเรียน เพื่อการพัฒนาโรงเรียนของเราให้ดียิ่งขึ้น
+              ร่วมติดตามการทำงานของสภานักเรียน
             </p>
             <div className="flex items-center space-x-4">
-              <button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2">
-                <span>ดูรายชื่อผู้แทนทั้งหมด</span>
+              <Link href={`/partyLists`} className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2">
+                <span>ดูรายชื่อผู้สมัครทั้งหมด</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </Link>
             </div>
           </div>
         </div>

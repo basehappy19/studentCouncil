@@ -32,7 +32,7 @@ export default function ActionButtons({requestId}:{requestId: number}) {
     const handleSubmit = async (status : StatusRequest) =>  {
         const res : Response = await ActionCheckInRequest({requestId, status});
         if(res.message && res.type){
-            return toast[res.type](res.message);
+            return toast[res.type](res.message,{position:`bottom-right`});
         }
     }
 

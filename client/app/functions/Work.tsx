@@ -1,6 +1,5 @@
 'use server'
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/auth-options";
+import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 
 export const AllWorks = async () => {
@@ -23,17 +22,23 @@ export const AllWorks = async () => {
 
 export const getUserWorkStatistics = async () => {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await auth();
 
         if (!session) {
             return null;
         }
-        const token = session.token
+        const token = session.user.token
+
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+        
+        if (token) {
+            headers['Authorization'] = token;
+        }
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/userWorkStatistics`,{
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token,
-            },
+            headers: headers,
             next: { revalidate: 0 } 
         });
         if(!res.ok){
@@ -51,6 +56,41 @@ export const getUserWorkStatistics = async () => {
     }
 };
 
+export const getWork = async ({id:id}:{id:number | null;}) => {
+    try {
+
+        const params = new URLSearchParams();
+        if (id) params.append("id", id.toString());
+        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/work?${params.toString()}`;
+
+        const res = await fetch(url, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            next: { revalidate: 0 }
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to fetch Work`);
+        }
+        const data = await res.json();
+
+        if (!data || Object.keys(data).length === 0 || id === null) {
+            return null;
+        }
+
+        return data;
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            console.error(`Error Fetch Work: ${e.message}`);
+            throw new Error("Failed to Work");
+        } else {
+            console.error('An unknown error occurred');
+            throw new Error("Failed to Work");
+        }
+    }
+};
+
 export const getUserWorks = async ({
     search,
     page = 1,
@@ -61,13 +101,21 @@ export const getUserWorks = async ({
     filter: string | undefined;
 }) => {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await auth();
 
         if (!session) {
             return null;
         }
 
-        const token = session.token;
+        const token = session.user.token;
+
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+        
+        if (token) {
+            headers['Authorization'] = token;
+        }
 
         const params = new URLSearchParams();
         if (search) params.append("search", search);
@@ -76,10 +124,7 @@ export const getUserWorks = async ({
         const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/userWorks?${params.toString()}`;
 
         const res = await fetch(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token,
-            },
+            headers: headers,
             next: { revalidate: 0 }
         });
 
@@ -101,21 +146,26 @@ export const getUserWorks = async ({
 
 export const getOptionsForAddWork = async () => {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await auth();
 
         if (!session) {
             return null;
         }
 
-        const token = session.token;
+        const token = session.user.token;
+
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+        };
+        
+        if (token) {
+            headers['Authorization'] = token;
+        }
 
         const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/optionsForAddWork`;
 
         const res = await fetch(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token,
-            },
+            headers: headers,
             next: { revalidate: 0 }
         });
 
@@ -149,13 +199,21 @@ export const AddWork = async (
     }
 ) => {
     try {        
-        const session = await getServerSession(authOptions);
+        const session = await auth();
 
         if (!session) {
             return null;
         }
 
-        const token = session.token;
+        const token = session.user.token;
+
+        const headers: Record<string, string> = {
+            'X-Upload-Type': 'work',
+        };
+        
+        if (token) {
+            headers['Authorization'] = token;
+        }
 
         const formData = new FormData();
         formData.append('title', title);
@@ -179,10 +237,7 @@ export const AddWork = async (
 
         const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/work", {
             method: 'POST',
-            headers: {
-                'Authorization': token,
-                "X-Upload-Type": "work",
-            },
+            headers: headers,
             body: formData,
         });
                     

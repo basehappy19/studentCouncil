@@ -10,7 +10,7 @@ import { Home, LogOut, Menu } from 'lucide-react'
 const SideBar = ({ user, badgeCount = 0 }: { user: UserData | null, badgeCount: number }) => {
     const pathname = usePathname()
     const [isOpen, setIsOpen] = useState<boolean>(false)
-
+    
     return (
         <div>
             <button
@@ -43,7 +43,7 @@ const SideBar = ({ user, badgeCount = 0 }: { user: UserData | null, badgeCount: 
                                 <li key={item.href}>
                                     <Link
                                         href={item.href}
-                                        className={`flex items-center p-2 text-gray-900 rounded-lg dark:text-custom-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${pathname === item.href ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
+                                        className={`flex items-center p-2 text-gray-900 rounded-lg dark:text-custom-white hover:bg-gray-100 dark:hover:bg-gray-700 group ${pathname.startsWith(item.href) ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                                     >
                                         {item.icon}
                                         <span className="ms-3">{item.label}</span>

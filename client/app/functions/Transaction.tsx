@@ -1,16 +1,18 @@
+import { Transaction } from "../interfaces/Transaction/Transaction";
+
 export const TransactionById = async (BudgetId: number) => {
     const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/transaction/"+BudgetId,{ next: { revalidate: 0 } });
     return response.json();
 };
 
-export const AddTransaction = async (transactionData) => {
+export const AddTransaction = async ({transaction}:{transaction: Transaction}) => {
     try {
         const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/transaction",{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(transactionData),
+            body: JSON.stringify(transaction),
         });
 
         if (!response.ok) {
@@ -24,21 +26,21 @@ export const AddTransaction = async (transactionData) => {
     }
 };
 
-export const UpdateTransaction = async (id : number, transactionData) => {
+export const UpdateTransaction = async ({id, transaction}:{id:number, transaction: Transaction}) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/transaction/"+id,{
+        const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/transaction/"+id,{
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(transactionData),
+            body: JSON.stringify(transaction),
         });
 
-        if (!response.ok) {
+        if (!res.ok) {
             throw new Error('Failed to UpdateTransaction');
         }
 
-        return await response.json();
+        return await res.json();
     } catch (err) {
         console.error('Error UpdateTransaction:', err);
         throw err;

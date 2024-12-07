@@ -16,9 +16,3 @@ interface SubCategory {
   title:string,
   icon:string,
 }
-
-interface Progress {
-  id:number,
-  description: string,
-  startedAt: string,
-}

@@ -43,8 +43,8 @@ async function page() {
 
         </div>
       </section>
-      <section className="p-10">
-        <div className="container p-4 mx-auto">
+      <section className="relative py-20 overflow-hidden">
+        <div className="relative container mx-auto px-4">
           <div className="grid grid-cols-1 gap-10">
             {works.map((work) => (
               <div className="col-span-1" key={work.id}>

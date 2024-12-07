@@ -336,9 +336,8 @@ exports.getVote = async (req, res, next) => {
                 summary: voteResult,
             },
         };
-        console.log(voteData);
 
-        res.send(voteData).status(200);
+        res.status(200).send(voteData);
     } catch (e) {
         e.status = 400;
         next(e);

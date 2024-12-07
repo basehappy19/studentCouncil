@@ -13,7 +13,7 @@ import PartyListCard from "@/components/PartyList/PartyListCard";
 import { getPartyList } from '@/app/functions/PartyList';
 import Image from "next/image";
 
-export async function generateMetadata(props: { params: { id: string } }) {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
   const params = await props.params
   const id = params.id
   const partyList: PartyList = await getPartyList(parseInt(id));
@@ -35,7 +35,7 @@ export async function generateMetadata(props: { params: { id: string } }) {
 }
 
 
-async function AboutPartyList(props: { params: { id: string } }) {
+async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
   const params = await props.params
   const id = params.id
   const partyList: PartyList = await getPartyList(parseInt(id));

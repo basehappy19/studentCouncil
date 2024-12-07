@@ -10,9 +10,9 @@ exports.RecommendPolicies = async (req, res, next) => {
                 category: true,
                 description: true,
                 subCategories: {
-                    include:{
+                    include: {
                         subCategory: true,
-                    }
+                    },
                 },
                 progresses: {
                     select: {
@@ -24,7 +24,7 @@ exports.RecommendPolicies = async (req, res, next) => {
         });
 
         const policies = _.sampleSize(allPolicies, 10);
-        
+
         res.send(policies).status(200);
     } catch (e) {
         e.status = 400;
@@ -34,16 +34,17 @@ exports.RecommendPolicies = async (req, res, next) => {
 
 exports.AllPolicies = async (req, res, next) => {
     try {
-        const { category,  subCategory } = req.query;
-        
+        const { category, subCategory } = req.query;
+        console.log(req.query);
+
         const policies = await prisma.policy.findMany({
             include: {
                 category: true,
                 description: true,
                 subCategories: {
-                    include:{
+                    include: {
                         subCategory: true,
-                    }
+                    },
                 },
                 progresses: {
                     include: {
@@ -52,27 +53,20 @@ exports.AllPolicies = async (req, res, next) => {
                 },
             },
             where: {
-                AND: [
-                    {
-                        category: {
-                            id: isNaN(parseInt(category))
-                            ? undefined
-                            : parseInt(category),
-                        },
-                    },
-                    {
+                categoryId: isNaN(parseInt(category)) ? undefined : parseInt(category),
+                ...(subCategory 
+                    ? {
                         subCategories: {
                             some: {
                                 subCategory: {
-                                    id: isNaN(parseInt(subCategory))
-                                    ? undefined
-                                    : parseInt(subCategory),
+                                    id: isNaN(parseInt(subCategory)) ? undefined : parseInt(subCategory),
                                 },
                             },
-                        },
-                    },
-                ],
-            },
+                        }
+                    } 
+                    : {}
+                ),
+            }            
         });
         res.status(200).send(policies);
     } catch (e) {
@@ -90,9 +84,9 @@ exports.Policy = async (req, res, next) => {
                 category: true,
                 description: true,
                 subCategories: {
-                    include:{
+                    include: {
                         subCategory: true,
-                    }
+                    },
                 },
                 progresses: {
                     select: {

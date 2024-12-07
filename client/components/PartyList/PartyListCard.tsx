@@ -21,7 +21,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
             src={`${process.env.NEXT_PUBLIC_PARTYLIST_IMG_FULL_PATH}${partyList.profile_image_full}`}
             alt={partyList.nickName}
           />
-          {pathname === `/partyList/${partyList.id}` && (
+          {(pathname === `/partyList/${partyList.id}` || pathname === `/partyLists`) && (
             <Badge className="absolute top-4 right-4 p-2 font-medium bg-blue-600 dark:bg-blue-900 hover:bg-blue-600 hover:dark:bg-blue-900">
               {partyList.rank}
             </Badge>

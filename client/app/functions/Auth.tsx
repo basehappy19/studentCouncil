@@ -1,39 +1,33 @@
 'use server'
+import { auth } from "@/auth";
+import { UserData } from "../interfaces/Auth/User";
 
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/auth-options";
-
-export const getUserData = async () => {
+export const getUserData = async (): Promise<UserData | null> => {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await auth();
         
-        if(!session){
-            return null;
+        if (!session) {
+            return null;  
         }
-        const token = session.token
+
+        const token = session?.user?.token || '';
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/user/data`, {
-            next: {
-                revalidate: 0,
-            },
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token,
-            }
-        })
+                'Authorization': token
+            },
+        });
+
         if (!res.ok) {
-            return null
+            throw new Error(`Failed To Fetch User data: ${res.status} ${res.statusText}`);
         }
+
         const data = await res.json();
 
-        return {data, token}
+        return { data, token };
     } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Failed to fetch user data: ${e.message}`);
-            throw new Error(`Failed to fetch user data`, { cause: e });
-        } else {
-            console.error("Unknown error occurred", e);
-            throw new Error(`Failed to fetch user data`);
-        }
+        console.error(`Failed to fetch user data: ${e instanceof Error ? e.message : 'Unknown error'}`);
+        return null;  
     }
-}
+};

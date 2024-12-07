@@ -1,12 +1,10 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Budget } from "@/app/interfaces/Budget/Budget";
 import { getBudgetInDepartment } from "@/app/functions/Budget";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent } from '@/components/ui/card';
+import TransactionTable from './TransactionTable';
 
 export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -31,7 +29,7 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
     <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800">
       <div className="container mx-auto px-4 py-8">
         {/* Header Section */}
-        <Card className="mb-8 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10">
+        <Card className="mb-8">
           <CardContent className="pt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
               <div className="flex justify-center">
@@ -76,73 +74,7 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
           </CardContent>
         </Card>
 
-        {/* Transactions Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>บัญชีงบประมาณฝ่าย{budget.title}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ScrollArea className="h-[600px] rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-12">#</TableHead>
-                    <TableHead>หัวข้อ</TableHead>
-                    <TableHead>คำอธิบาย</TableHead>
-                    <TableHead className="text-right">จำนวน</TableHead>
-                    <TableHead>ประเภท</TableHead>
-                    <TableHead>สร้างเมื่อ</TableHead>
-                    <TableHead>อัพเดทเมื่อ</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {budget.transactions.length > 0 ? (
-                    budget.transactions.map((transaction, index) => (
-                      <TableRow key={transaction.id}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell className="font-medium">
-                          {transaction.title}
-                        </TableCell>
-                        <TableCell>{transaction.description}</TableCell>
-                        <TableCell className="text-right">
-                          {transaction.amount.toLocaleString()}
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={transaction.type === "INCOME" ? "default" : "destructive"}
-                            className="font-semibold"
-                          >
-                            {transaction.type === "INCOME" ? "รายรับ" : "รายจ่าย"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {new Date(transaction.createdAt).toLocaleDateString("th-TH", {
-                            year: "numeric",
-                            month: "long",
-                            day: "2-digit",
-                          })}
-                        </TableCell>
-                        <TableCell>
-                          {new Date(transaction.updatedAt).toLocaleDateString("th-TH", {
-                            year: "numeric",
-                            month: "long",
-                            day: "2-digit",
-                          })}
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center">
-                        ไม่มีข้อมูล
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </ScrollArea>
-          </CardContent>
-        </Card>
+        <TransactionTable budget={budget} />
       </div>
     </div >
   );

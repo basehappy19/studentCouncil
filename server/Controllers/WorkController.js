@@ -156,6 +156,50 @@ exports.UserWorkStatistics = async (req, res, next) => {
     }
 };
 
+exports.getWorkForEdit = async (req, res, next) => {
+    try {
+        const id = req.query;
+
+        const work = await prisma.work.findFirst({
+            where: {
+                id: isNaN(parseInt(id)) ? undefined : parseInt(id),
+            },
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                postBy: true,
+                images: true,
+                operators: {
+                    select: {
+                        id: true,
+                    },
+                },
+                tags: {
+                    select: {
+                        id: true,
+                    },
+                },
+                date: true,
+                updatedAt: true,
+            },
+        });
+
+        if (!work) {
+            return res.status(200).send(null);
+        }
+
+        work.operators = work.operators.map(operator => operator.id);
+        work.tags = work.tags.map(tag => tag.id);
+
+        res.status(200).send(work);
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+};
+
+
 exports.UserWorks = async (req, res, next) => {
     try {
         const { search, page = 1, pageSize = 5, filter = "" } = req.query;
@@ -283,7 +327,7 @@ exports.UserWorks = async (req, res, next) => {
             ]);
 
         const totalPages = Math.ceil(totalRecords / size);
-        
+
         res.status(200).json({
             data: works,
             pagination: {
@@ -293,9 +337,9 @@ exports.UserWorks = async (req, res, next) => {
                 pageSize: size,
             },
             additionalData: {
-                totalOwned,       
-                totalParticipated, 
-                totalWorks: totalOwned + totalParticipated,      
+                totalOwned,
+                totalParticipated,
+                totalWorks: totalOwned + totalParticipated,
             },
         });
     } catch (e) {
@@ -308,25 +352,29 @@ exports.AddWork = async (req, res, next) => {
         const id = req.user.id;
         const data = req.body;
         const images = req.files;
-        
-        const tagIds = JSON.parse(data.tags)
-        const operatorIds = JSON.parse(data.operators)
+
+        const tagIds = JSON.parse(data.tags);
+        const operatorIds = JSON.parse(data.operators);
 
         const existingTags = await prisma.workTag.findMany({
             where: {
                 id: {
-                    in: tagIds, 
+                    in: tagIds,
                 },
             },
         });
 
-        const newTagIds = tagIds.filter(tagId => 
-            !existingTags.some(existingTag => existingTag.id === tagId)
+        const newTagIds = tagIds.filter(
+            (tagId) =>
+                !existingTags.some((existingTag) => existingTag.id === tagId)
         );
 
-        const newTags = newTagIds.length > 0 ? await prisma.workTag.createMany({
-            data: newTagIds.map(tagId => ({ id: tagId })),
-        }) : [];
+        const newTags =
+            newTagIds.length > 0
+                ? await prisma.workTag.createMany({
+                      data: newTagIds.map((tagId) => ({ id: tagId })),
+                  })
+                : [];
 
         await prisma.work.create({
             data: {
@@ -341,12 +389,12 @@ exports.AddWork = async (req, res, next) => {
                     createMany: {
                         data: images.map((file) => ({
                             path: file.filename,
-                        }))
-                    }
+                        })),
+                    },
                 },
                 tags: {
                     connect: existingTags.map((tag) => ({ id: tag.id })),
-                    create: newTags.map((tag) => ({ id: tag.id })), 
+                    create: newTags.map((tag) => ({ id: tag.id })),
                 },
                 operators: {
                     create: {
@@ -355,25 +403,25 @@ exports.AddWork = async (req, res, next) => {
                     createMany: {
                         data: operatorIds.map((operatorId) => ({
                             userId: operatorId,
-                        }))
-                    }
+                        })),
+                    },
                 },
-            }
+            },
         });
 
-        res.status(200).json({ message: 'โพสต์งานเรียบร้อยแล้ว', type: 'success' });
+        res.status(200).json({
+            message: "โพสต์งานเรียบร้อยแล้ว",
+            type: "success",
+        });
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
-
-
-
 exports.OptionsForAddWork = async (req, res, next) => {
     try {
         const users = await prisma.user.findMany({
-            select:{
+            select: {
                 id: true,
                 fullName: true,
                 partyList: {
@@ -384,21 +432,21 @@ exports.OptionsForAddWork = async (req, res, next) => {
                         profile_image_128x128: true,
                         profile_image_full: true,
                         roles: {
-                            select:{
+                            select: {
                                 id: true,
-                                role: true
-                            }
+                                role: true,
+                            },
                         },
                         order: true,
-                    }
-                }
+                    },
+                },
             },
             orderBy: {
                 partyList: {
                     order: "asc",
-                }
-            }
-        })
+                },
+            },
+        });
 
         const tags = await prisma.workTag.findMany({
             select: {
@@ -410,16 +458,16 @@ exports.OptionsForAddWork = async (req, res, next) => {
             orderBy: {
                 id: "asc",
             },
-        })
+        });
 
         const options = {
             users,
             tags,
-        }
+        };
 
         res.status(200).send(options);
     } catch (e) {
         e.status = 400;
         next(e);
     }
-}
+};

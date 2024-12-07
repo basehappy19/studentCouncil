@@ -41,7 +41,7 @@ export const metadata : Metadata = {
 };
 
 
-async function PolicyTrack(props: { params: { slug: string[] } }) {
+async function PolicyTrack(props: { params: Promise<{ slug: string[] }> }) {
   const params = await props.params
   const slug = params.slug
   const categories: Category[] = await AllCategories();

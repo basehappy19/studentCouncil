@@ -94,28 +94,29 @@ const WorkPostModal = ({ options }: { options: Option }) => {
       });
       if (res.message && res.type) {
         toast[res.type](res.message);
-        // รีเซ็ตฟอร์มเมื่อโพสต์สำเร็จ
-        form.reset(); 
-        setImages([]); // ล้างไฟล์ภาพที่อัปโหลด
-        setTags([]); // ล้างแท็กที่เลือก
-        setOperators([]); // ล้างผู้ร่วมงานที่เลือก
+        form.reset();
+        setImages([]);
+        setTags([]);
+        setOperators([]);
       }
     } catch (e) {
       console.error(e);
-      toast.error(`มีปัญหาบางอย่างเกิดขึ้น ไม่สามารถโพสต์งานได้`);
+      toast.error(`มีปัญหาบางอย่างเกิดขึ้น ไม่สามารถโพสต์งานได้`,{position:`bottom-right`});
     }
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>
+        <Button className='transition-all ease-in-out duration-300 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 whitespace-nowrap bg-green-500 hover:bg-green-600 focus:ring-green-400'>
           <Plus className="mr-2" /> โพสต์งานใหม่
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>โพสต์งานใหม่</DialogTitle>
+          <DialogTitle>
+            โพสต์งานใหม่
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" encType="multipart/form-data">
@@ -251,7 +252,7 @@ const WorkPostModal = ({ options }: { options: Option }) => {
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button className='transition-all ease-in-out duration-300 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 whitespace-nowrap bg-green-500 hover:bg-green-600 focus:ring-green-400 w-full' type="submit">
               โพสต์งาน
             </Button>
           </form>

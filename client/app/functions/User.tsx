@@ -1,9 +1,11 @@
-export const AllUser = async () => {
-    const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/user",{ next: { revalidate: 0 } });
+import { User } from "../interfaces/User/User";
+
+export const AllUsers = async () => {
+    const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/users",{ next: { revalidate: 0 } });
     return response.json();
 };
 
-export const User = async (id) => {
+export const getUser = async (id:number) => {
     try {
         const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/user",{ 
             method: 'POST',
@@ -24,7 +26,7 @@ export const User = async (id) => {
     }
 };
   
-export const AddUser = async (user) => {
+export const AddUser = async ({user}:{user:User}) => {
     try {
         const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/register", {
             method: 'POST',
@@ -47,9 +49,9 @@ export const AddUser = async (user) => {
     }
 }
 
-export const UpdateUser = async (userId, user) => {
+export const UpdateUser = async ({id, user}:{id:string, user: User}) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/user/"+userId, {
+        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/user/"+id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,11 +72,11 @@ export const UpdateUser = async (userId, user) => {
     }
 }
 
-export const UpdateProfile = async (userId, formData) => {
+export const UpdateProfile = async ({id, data}:{id:string, data: User}) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + '/upload/profile/user/'+userId,{
+        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + '/upload/profile/user/'+id,{
             method: 'PUT',
-            body: formData,
+            body: JSON.stringify(data),
         })
         if (!response.ok) {
             throw new Error('Failed to update profile');
@@ -86,20 +88,18 @@ export const UpdateProfile = async (userId, formData) => {
     }
 }
 
-export const RemoveUser = async (userId) => {
+export const RemoveUser = async (id:string) => {
     try {
-        const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + '/user/' + userId,{
+        const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + '/user/' + id,{
             method: 'DELETE',
         })
-        if (!response.ok) {
-            const errorBody = await response.text();
-            console.error('Error response:', errorBody);
-            throw new Error(`Failed to Remove user: ${response.status} ${response.statusText}`);
+        if (!res.ok) {
+            throw new Error('Failed to Remove User');
         }
-        return await response.json();
-    } catch (err) {
-        console.error('Error Remove user:', err);
-        throw error;
+        return await res.json();
+    } catch (e) {
+        console.error('Error Remove User:', e);
+        throw e;
     }
 }
   

@@ -22,12 +22,13 @@ const CheckInButton = () => {
   const handleCheckIn = async (type: CheckInType, reason: string | null) => {
     if (type === "PERSONAL_LEAVE" && (reason === null || reason === '')) {
       setReasonCheckNULL(true)
-      return toast.error('กรุณาระบุเหตุผลลากิจ');
+      return toast.error('กรุณาระบุเหตุผลลากิจ', {position: `bottom-right`});
     }
-    const res : Response = await CheckIn({type: type, reason: reason});
+    const res: Response = await CheckIn({ type: type, reason: reason });
 
-    if(res.type && res.message){
-      return toast[res.type](res.message);
+    if (res.type && res.message) {
+      return toast[res.type](res.message, { position: `bottom-right` });
+
     }
   };
 

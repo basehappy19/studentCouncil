@@ -83,7 +83,7 @@ const CheckInTrackingTable = ({ checkIns }: { checkIns: CheckIns }) => {
                       {dayCheckIn ? (
                         <Badge
                           variant="outline"
-                          className={`
+                          className={`text-nowrap
                             ${dayCheckIn.type === 'NORMAL' ? 'bg-green-100 text-green-800' :
                               dayCheckIn.type === 'SICK_LEAVE' ? 'bg-yellow-100 text-yellow-800' :
                                 dayCheckIn.type === 'PERSONAL_LEAVE' ? 'bg-blue-100 text-blue-800' :

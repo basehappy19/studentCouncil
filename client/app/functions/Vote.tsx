@@ -1,3 +1,5 @@
+'use server'
+
 export const AllVotes = async () => {
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/votes`,

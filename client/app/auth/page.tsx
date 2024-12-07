@@ -33,7 +33,7 @@ const LoginPage = () => {
             toast.error("ชื่อผู้ใช้ หรือ รหัสผ่านไม่ถูกต้อง", { position: "bottom-right" });
             return;
         } else {
-            router.push("/dashboard");
+            router.push("/dashboard/home");
         }
     };
 

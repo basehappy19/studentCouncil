@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
         port: '8000',
         pathname: '/Uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'apistc.basehappy19.com',
+        port: '3001',
+        pathname: '/Uploads/**',
+      },
     ],
   },
   experimental: {

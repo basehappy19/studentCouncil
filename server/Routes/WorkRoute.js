@@ -8,9 +8,11 @@ const {
     UserWorkStatistics,
     UserWorks,
     OptionsForAddWork,
+    getWorkForEdit,
 } = require("../Controllers/WorkController");
 
 router.get("/works", AllWorks);
+router.get("/work", getWorkForEdit);
 router.get("/userWorkStatistics", UserWorkStatistics);
 router.get("/userWorks", UserWorks);
 router.get("/optionsForAddWork", OptionsForAddWork);

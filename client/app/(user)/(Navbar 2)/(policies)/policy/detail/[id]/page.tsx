@@ -3,7 +3,7 @@ import { Policy, Status } from "@/app/interfaces/Policy/Policy";
 import PolicyDetail from "./PolicyDetail";
 
 export async function generateMetadata(props: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const params = await props.params
   const id = params.id
@@ -21,7 +21,7 @@ export async function generateMetadata(props: {
   };
 }
 
-async function PolicyDetailPage(props: { params: { id: string } }) {
+async function PolicyDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params
   const id = params.id
   const policy: Policy = await getPolicy(id);

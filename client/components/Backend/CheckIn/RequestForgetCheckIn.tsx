@@ -15,7 +15,8 @@ const RequestForgetCheckIn = () => {
     const res: Response = await CheckIn({ type: type, reason: null });
 
     if (res.type && res.message) {
-      return toast[res.type](res.message);
+                  return toast[res.type](res.message,{position:`bottom-right`});
+
     }
   };
 
