@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon server.js",
+    "db:push": "prisma db push",
     "start": "cross-env NODE_ENV=production node server.js"
   },
   "keywords": [],
