@@ -12,7 +12,6 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'apistc.basehappy19.com',
-        port: '3001',
         pathname: '/Uploads/**',
       },
     ],

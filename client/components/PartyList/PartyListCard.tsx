@@ -22,7 +22,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
             alt={partyList.nickName}
           />
           {(pathname === `/partyList/${partyList.id}` || pathname === `/partyLists`) && (
-            <Badge className="absolute top-4 right-4 p-2 font-medium bg-blue-600 dark:bg-blue-900 hover:bg-blue-600 hover:dark:bg-blue-900">
+            <Badge className="absolute top-4 right-4 p-2 font-medium bg-blue-600 dark:bg-blue-900 hover:bg-blue-600 hover:dark:bg-blue-900 dark:text-gray-200">
               {partyList.rank}
             </Badge>
           )}
@@ -65,14 +65,15 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
                 </Badge>
               ))}
             </div>
-
-            <Link
-              href={`/partyList/${partyList.id}`}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-            >
-              ทำความรู้จักผู้สมัคร
-              <ArrowRight className="h-4 w-4" />
-            </Link>
+            {pathname !== `/partyList/${partyList.id}` && (
+              <Link
+                href={`/partyList/${partyList.id}`}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-center text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+              >
+                ทำความรู้จักผู้สมัคร
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            )}
           </div>
         </CardContent>
       </div>

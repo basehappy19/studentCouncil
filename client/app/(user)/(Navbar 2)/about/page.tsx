@@ -26,27 +26,30 @@ const SectionCard = ({
   description,
   linkText,
   linkHref,
-  bgColor
 }: {
   icon: React.ElementType,
   title: string,
   description: string[],
   linkText: string,
   linkHref: string,
-  bgColor: string
 }) => (
-  <div className={`${bgColor} rounded-2xl shadow-lg p-6 transform transition-all hover:scale-105`}>
+  <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6 transform transition-all hover:scale-105 hover:shadow-xl border border-gray-100 dark:border-slate-700">
     <div className="flex flex-col items-center text-center space-y-4">
-      <Icon className="w-16 h-16 text-custom-primary-dark" />
-      <h2 className="text-2xl font-bold text-custom-black">{title}</h2>
-      <div className="text-custom-black">
+      <Icon className="w-16 h-16 text-custom-primary-dark dark:text-custom-primary-light" />
+      <h2 className="text-2xl font-bold text-custom-black dark:text-blue-600 text-blue-400">{title}</h2>
+      <div className="text-gray-700 dark:text-gray-300">
         {description.map((line, index) => (
           <p key={index} className="mb-2">{line}</p>
         ))}
       </div>
       <Link
         href={linkHref}
-        className="mt-4 px-6 py-2 bg-custom-primary-dark text-white rounded-full hover:bg-custom-primary transition-colors"
+        className="mt-4 px-6 py-2 
+          bg-custom-primary-dark dark:bg-custom-primary-light 
+          dark:text-white text-slate-900 
+          rounded-full 
+          hover:bg-custom-primary dark:hover:bg-opacity-80 
+          transition-colors"
       >
         {linkText} →
       </Link>
@@ -140,17 +143,28 @@ function About() {
       bgColor: "bg-white"
     }
   ];
-
   return (
-    <div className="min-h-screen
-        dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 
-        bg-gradient-to-br from-blue-50 via-yellow-50 to-pink-50">
+    <div className="min-h-screen 
+      bg-gradient-to-br 
+      from-blue-50 via-yellow-50 to-pink-50
+      dark:bg-gradient-to-br 
+      dark:from-slate-900 dark:via-slate-800 dark:to-slate-900
+      text-gray-800 dark:text-gray-100">
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-custom-primary-dark mb-4">
+          <h1 className="
+            text-4xl font-bold 
+            text-custom-primary-dark 
+            dark:text-custom-primary-light 
+            mb-4"
+          >
             สภานักเรียนโปร่งใส
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="
+            text-xl 
+            text-gray-600 dark:text-gray-300 
+            max-w-2xl mx-auto"
+          >
             เราเชื่อว่าความโปร่งใสและการมีส่วนร่วมคือหัวใจของการทำงานเพื่อนักเรียน
           </p>
         </div>

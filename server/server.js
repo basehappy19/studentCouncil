@@ -30,6 +30,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/Uploads", express.static("Uploads"));
+app.use("/px", require("./Routes/index.js"));
 app.use("", require("./Routes/index.js"));
 
 app.use(VerifyToken);  
