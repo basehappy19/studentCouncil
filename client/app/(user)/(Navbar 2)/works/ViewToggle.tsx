@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { LayoutGrid, AlignJustify, Columns } from 'lucide-react'
 
-const GridViewToggle = ({ onViewChange }) => {
+const GridViewToggle = ({ onViewChange }: { onViewChange: (columns: number) => void;}) => {
     const [activeView, setActiveView] = useState(2);
 
     const viewOptions = [
