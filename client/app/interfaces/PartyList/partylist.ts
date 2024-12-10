@@ -14,6 +14,7 @@ export interface PartyList {
     roles: Role[],
     bio: Bio,
     order: number,
+    orderInHomepage: number,
 }
 
 export interface Role {

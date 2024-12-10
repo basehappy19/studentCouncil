@@ -2,9 +2,13 @@
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 
-export const AllWorks = async () => {
+export const AllWorks = async ({search}:{search: string | undefined}) => {
     try {
-        const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/works",{ next: { revalidate: 0 } });
+        const params = new URLSearchParams();
+        if (search) params.append("search", search.toString());
+
+        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/works?${params.toString()}`;
+        const res = await fetch(url ,{ next: { revalidate: 0 } });
         if(!res.ok){
             throw new Error(`Failed to fetch works`);
         }
@@ -27,18 +31,13 @@ export const getUserWorkStatistics = async () => {
         if (!session) {
             return null;
         }
-        const token = session.user.token
-
-        const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-        };
-        
-        if (token) {
-            headers['Authorization'] = token;
-        }
+        const token = session.user.token;
 
         const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/userWorkStatistics`,{
-            headers: headers,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            },
             next: { revalidate: 0 } 
         });
         if(!res.ok){

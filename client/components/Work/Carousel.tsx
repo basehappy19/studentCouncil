@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -9,6 +9,29 @@ const Carousel = ({ images }: { images: WorkImages[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const workImgSrc = process.env.NEXT_PUBLIC_WORK_IMG_PATH || "";
+  const handleNext = useCallback(() => {
+    if (isAnimating || images.length <= 1) return;
+    setIsAnimating(true);
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+    setTimeout(() => setIsAnimating(false), 500);
+  }, [isAnimating, images.length]);
+
+
+
+
+  const handlePrev = () => {
+    if (isAnimating || images.length <= 1) return;
+    setIsAnimating(true);
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+    setTimeout(() => setIsAnimating(false), 500);
+  };
+
+  const handleDotClick = useCallback((index: number) => {
+    if (isAnimating || index === currentIndex) return;
+    setIsAnimating(true);
+    setCurrentIndex(index);
+    setTimeout(() => setIsAnimating(false), 500);
+  }, [isAnimating, currentIndex]);
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -18,37 +41,15 @@ const Carousel = ({ images }: { images: WorkImages[] }) => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [currentIndex, images.length]);
-
-  const handleNext = () => {
-    if (isAnimating || images.length <= 1) return;
-    setIsAnimating(true);
-    setCurrentIndex((prev) => (prev + 1) % images.length);
-    setTimeout(() => setIsAnimating(false), 500);
-  };
-
-  const handlePrev = () => {
-    if (isAnimating || images.length <= 1) return;
-    setIsAnimating(true);
-    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
-    setTimeout(() => setIsAnimating(false), 500);
-  };
-
-  const handleDotClick = (index: number) => {
-    if (isAnimating || index === currentIndex) return;
-    setIsAnimating(true);
-    setCurrentIndex(index);
-    setTimeout(() => setIsAnimating(false), 500);
-  };
+  }, [handleNext, images.length]);
 
   return (
     <div className="relative w-full h-[400px] overflow-hidden rounded-xl group">
       {/* Main Image */}
       <div className="relative w-full h-full">
         <div
-          className={`absolute w-full h-full transition-transform duration-500 ease-out ${
-            isAnimating ? 'transform scale-95 opacity-90' : 'scale-100'
-          }`}
+          className={`absolute w-full h-full transition-transform duration-500 ease-out ${isAnimating ? 'transform scale-95 opacity-90' : 'scale-100'
+            }`}
         >
           <Image
             src={workImgSrc + images[currentIndex].path}
@@ -89,11 +90,10 @@ const Carousel = ({ images }: { images: WorkImages[] }) => {
             <button
               key={index}
               onClick={() => handleDotClick(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentIndex
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentIndex
                   ? 'bg-white w-4'
                   : 'bg-white/60 hover:bg-white/80'
-              }`}
+                }`}
             />
           ))}
         </div>

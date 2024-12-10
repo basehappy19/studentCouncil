@@ -16,9 +16,13 @@ export const getPartyListInHomepages = async () => {
   }
 };
 
-export const AllPartyLists = async () => {
+export const AllPartyLists = async ({search}:{search: string | undefined}) => {
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/partyLists", { next: { revalidate: 0 } });
+    const params = new URLSearchParams();
+    if (search) params.append("search", search.toString());
+
+    const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/partyLists?${params.toString()}`;
+    const res = await fetch(url, { next: { revalidate: 0 } });
     if (!res.ok) {
       throw new Error(res.statusText);
     }

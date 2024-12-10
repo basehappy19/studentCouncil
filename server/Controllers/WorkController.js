@@ -1,10 +1,59 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const validateRequiredFields = require("../Functions/ValidateRequiredFields");
 
 exports.AllWorks = async (req, res, next) => {
     try {
+        const { search } = req.query;
+        const searchFilter = search
+            ? {
+                  OR: [
+                      {
+                          title: { contains: search },
+                          description: { contains: search },
+                      },
+                      {
+                          postBy: {
+                              fullName: { contains: search },
+                          },
+                      },
+                      {
+                          postBy: {
+                              partyList: {
+                                  nickName: { contains: search },
+                              },
+                          },
+                      },
+                      {
+                          operators: {
+                              some: {
+                                  user: {
+                                      partyList: {
+                                          fullName: {
+                                              contains: search,
+                                          },
+                                      },
+                                  },
+                              },
+                          },
+                      },
+                      {
+                          operators: {
+                              some: {
+                                  user: {
+                                      partyList: {
+                                          nickName: {
+                                              contains: search,
+                                          },
+                                      },
+                                  },
+                              },
+                          },
+                      },
+                  ].filter(Boolean),
+              }
+            : {};
         const works = await prisma.work.findMany({
+            where: searchFilter,
             include: {
                 postBy: {
                     select: {
@@ -189,8 +238,8 @@ exports.getWorkForEdit = async (req, res, next) => {
             return res.status(200).send(null);
         }
 
-        work.operators = work.operators.map(operator => operator.id);
-        work.tags = work.tags.map(tag => tag.id);
+        work.operators = work.operators.map((operator) => operator.id);
+        work.tags = work.tags.map((tag) => tag.id);
 
         res.status(200).send(work);
     } catch (e) {
@@ -198,7 +247,6 @@ exports.getWorkForEdit = async (req, res, next) => {
         next(e);
     }
 };
-
 
 exports.UserWorks = async (req, res, next) => {
     try {

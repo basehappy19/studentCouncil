@@ -1,10 +1,10 @@
 import { AllWorks } from "@/app/functions/Work";
-import WorkCard from "@/components/Work/WorkCard";
 import { Work } from "@/app/interfaces/Work/Work";
 import TagInHeader from "@/app/layouts/TagInHeader";
 import { Metadata } from "next";
+import SectionData from "./SectionData";
 
-export const metadata : Metadata = {
+export const metadata: Metadata = {
   title: `ติดตามการทำงาน ${process.env.NEXT_PUBLIC_APP_TITLE}`,
   description:
     "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามการทำงานผลงานเราได้ที่นี้",
@@ -15,8 +15,10 @@ export const metadata : Metadata = {
   },
 };
 
-async function page() {
-  const works: Work[] = await AllWorks();
+async function TrackWorks(props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const searchParams = await props.searchParams
+  const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;    
+  const works: Work[] = await AllWorks({search});
 
   return (
     <div className="min-h-screen
@@ -43,21 +45,9 @@ async function page() {
 
         </div>
       </section>
-      <section className="relative py-20 overflow-hidden">
-        <div className="relative container mx-auto px-4">
-          <div className="grid grid-cols-1 gap-10">
-            {works.map((work) => (
-              <div className="col-span-1" key={work.id}>
-                <WorkCard
-                  work={work}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <SectionData works={works} />
     </div>
   );
 }
 
-export default page;
+export default TrackWorks;

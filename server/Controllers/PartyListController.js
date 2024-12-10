@@ -1,128 +1,171 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-exports.AllPartyLists = async(req, res, next)=>{
+exports.AllPartyLists = async (req, res, next) => {
     try {
+        const { search } = req.query;
+        const searchFilter = search
+            ? {
+                  OR: [
+                      {
+                          fullName: { contains: search },
+                      },
+                      {
+                          nickName: { contains: search },
+                      },
+                      {
+                          rank: { contains: search },
+                      },
+                      {
+                          roles: {
+                              some: {
+                                  role: { name: { contains: search } },
+                              },
+                          },
+                      },
+                      {
+                          bio: {
+                              classroom: { contains: search },
+                              skills: {
+                                  some: {
+                                      skill: { name: { contains: search } },
+                                  },
+                              },
+                          },
+                      },
+                  ].filter(Boolean),
+              }
+            : {};
         const partyLists = await prisma.partyList.findMany({
+            where: searchFilter,
             include: {
                 contacts: {
-                    include:{
-                        platform:true,
-                    }
+                    include: {
+                        platform: true,
+                    },
                 },
                 roles: {
-                    include:{
-                        role: true
-                    }
+                    include: {
+                        role: true,
+                    },
                 },
                 bio: {
-                    include:{
-                        skills:{
-                            include:{
-                                skill: true
-                            }
+                    include: {
+                        skills: {
+                            include: {
+                                skill: true,
+                            },
                         },
-                        experiences:{
-                            include:{
-                                experience: true
-                            }
+                        experiences: {
+                            include: {
+                                experience: true,
+                            },
                         },
-                    }
-                }
+                    },
+                },
             },
             orderBy: {
-                order: 'asc',
+                order: "asc",
             },
-        })
-        res.status(200).send(partyLists)
+        });
+        res.status(200).send(partyLists);
     } catch (e) {
-        e.status = 400; 
+        e.status = 400;
         next(e);
     }
-}
-exports.PartyList = async(req, res, next)=>{
+};
+exports.PartyList = async (req, res, next) => {
     try {
-        const { id } = req.query
+        const { id } = req.query;
         const partyList = await prisma.partyList.findFirst({
             where: {
-                id: isNaN(parseInt(id))
-                ? undefined
-                : parseInt(id),
+                id: isNaN(parseInt(id)) ? undefined : parseInt(id),
             },
-            include:{
+            include: {
                 contacts: {
-                    include:{
-                        platform:true,
-                    }
+                    include: {
+                        platform: true,
+                    },
                 },
                 roles: {
-                    include:{
-                        role: true
-                    }
+                    include: {
+                        role: true,
+                    },
                 },
                 bio: {
-                    include:{
-                        skills:{
-                            include:{
-                                skill: true
-                            }
+                    include: {
+                        skills: {
+                            include: {
+                                skill: true,
+                            },
                         },
-                        experiences:{
-                            include:{
-                                experience: true
-                            }
+                        experiences: {
+                            include: {
+                                experience: true,
+                            },
                         },
-                    }
-                }
-            }
-        })
-        res.status(200).send(partyList)
+                    },
+                },
+            },
+        });
+        res.status(200).send(partyList);
     } catch (e) {
-        e.status = 400; 
+        e.status = 400;
         next(e);
     }
-}
+};
 exports.HomePagePartyLists = async (req, res) => {
     try {
         const partyLists = await prisma.partyList.findMany({
             where: {
-                showInHomepage: true
+                showInHomepage: true,
             },
-            include:{
+            include: {
                 contacts: {
-                    include:{
-                        platform:true,
-                    }
+                    include: {
+                        platform: true,
+                    },
                 },
                 roles: {
-                    include:{
-                        role: true
-                    }
+                    include: {
+                        role: true,
+                    },
                 },
                 bio: {
-                    include:{
-                        skills:{
-                            include:{
-                                skill: true
-                            }
+                    include: {
+                        skills: {
+                            include: {
+                                skill: true,
+                            },
                         },
-                    }
-                }
+                    },
+                },
             },
             orderBy: {
-                orderInHomepage: 'asc',
+                orderInHomepage: "asc",
             },
-        })
+        });
         res.status(200).send(partyLists);
     } catch (e) {
         console.log(e);
-        res.status(500).send('Server Error');
+        res.status(500).send("Server Error");
     }
-}
+};
 
-exports.AddPartyList = async(req, res, next)=>{
+exports.AddPartyList = async (req, res, next) => {
     try {
-        const { firstName, middleName, lastName, nickName, shortMessage, classroom, messageToStudent, rank, profileImg, showInHomepage } = req.body
+        const {
+            firstName,
+            middleName,
+            lastName,
+            nickName,
+            shortMessage,
+            classroom,
+            messageToStudent,
+            rank,
+            profileImg,
+            showInHomepage,
+        } = req.body;
 
         const requiredFields = {
             firstName: "First Name",
@@ -134,11 +177,13 @@ exports.AddPartyList = async(req, res, next)=>{
             messageToStudent: "Message To Student",
             rank: "Rank",
         };
-      
+
         const errorMessage = validateRequiredFields(req.body, requiredFields);
-    
+
         if (errorMessage) {
-        return res.status(400).json({ message: errorMessage, type: "error" });
+            return res
+                .status(400)
+                .json({ message: errorMessage, type: "error" });
         }
 
         await prisma.partyList.create({
@@ -154,12 +199,15 @@ exports.AddPartyList = async(req, res, next)=>{
                 },
                 rank,
                 profileImg,
-                showInHomepage
-            }
-        }) 
-        res.json({message:`เพื่ม ${firstName} ${middleName} ${lastName} ในบัญชีรายชื่อสมาชิกแล้ว`, type:`success`}).status(201)
+                showInHomepage,
+            },
+        });
+        res.json({
+            message: `เพื่ม ${firstName} ${middleName} ${lastName} ในบัญชีรายชื่อสมาชิกแล้ว`,
+            type: `success`,
+        }).status(201);
     } catch (e) {
-        e.status = 400; 
+        e.status = 400;
         next(e);
     }
-}
+};
