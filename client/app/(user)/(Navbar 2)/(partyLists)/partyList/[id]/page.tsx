@@ -12,6 +12,8 @@ import {
 import PartyListCard from "@/components/PartyList/PartyListCard";
 import { getPartyList } from '@/app/functions/PartyList';
 import Image from "next/image";
+import ContactForm from "./ContactForm";
+import SupportButton from "./SupportButton";
 
 export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
   const params = await props.params
@@ -42,7 +44,7 @@ async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
   const platformIconSrc = process.env.NEXT_PUBLIC_PLATFORM_ICON_PATH || "";
 
   return (
-    <div className="relative bg-[#f4f4fc] dark:bg-slate-900">
+    <div className="relative bg-[#f4f4fc] dark:bg-slate-900 pb-5">
       <section className="relative min-h-screen bg-gradient-to-br from-blue-100 via-yellow-50 to-pink-100 dark:from-slate-800/50 dark:to-transparent">
         <div className="absolute inset-0 bg-grid-white/25 bg-grid-8" />
         <div className="relative pt-20 pb-32 px-4">
@@ -68,10 +70,10 @@ async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
         </div>
       </section>
 
-      <section className="relative -mt-20 mb-24">
+      <section className="relative -mt-20 mb-10">
         <div className="container mx-auto px-4">
           <Card className="relative overflow-hidden bg-white/90 dark:bg-stone-200 backdrop-blur-sm border-0 shadow-xl">
-            <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-blue-500 to-pink-500/60" />
+            <div className="absolute top-0 left-0 w-2 h-full bg-pink-500/60" />
             <CardContent className="p-8">
               <h2 className="text-3xl font-bold text-gray-800 mb-6">
                 ถึงพี่น้องชาวชมพูขาว
@@ -85,7 +87,7 @@ async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
       </section>
 
 
-      <section>
+      <section className="relative my-10">
         <div className="container mx-auto px-4">
 
           <div className="group relative overflow-hidden rounded-xl p-8 mb-8 bg-white/90 dark:bg-stone-200 shadow-md dark:shadow-none transition-colors duration-300">
@@ -97,7 +99,7 @@ async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
                 {partyList.fullName}
               </span>
             </div>
-            <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-blue-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
           </div>
 
           <div className="group relative overflow-hidden rounded-xl p-8 mb-8 bg-white/90 dark:bg-stone-200 shadow-md dark:shadow-none transition-colors duration-300">
@@ -109,7 +111,7 @@ async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
                 ม.{partyList.bio.classroom}
               </span>
             </div>
-            <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-blue-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
           </div>
 
           <div className="group relative overflow-hidden rounded-xl p-8 bg-white/90 dark:bg-stone-200 shadow-md dark:shadow-none transition-colors duration-300">
@@ -123,50 +125,55 @@ async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
                     key={experience.id}
                     className="relative pl-6 before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5 before:bg-gradient-to-b before:from-pink-500 before:to-purple-500"
                   >
-                    <h4 className="text-xl font-semibold text-gray-800">
+                    <h4 className="text-md font-semibold text-gray-800">
                       {experience.experience.title}
                     </h4>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="absolute bottom-0 left-0 h-1 w-full bg-gradient-to-r from-blue-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
           </div>
         </div>
       </section>
 
-      <section className="py-8">
+      <section className="relative my-10">
         <div className="container mx-auto px-4">
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {partyList.contacts.map((contact) => (
               <Link
                 key={contact.id}
                 href={contact.link}
                 target="_blank"
-                className="block"
+                className="group"
               >
-                <Button
-                  variant="outline"
-                  className="flex items-center justify-between w-full gap-4 px-5 py-3 rounded-lg dark:bg-blue-400 dark:hover:bg-blue-500 bg-blue-300 hover:bg-blue-400 text-white transition-all duration-300"
-                >
-                  <div className="flex items-center gap-3">
-                    <Image
-                      width={24}
-                      height={24}
-                      src={platformIconSrc + contact.platform.icon}
-                      alt={contact.username}
-                      className="w-6 h-6"
-                    />
-                    <span className="text-lg">{contact.platform.name}</span>
+                <div className="bg-white dark:bg-blue-800 shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 rounded-xl overflow-hidden">
+                  <div className="flex items-center p-4 space-x-4">
+                    <div className="bg-blue-100 dark:bg-blue-700 p-3 rounded-full">
+                      <Image
+                        width={32}
+                        height={32}
+                        src={platformIconSrc + contact.platform.icon}
+                        alt={contact.username}
+                        className="w-8 h-8"
+                      />
+                    </div>
+                    <div className="flex-grow">
+                      <p className="text-lg font-semibold text-blue-800 dark:text-blue-100">
+                        {contact.platform.name}
+                      </p>
+                    </div>
+                    <ExternalLink className="text-blue-600 dark:text-blue-300 opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  <ExternalLink className="w-5 h-5 text-white opacity-90 hover:opacity-100 transition-opacity duration-300" />
-                </Button>
+                </div>
               </Link>
             ))}
-
           </div>
         </div>
       </section>
+
+      <ContactForm partyList={partyList} />
+      <SupportButton partyList={partyList} />
     </div>
   );
 }

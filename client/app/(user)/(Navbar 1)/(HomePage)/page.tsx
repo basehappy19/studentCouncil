@@ -25,7 +25,7 @@ async function Home() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-              <span className="text-blue-500 dark:text-blue-400"><span className='line-through'>สมาชิก</span><span>ผู้แทน</span></span>
+              <span className="text-blue-500 dark:text-blue-400"><span>ผู้แทน</span></span>
               <span className="text-yellow-500 dark:text-amber-300"> นักเรียนของเรา</span>
             </h1>
             <h2 className="text-3xl md:text-4xl font-bold mb-8">
