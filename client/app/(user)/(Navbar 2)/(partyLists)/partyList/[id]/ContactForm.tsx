@@ -5,6 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Send, MessageCircle } from 'lucide-react';
 import { PartyList } from '@/app/interfaces/PartyList/partylist';
+import { SendMessageToPartyList } from '@/app/functions/PartyList';
+import { Response } from '@/app/interfaces/Response';
+import { toast } from 'react-toastify';
 
 const ContactForm = ({ partyList }:{ partyList : PartyList }) => {
   const [formData, setFormData] = useState({
@@ -30,12 +33,13 @@ const ContactForm = ({ partyList }:{ partyList : PartyList }) => {
     }
 
     try {
-      console.log(formData.message);
-      
-      
+      const res: Response = await SendMessageToPartyList({partyListId: partyList.id, message: formData.message})
       setFormData({
         message: ''
       });
+      if(res.message && res.type) {
+        return toast[res.type](res.message,{position: 'bottom-right'})
+      }
     } catch (e : unknown) {
       console.error(e);
       throw new Error(`Failed To Send Message`);

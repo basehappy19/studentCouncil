@@ -341,12 +341,22 @@ model PartyList {
   showInHomepage         Boolean            @default(false)
   order                  Int
   orderInHomepage        Int?
+  support                Int                @default(0)
   user                   User?              @relation 
   voteAgrees             VoteAgree[]
   voteDisagrees          VoteDisagree[]
   voteAbstains           VoteAbstain[]
   noVotes                NoVote[]
   departmentsLeader      Department[]       @relation("LeaderToDepartments")
+  messagesToPartyList    MessageToPartyList[]
+}
+
+
+model MessageToPartyList {
+  id Int @id @default(autoincrement())
+  partyListId Int
+  partyList   PartyList @relation(fields: [partyListId], references: [id])
+  message   String @db.Text
 }
 
 model Role {

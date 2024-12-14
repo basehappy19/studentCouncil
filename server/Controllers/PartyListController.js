@@ -114,6 +114,70 @@ exports.PartyList = async (req, res, next) => {
         next(e);
     }
 };
+
+exports.SupportPartyList = async (req, res, next) => {
+    try {
+        const { partyListId } = req.body;
+
+        if(!partyListId) {
+            return res.json({
+                message: "เกิดปัญหาบางอย่างกับเซิร์ฟเวอร์",
+                type: "error",
+            })
+        }
+
+        const partyList = await prisma.partyList.update({
+            where: {
+                id: partyListId,
+            },
+            data: {
+                support: {
+                    increment: 1
+                },
+            },
+        });
+        res.status(200).json({
+            message: `ส่งกำลังใจให้ ${partyList.nickName} เรียบร้อยแล้ว`,
+            type: "success",
+        })
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+}
+
+exports.SendMessage = async (req, res, next) => {
+    try {
+        const { partyListId, message } = req.body;
+
+        if(!partyListId) {
+            return res.json({
+                message: "เกิดปัญหาบางอย่างกับเซิร์ฟเวอร์",
+                type: "error",
+            })
+        }
+        const partyList = await prisma.partyList.findFirst({
+            where: {
+                id: partyListId,
+            },
+        });
+
+        await prisma.messageToPartyList.create({
+            data: {
+                partyListId: partyList.id,
+                message: message,
+            },
+        });
+        res.status(200).json({
+            message: `ส่งข้อความถึง ${partyList.nickName} เรียบร้อยแล้ว`,
+            type: "success",
+        })
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+}
+
 exports.HomePagePartyLists = async (req, res) => {
     try {
         const partyLists = await prisma.partyList.findMany({

@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
   ChevronDown,
   ExternalLink
@@ -42,7 +41,7 @@ async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
   const id = params.id
   const partyList: PartyList = await getPartyList(parseInt(id));
   const platformIconSrc = process.env.NEXT_PUBLIC_PLATFORM_ICON_PATH || "";
-
+  
   return (
     <div className="relative bg-[#f4f4fc] dark:bg-slate-900 pb-5">
       <section className="relative min-h-screen bg-gradient-to-br from-blue-100 via-yellow-50 to-pink-100 dark:from-slate-800/50 dark:to-transparent">

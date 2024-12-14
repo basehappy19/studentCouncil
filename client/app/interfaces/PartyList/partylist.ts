@@ -15,6 +15,7 @@ export interface PartyList {
     bio: Bio,
     order: number,
     orderInHomepage: number,
+    support: number,
 }
 
 export interface Role {

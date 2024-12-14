@@ -1,3 +1,6 @@
+'use server'
+import { revalidatePath } from "next/cache";
+
 export const getPartyListInHomepages = async () => {
   try {
     const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/partyList_for_homepages", { next: { revalidate: 0 } });
@@ -16,7 +19,64 @@ export const getPartyListInHomepages = async () => {
   }
 };
 
-export const AllPartyLists = async ({search}:{search: string | undefined}) => {
+export const SupportPartyList = async ({ partyListId }: { partyListId: number }) => {
+  try {
+    
+
+    const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/partyList/support`;
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ partyListId }),
+    });
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
+    revalidatePath(`/partyList/${partyListId}`);
+    return res.json();
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error(`Error Support PartyList: ${e.message}`);
+      throw new Error("Failed To Support PartyList");
+    } else {
+      console.error('An unknown error occurred');
+      throw new Error("Failed To Support PartyList");
+    }
+  }
+}
+
+export const SendMessageToPartyList = async ({ partyListId, message }: { partyListId: number, message: string }) => {
+  try {
+    
+
+    const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/partyList/message`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ partyListId: partyListId, message: message}),
+    });
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
+    revalidatePath(`/partyList/${partyListId}`);
+    return res.json();
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error(`Error Send Message PartyList: ${e.message}`);
+      throw new Error("Failed To Send Message PartyList");
+    } else {
+      console.error('An unknown error occurred');
+      throw new Error("Failed To Send Message PartyList");
+    }
+  }
+}
+
+
+export const AllPartyLists = async ({ search }: { search: string | undefined }) => {
   try {
     const params = new URLSearchParams();
     if (search) params.append("search", search.toString());
