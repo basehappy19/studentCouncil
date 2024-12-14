@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ThemeProvider } from "./context/Theme-provider";
 import { Providers } from "./context/Providers";
-
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 export const metadata: Metadata = {
   title: `หน้าแรก ${process.env.NEXT_PUBLIC_APP_TITLE}`,
@@ -19,6 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <GoogleAnalytics gaId="G-0Z020L9EB5" />
       <body>
         <Providers>
           <ThemeProvider
