@@ -34,26 +34,27 @@ const SectionCard = ({
   linkHref: string,
 }) => (
   <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6 transform transition-all hover:scale-105 hover:shadow-xl border border-gray-100 dark:border-slate-700">
-    <div className="flex flex-col items-center text-center space-y-4">
-      <Icon className="w-16 h-16 text-custom-primary-dark dark:text-custom-primary-light" />
-      <h2 className="text-2xl font-bold text-custom-black dark:text-blue-600 text-blue-400">{title}</h2>
-      <div className="text-gray-700 dark:text-gray-300">
-        {description.map((line, index) => (
-          <p key={index} className="mb-2">{line}</p>
-        ))}
-      </div>
-      <Link
-        href={linkHref}
-        className="mt-4 px-6 py-2 
+    <Link href={linkHref}>
+      <div className="flex flex-col items-center text-center space-y-4">
+        <Icon className="w-16 h-16 text-custom-primary-dark dark:text-custom-primary-light" />
+        <h2 className="text-2xl font-bold text-custom-black dark:text-blue-600 text-blue-400">{title}</h2>
+        <div className="text-gray-700 dark:text-gray-300">
+          {description.map((line, index) => (
+            <p key={index} className="mb-2">{line}</p>
+          ))}
+        </div>
+        <div
+          className="mt-4 px-6 py-2 
           bg-custom-primary-dark dark:bg-custom-primary-light 
           dark:text-white text-slate-900 
           rounded-full 
           hover:bg-custom-primary dark:hover:bg-opacity-80 
           transition-colors"
-      >
-        {linkText} →
-      </Link>
-    </div>
+        >
+          {linkText} →
+        </div>
+      </div>
+    </Link>
   </div>
 );
 
@@ -99,7 +100,7 @@ function About() {
         "ที่เคยให้คำสัญญากับนักเรียนทุกคน"
       ],
       linkText: "จับตาความคืบหน้า",
-      linkHref: "/policy/tracks",
+      linkHref: "/policy/watch",
       bgColor: "bg-white"
     },
     {

@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const { AllWorkTags, AddWorkTag } = require('../Controllers/WorkTagController');
+const { AllWorkTags, AddWorkTag, AllWorkTagsWithWork } = require('../Controllers/WorkTagController');
 
-router.get('/work_tags', AllWorkTags);
-router.post('/work_tag', AddWorkTag);
+router.get('/tags', AllWorkTags);
+router.get('/work/tags', AllWorkTagsWithWork);
+router.post('/tag', AddWorkTag);
 
 module.exports = router;

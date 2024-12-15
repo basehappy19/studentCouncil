@@ -7,6 +7,7 @@ export interface Vote {
     content: string,
     refers: VoteRefers[],
     documents: VoteDocuments[],
+    type: 'PUBLIC' | 'SECRET',
     result: VoteResult,
     createdAt: string;
     updatedAt: string;

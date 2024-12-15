@@ -1,4 +1,5 @@
-import React from 'react';
+'use client'
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -7,7 +8,20 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { NoVote, VoteAbstain, VoteAgree, VoteDisagree } from '@/app/interfaces/Vote/Vote';
 
-export const VoteAgreeZone = ({ agrees = [] } : { agrees : VoteAgree[] }) => {
+export const VoteAgreeZone = ({ agrees = [] }: { agrees: VoteAgree[] }) => {
+  const [openTooltips, setOpenTooltips] = useState<Record<string, boolean>>({});
+  const handleToggleTooltip = (id: string) => {
+    setOpenTooltips((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+  const handleCloseTooltip = (id: string) => {
+    setOpenTooltips((prevState) => ({
+      ...prevState,
+      [id]: false,
+    }));
+  };
   return (
     <Card className="dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-xl dark:border-0">
       <CardHeader className="pb-2">
@@ -24,10 +38,16 @@ export const VoteAgreeZone = ({ agrees = [] } : { agrees : VoteAgree[] }) => {
           <div className="flex flex-wrap gap-3 p-4 bg-green-50 dark:bg-green-900 rounded-lg">
             {agrees.map((agree) => (
               <TooltipProvider key={agree.id}>
-                <Tooltip>
+                <Tooltip open={openTooltips[agree.id] || false}
+                  onOpenChange={(open) =>
+                    setOpenTooltips((prevState) => ({ ...prevState, [agree.id]: open }))
+                  }>
                   <TooltipTrigger>
-                    <Avatar className="h-14 w-14 border-2 border-gray-100 dark:border-gray-600 hover:scale-110 transition-transform">
-                      <AvatarImage 
+                    <Avatar
+                      onClick={() => handleToggleTooltip(agree.id.toString())}
+                      onBlur={() => handleCloseTooltip(agree.id.toString())}
+                      className="h-14 w-14 border-2 border-gray-100 dark:border-gray-600 hover:scale-110 transition-transform">
+                      <AvatarImage
                         src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + agree.partyList.profile_image_128x128}
                         alt={agree.partyList.nickName}
                       />
@@ -40,7 +60,7 @@ export const VoteAgreeZone = ({ agrees = [] } : { agrees : VoteAgree[] }) => {
                     <Card className="border-none shadow-none dark:bg-gray-600">
                       <CardContent className="flex items-center gap-4 p-4">
                         <Avatar className="h-16 w-16 border-2 border-gray-300 dark:border-gray-600">
-                          <AvatarImage 
+                          <AvatarImage
                             src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + agree.partyList.profile_image_128x128}
                             alt={agree.partyList.nickName}
                           />
@@ -73,7 +93,20 @@ export const VoteAgreeZone = ({ agrees = [] } : { agrees : VoteAgree[] }) => {
   );
 };
 
-export const VoteDisagreeZone = ({ disagrees = [] } : { disagrees : VoteDisagree[] }) => {
+export const VoteDisagreeZone = ({ disagrees = [] }: { disagrees: VoteDisagree[] }) => {
+  const [openTooltips, setOpenTooltips] = useState<Record<string, boolean>>({});
+  const handleToggleTooltip = (id: string) => {
+    setOpenTooltips((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+  const handleCloseTooltip = (id: string) => {
+    setOpenTooltips((prevState) => ({
+      ...prevState,
+      [id]: false,
+    }));
+  };
   return (
     <Card className="dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-xl dark:border-0">
       <CardHeader className="pb-2">
@@ -90,10 +123,16 @@ export const VoteDisagreeZone = ({ disagrees = [] } : { disagrees : VoteDisagree
           <div className="flex flex-wrap gap-3 p-4 bg-red-50 dark:bg-red-900 rounded-lg">
             {disagrees.map((disagree) => (
               <TooltipProvider key={disagree.id}>
-                <Tooltip>
+                <Tooltip open={openTooltips[disagree.id] || false}
+                  onOpenChange={(open) =>
+                    setOpenTooltips((prevState) => ({ ...prevState, [disagree.id]: open }))
+                  }>
                   <TooltipTrigger>
-                    <Avatar className="h-14 w-14 border-2 border-gray-100 dark:border-gray-600 hover:scale-110 transition-transform">
-                      <AvatarImage 
+                    <Avatar
+                    onClick={() => handleToggleTooltip(disagree.id.toString())}
+                    onBlur={() => handleCloseTooltip(disagree.id.toString())}
+                    className="h-14 w-14 border-2 border-gray-100 dark:border-gray-600 hover:scale-110 transition-transform">
+                      <AvatarImage
                         src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + disagree.partyList.profile_image_128x128}
                         alt={disagree.partyList.nickName}
                       />
@@ -106,7 +145,7 @@ export const VoteDisagreeZone = ({ disagrees = [] } : { disagrees : VoteDisagree
                     <Card className="border-none shadow-none dark:bg-gray-600">
                       <CardContent className="flex items-center gap-4 p-4">
                         <Avatar className="h-16 w-16 border-2 border-gray-300 dark:border-gray-600">
-                          <AvatarImage 
+                          <AvatarImage
                             src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + disagree.partyList.profile_image_128x128}
                             alt={disagree.partyList.nickName}
                           />
@@ -139,7 +178,20 @@ export const VoteDisagreeZone = ({ disagrees = [] } : { disagrees : VoteDisagree
   );
 };
 
-export const VoteAbstainZone = ({ abstains = [] } : { abstains : VoteAbstain[] }) => {
+export const VoteAbstainZone = ({ abstains = [] }: { abstains: VoteAbstain[] }) => {
+  const [openTooltips, setOpenTooltips] = useState<Record<string, boolean>>({});
+  const handleToggleTooltip = (id: string) => {
+    setOpenTooltips((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+  const handleCloseTooltip = (id: string) => {
+    setOpenTooltips((prevState) => ({
+      ...prevState,
+      [id]: false,
+    }));
+  };
   return (
     <Card className="dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-xl dark:border-0">
       <CardHeader className="pb-2">
@@ -156,10 +208,16 @@ export const VoteAbstainZone = ({ abstains = [] } : { abstains : VoteAbstain[] }
           <div className="flex flex-wrap gap-3 p-4 bg-gray-100 dark:bg-gray-600 rounded-lg">
             {abstains.map((abstain) => (
               <TooltipProvider key={abstain.id}>
-                <Tooltip>
+                <Tooltip open={openTooltips[abstain.id] || false}
+                  onOpenChange={(open) =>
+                    setOpenTooltips((prevState) => ({ ...prevState, [abstain.id]: open }))
+                  }>
                   <TooltipTrigger>
-                    <Avatar className="h-14 w-14 border-2 border-gray-100 dark:border-gray-600 hover:scale-110 transition-transform">
-                      <AvatarImage 
+                    <Avatar 
+                    onClick={() => handleToggleTooltip(abstain.id.toString())}
+                    onBlur={() => handleCloseTooltip(abstain.id.toString())}
+                    className="h-14 w-14 border-2 border-gray-100 dark:border-gray-600 hover:scale-110 transition-transform">
+                      <AvatarImage
                         src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + abstain.partyList.profile_image_128x128}
                         alt={abstain.partyList.nickName}
                       />
@@ -172,7 +230,7 @@ export const VoteAbstainZone = ({ abstains = [] } : { abstains : VoteAbstain[] }
                     <Card className="border-none shadow-none dark:bg-gray-600">
                       <CardContent className="flex items-center gap-4 p-4">
                         <Avatar className="h-16 w-16 border-2 border-gray-300 dark:border-gray-600">
-                          <AvatarImage 
+                          <AvatarImage
                             src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + abstain.partyList.profile_image_128x128}
                             alt={abstain.partyList.nickName}
                           />
@@ -205,7 +263,20 @@ export const VoteAbstainZone = ({ abstains = [] } : { abstains : VoteAbstain[] }
   );
 };
 
-export const NoVoteZone = ({ noVotes = [] } : { noVotes : NoVote[] }) => {
+export const NoVoteZone = ({ noVotes = [] }: { noVotes: NoVote[] }) => {
+  const [openTooltips, setOpenTooltips] = useState<Record<string, boolean>>({});
+  const handleToggleTooltip = (id: string) => {
+    setOpenTooltips((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+  const handleCloseTooltip = (id: string) => {
+    setOpenTooltips((prevState) => ({
+      ...prevState,
+      [id]: false,
+    }));
+  };
   return (
     <Card className="dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-xl dark:border-0">
       <CardHeader className="pb-2">
@@ -222,10 +293,16 @@ export const NoVoteZone = ({ noVotes = [] } : { noVotes : NoVote[] }) => {
           <div className="flex flex-wrap gap-3 p-4 bg-gray-300 dark:bg-gray-900 rounded-lg">
             {noVotes.map((noVote) => (
               <TooltipProvider key={noVote.id}>
-                <Tooltip>
+                <Tooltip open={openTooltips[noVote.id] || false}
+                  onOpenChange={(open) =>
+                    setOpenTooltips((prevState) => ({ ...prevState, [noVote.id]: open }))
+                  }>
                   <TooltipTrigger>
-                    <Avatar className="h-14 w-14 border-2 border-gray-100 dark:border-gray-600 hover:scale-110 transition-transform">
-                      <AvatarImage 
+                    <Avatar 
+                    onClick={() => handleToggleTooltip(noVote.id.toString())}
+                    onBlur={() => handleCloseTooltip(noVote.id.toString())}
+                    className="h-14 w-14 border-2 border-gray-100 dark:border-gray-600 hover:scale-110 transition-transform">
+                      <AvatarImage
                         src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + noVote.partyList.profile_image_128x128}
                         alt={noVote.partyList.nickName}
                       />
@@ -238,7 +315,7 @@ export const NoVoteZone = ({ noVotes = [] } : { noVotes : NoVote[] }) => {
                     <Card className="border-none shadow-none dark:bg-gray-600">
                       <CardContent className="flex items-center gap-4 p-4">
                         <Avatar className="h-16 w-16 border-2 border-gray-300 dark:border-gray-600">
-                          <AvatarImage 
+                          <AvatarImage
                             src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + noVote.partyList.profile_image_128x128}
                             alt={noVote.partyList.nickName}
                           />

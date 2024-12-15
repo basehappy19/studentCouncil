@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 exports.AllWorks = async (req, res, next) => {
     try {
-        const { search } = req.query;
+        const { search, tag } = req.query;
         const searchFilter = search
             ? {
                   OR: [
@@ -49,11 +49,41 @@ exports.AllWorks = async (req, res, next) => {
                               },
                           },
                       },
+                      {
+                          tags: {
+                              some: {
+                                  tag: {
+                                      title: {
+                                          contains: search,
+                                      },
+                                  },
+                              },
+                          },
+                      },
                   ].filter(Boolean),
               }
             : {};
+
+        const tagFilter = tag
+            ? {
+                  tags: {
+                      some: {
+                          tag: {
+                              id: {
+                                  equals: parseInt(tag), 
+                              },
+                          },
+                      },
+                  },
+              }
+            : {};
+
+        const combinedFilter = {
+            AND: [searchFilter, tagFilter].filter(Boolean),
+        };
+
         const works = await prisma.work.findMany({
-            where: searchFilter,
+            where: combinedFilter,
             include: {
                 postBy: {
                     select: {
@@ -122,7 +152,13 @@ exports.AllWorks = async (req, res, next) => {
                 tags: {
                     select: {
                         id: true,
-                        tag: true,
+                        tag: {
+                            select: {
+                                id: true,
+                                title: true,
+                                icon: true,
+                            },
+                        },
                     },
                 },
             },
@@ -227,6 +263,13 @@ exports.getWorkForEdit = async (req, res, next) => {
                 tags: {
                     select: {
                         id: true,
+                        tag: {
+                            select: {
+                                id: true,
+                                title: true,
+                                icon: true,
+                            },
+                        },
                     },
                 },
                 date: true,
@@ -340,7 +383,12 @@ exports.UserWorks = async (req, res, next) => {
                         tags: {
                             select: {
                                 id: true,
-                                tag: true,
+                                tag: {
+                                    select: {
+                                        id: true,
+                                        icon: true,
+                                    },
+                                },
                             },
                         },
                         date: true,
@@ -501,7 +549,6 @@ exports.OptionsForAddWork = async (req, res, next) => {
                 id: true,
                 title: true,
                 icon: true,
-                color: true,
             },
             orderBy: {
                 id: "asc",

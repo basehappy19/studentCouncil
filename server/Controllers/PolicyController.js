@@ -35,7 +35,6 @@ exports.RecommendPolicies = async (req, res, next) => {
 exports.AllPolicies = async (req, res, next) => {
     try {
         const { category, subCategory } = req.query;
-        console.log(req.query);
 
         const policies = await prisma.policy.findMany({
             include: {
@@ -115,6 +114,69 @@ exports.Policy = async (req, res, next) => {
         };
 
         res.status(200).send(result);
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+};
+
+exports.LikePolicy = async (req, res, next) => {
+    try {
+        const { policyId } = req.body;
+
+        if (!policyId) {
+            return res.json({
+                message: "เกิดปัญหาบางอย่างกับเซิร์ฟเวอร์",
+                type: "error",
+            });
+        }
+
+        const policy = await prisma.policy.update({
+            where: {
+                id: policyId,
+            },
+            data: {
+                like: {
+                    increment: 1,
+                },
+            },
+        });
+        res.status(200).json({
+            message: `กดถูกใจนโยบาย ${policy.title} เรียบร้อยแล้ว`,
+            type: "success",
+        });
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+};
+
+exports.CommentPolicy = async (req, res, next) => {
+    try {
+        const { policyId, message } = req.body;
+
+        if (!policyId) {
+            return res.json({
+                message: "เกิดปัญหาบางอย่างกับเซิร์ฟเวอร์",
+                type: "error",
+            });
+        }
+        const policy = await prisma.policy.findFirst({
+            where: {
+                id: policyId,
+            },
+        });
+
+        await prisma.commentPolicy.create({
+            data: {
+                policyId: policy.id,
+                message: message,
+            },
+        });
+        res.status(200).json({
+            message: `ส่งคอมเม้นนโยบาย ${policy.title} เรียบร้อยแล้ว`,
+            type: "success",
+        });
     } catch (e) {
         e.status = 400;
         next(e);

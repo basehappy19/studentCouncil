@@ -70,8 +70,8 @@ const CategoryCard = ({ category }: { category: Category }) => {
           flex items-center justify-center gap-2
           font-medium text-base
           transition-all duration-300
-          dark:bg-blue-500 dark:hover:bg-blue-400 dark:text-white dark:bg-none
-          bg-gradient-to-r from-blue-500 via-blue-400 to-pink-400 text-white hover:opacity-90
+          dark:bg-pink-500 dark:hover:bg-pink-400 dark:text-white dark:bg-none
+          bg-pink-400 text-white hover:opacity-90
         `}
           >
             ดูนโยบายทั้งหมด

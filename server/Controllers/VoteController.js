@@ -53,6 +53,7 @@ exports.AllVotes = async (req, res, next) => {
                         },
                     },
                 },
+                type: true,
                 createdAt: true,
                 updatedAt: true,
             },
@@ -202,6 +203,7 @@ exports.getVote = async (req, res, next) => {
                         document: true,
                     },
                 },
+                type: true,
                 result: {
                     select: {
                         maxAttendees: true,

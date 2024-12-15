@@ -56,7 +56,7 @@ async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
               </div>
 
               <div className="flex-1 relative">
-                <div className="text-3xl md:text-6xl text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-orange-400 dark:from-blue-600 dark:to-orange-600">
+                <div className="text-3xl md:text-6xl text-center font-bold text-transparent bg-clip-text bg-orange-400 dark:bg-orange-600">
                   {partyList.bio.shortMessage}
                 </div>
               </div>

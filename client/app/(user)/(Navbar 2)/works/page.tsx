@@ -1,5 +1,5 @@
-import { AllWorks } from "@/app/functions/Work";
-import { Work } from "@/app/interfaces/Work/Work";
+import { AllTagsWithWork, AllWorks } from "@/app/functions/Work";
+import { Tag, Work } from "@/app/interfaces/Work/Work";
 import TagInHeader from "@/app/layouts/TagInHeader";
 import { Metadata } from "next";
 import SectionData from "./SectionData";
@@ -18,8 +18,9 @@ export const metadata: Metadata = {
 async function TrackWorks(props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const searchParams = await props.searchParams
   const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;    
-  const works: Work[] = await AllWorks({search});
-
+  const tag = typeof searchParams.tag === 'string' ? searchParams.tag : undefined;    
+  const works: Work[] = await AllWorks({search, tag});
+  const tags: Tag[] = await AllTagsWithWork();
   return (
     <div className="min-h-screen
         dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 
@@ -31,13 +32,13 @@ async function TrackWorks(props: { searchParams: Promise<{ [key: string]: string
           <div className="max-w-4xl mx-auto text-center space-y-4">
             <TagInHeader icon="Flag" color="text-yellow-400" title="โรงเรียนในแบบที่เราอยากเห็น" />
 
-            <h1 className="text-5xl md:text-7xl font-bold">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-yellow-500 to-pink-500">
+            <h1 className="text-3xl md:text-7xl font-bold">
+              <span className="bg-clip-text text-transparent bg-pink-400 dark:bg-pink-500">
                 ผลงานของเรา
               </span>
             </h1>
-            <h1 className="text-5xl md:text-7xl font-bold">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-yellow-500 to-pink-500">
+            <h1 className="text-3xl md:text-7xl font-bold">
+              <span className="bg-clip-text text-transparent bg-pink-400 dark:bg-pink-500">
                 ตลอดวาระการทำงาน
               </span>
             </h1>
@@ -45,7 +46,7 @@ async function TrackWorks(props: { searchParams: Promise<{ [key: string]: string
 
         </div>
       </section>
-      <SectionData works={works} />
+      <SectionData works={works} tags={tags} searchTag={tag} />
     </div>
   );
 }

@@ -7,7 +7,7 @@ const TagInHeader = ({ icon, color, title }: { icon: IconName, color: string, ti
     const IconComponent = Icons[icon] as React.ElementType | undefined;
 
     return (
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-white/10 backdrop-blur-md border border-white/20 mb-6">
             {IconComponent ? (
                 <IconComponent className={`w-5 h-5 ${color}`} />
             ) : (

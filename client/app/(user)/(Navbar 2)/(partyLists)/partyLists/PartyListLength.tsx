@@ -2,11 +2,10 @@
 import React, { useEffect, useRef } from 'react'
 
 const PartyListLength = ({ count }: { count: number }) => {
-    const partyListLengthRef = useRef<number>(0);
+    const partyListLengthRef = useRef<number>(69);
 
-    // ใช้ useEffect เพื่อเก็บค่า count 
     useEffect(() => {
-        if (partyListLengthRef.current === 0) {
+        if (partyListLengthRef.current === 69) {
             partyListLengthRef.current = count; 
         }
     }, [count]); 

@@ -47,7 +47,7 @@ exports.AllPolicyProgresses = async (req, res) => {
 
             return {
                 ...policy,
-                current_progress: latestProgress, 
+                currentProgress: latestProgress, 
             };
         });
 

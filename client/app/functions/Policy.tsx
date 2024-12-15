@@ -1,5 +1,7 @@
 'use server'
 
+import { revalidatePath } from "next/cache";
+
 export const RecommendPolicies = async () => {
   try {
     const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/policies_recommend", { next: { revalidate: 0 } });
@@ -39,6 +41,60 @@ export const AllPolicies = async ({ category = undefined, subCategory = undefine
     }
   }
 };
+
+export const CommentPolicy = async ({ policyId, message }: { policyId: number, message: string }) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/policy/comment`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ policyId: policyId, message: message}),
+    });
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
+    revalidatePath(`/policy/detail/${policyId}`);
+    return res.json();
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error(`Error Send Comment Policy: ${e.message}`);
+      throw new Error("Failed To Send Comment Policy");
+    } else {
+      console.error('An unknown error occurred');
+      throw new Error("Failed To Send Comment Policy");
+    }
+  }
+}
+
+export const LikePolicy = async ({ policyId }: { policyId: number }) => {
+  try {
+    
+
+    const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/policy/like`;
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ policyId }),
+    });
+    if (!res.ok) {
+      throw new Error(res.statusText);
+    }
+    revalidatePath(`/policy/detail/${policyId}`);
+    return res.json();
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error(`Error Like Policy: ${e.message}`);
+      throw new Error("Failed To Like Policy");
+    } else {
+      console.error('An unknown error occurred');
+      throw new Error("Failed To Like Policy");
+    }
+  }
+}
 
 export const AllPolicyProgresses = async (category: string | undefined) => {
   try {

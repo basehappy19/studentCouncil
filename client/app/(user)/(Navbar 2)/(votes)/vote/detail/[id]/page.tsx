@@ -2,13 +2,14 @@ import { getVote } from "@/app/functions/Vote";
 import Link from "next/link";
 import { Vote } from "@/app/interfaces/Vote/Vote";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Download, FileText, Hash, ChevronRight, Users, CheckCircle, XCircle, MinusCircle } from "lucide-react";
+import { Calendar, Download, FileText, Hash, ChevronRight, Users, CheckCircle, XCircle, MinusCircle, Trophy, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import VoteStatistics from "@/components/Vote/VoteStatistics";
 import VoteSummary from "@/components/Vote/VoteSummary";
 import { NoVoteZone, VoteAbstainZone, VoteAgreeZone, VoteDisagreeZone } from "@/components/Vote/Results/VoteResultZone";
 import ImprovedVoteTable from "@/components/Vote/Results/ImprovedVoteTable";
 import SearchBar from "@/components/Vote/Results/SearchBar";
+import * as Icons from "lucide-react"
 
 export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
   const params = await props.params
@@ -29,7 +30,7 @@ const VoteResult = async (props: { searchParams: Promise<{ [key: string]: string
   const params = await props.params
   const searchParams = await props.searchParams
   const id = params.id
-  const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;    
+  const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;
   const vote: Vote = await getVote({ id: parseInt(id), search: undefined });
   const voteResultPerPartyLists: Vote = await getVote({ id: parseInt(id), search: search });
 
@@ -51,6 +52,35 @@ const VoteResult = async (props: { searchParams: Promise<{ [key: string]: string
     }
     return <Badge>ไม่สามารถสรุปได้</Badge>;
   };
+
+  type VoteType = "Agree" | "Disagree" | "Abstain" | "Tie | no result" | string;
+
+  const voteTypeStyles: Record<VoteType, { gradient: string; icon: React.ComponentType<Icons.LucideProps>; message: string }> = {
+    "Agree": {
+      gradient: "from-blue-600 to-indigo-600",
+      icon: Trophy,
+      message: "เห็นด้วย"
+    },
+    "Disagree": {
+      gradient: "from-rose-600 to-red-600",
+      icon: AlertTriangle,
+      message: "ไม่เห็นด้วย"
+    },
+    "Abstain": {
+      gradient: "from-yellow-600 to-orange-600",
+      icon: AlertTriangle,
+      message: "งดออกเสียง"
+    },
+    "Tie | no result": {
+      gradient: "from-gray-600 to-slate-700",
+      icon: AlertTriangle,
+      message: "มติคะแนนเท่ากัน"
+    }
+  };
+
+  const currentType: VoteType = vote.result.summary.type;
+  const currentStyle = voteTypeStyles[currentType];
+  const VoteIcon = currentStyle.icon;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -144,100 +174,112 @@ const VoteResult = async (props: { searchParams: Promise<{ [key: string]: string
         </Card>
 
         <div className="mt-8 space-y-8">
-          <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-xl border-0">
+
+          <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-xl border-0 overflow-hidden">
             <div className="relative">
+              {/* Dark mode gradient overlay */}
               <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10 dark:from-blue-900/20 dark:to-indigo-900/20" />
 
+              {/* Card Header */}
               <CardHeader className="p-6 border-b border-gray-200 dark:border-gray-700">
-                <div className="text-center space-y-2">
-                  <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
-                    ผลการลงมติ
-                  </h2>
+                <div className="text-center space-y-3">
+                  <div className="flex justify-center items-center gap-3">
+                    <VoteIcon className="w-8 h-8 text-primary" />
+                    <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+                      ผลการลงมติ
+                    </h2>
+                  </div>
                   <p className="text-gray-600 dark:text-gray-400">
                     สรุปคะแนนและสถิติการลงมติ
                   </p>
                 </div>
               </CardHeader>
+
+              {/* Card Content */}
               <CardContent className="p-6">
-                <div className="space-y-4">
+                <div className="space-y-5">
+                  {/* Result Summary Section */}
                   <div className="flex justify-between items-center">
                     <h3 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                       สรุปผล
                     </h3>
                     <VoteSummary summary={vote.result.summary} />
                   </div>
-                  <div className={`text-3xl font-bold bg-gradient-to-r
-                  ${vote.result.summary.type === "Agree" &&
-                          `from-blue-600 to-indigo-600`}
-                        ${vote.result.summary.type === "Disagree" &&
-                          `from-rose-600 to-red-600`}
-                        ${vote.result.summary.type === "Abstain" &&
-                          `from-yellow-600 to-orange-600`}
-                        ${vote.result.summary.type === "Tie | no result" &&
-                          `from-gray-600 to-black-600`}
-                  bg-clip-text text-transparent`}>
-                    {vote.result.summary.type === "Tie | no result" ? (
-                      "มติคะแนนเท่ากัน | ไม่สามารถสรุปได้"
+
+                  {/* Animated Result Percentage */}
+                  <div className={`text-3xl font-bold bg-gradient-to-r ${currentStyle.gradient} 
+              bg-clip-text text-transparent text-center flex items-center justify-center gap-3`}>
+                    {currentType === "Tie | no result" ? (
+                      <span>มติคะแนนเท่ากัน | ไม่สามารถสรุปได้</span>
                     ) : (
                       <>
-                        {vote.result.summary.type === "Agree" &&
-                          `${vote.result.percentages.agreePercentage}% เห็นด้วย`}
-                        {vote.result.summary.type === "Disagree" &&
-                          `${vote.result.percentages.disagreePercentage}% ไม่เห็นด้วย`}
-                        {vote.result.summary.type === "Abstain" &&
-                          `${vote.result.percentages.abstainPercentage}% งดออกเสียง`}
+                        {currentType === "Agree" &&
+                          `${vote.result.percentages.agreePercentage}% ${currentStyle.message}`}
+                        {currentType === "Disagree" &&
+                          `${vote.result.percentages.disagreePercentage}% ${currentStyle.message}`}
+                        {currentType === "Abstain" &&
+                          `${vote.result.percentages.abstainPercentage}% ${currentStyle.message}`}
                       </>
                     )}
                   </div>
+
+                  {/* Detailed Vote Statistics */}
                   <VoteStatistics result={vote.result} />
                 </div>
               </CardContent>
             </div>
           </Card>
 
-          <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-xl border-0">
-            <div className="relative">
-              <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10 dark:from-blue-900/20 dark:to-indigo-900/20" />
+          {vote.type === 'PUBLIC' && (
+            <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-xl border-0">
+              <div className="relative">
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10 dark:from-blue-900/20 dark:to-indigo-900/20" />
 
-              <CardContent className="p-6">
-                <div className="text-center space-y-2 mb-8">
-                  <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
-                    ภาพรวมคะแนนลงมติ
-                  </h2>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    รายละเอียดการลงคะแนนแยกตามประเภท
-                  </p>
-                </div>
+                <CardContent className="p-6">
+                  <div className="text-center space-y-2 mb-8">
+                    <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+                      ภาพรวมคะแนนลงมติ
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      รายละเอียดการลงคะแนนแยกตามประเภท
+                    </p>
+                  </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <VoteAgreeZone agrees={vote.result.agrees} />
-                  <VoteDisagreeZone disagrees={vote.result.disagrees} />
-                  <VoteAbstainZone abstains={vote.result.abstains} />
-                  <NoVoteZone noVotes={vote.result.noVotes} />
-                </div>
-              </CardContent>
-            </div>
-          </Card>
-          <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-xl border-0">
-            <div className="relative">
-              <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10 dark:from-blue-900/20 dark:to-indigo-900/20" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <VoteAgreeZone agrees={vote.result.agrees} />
+                    <VoteDisagreeZone disagrees={vote.result.disagrees} />
+                    <VoteAbstainZone abstains={vote.result.abstains} />
+                    <NoVoteZone noVotes={vote.result.noVotes} />
+                  </div>
+                </CardContent>
+              </div>
+            </Card>
+          )}
+          {vote.type === 'PUBLIC' && (
+            <Card className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm shadow-xl rounded-xl border-0">
+              <div className="relative">
+                <div className="hidden dark:block absolute inset-0 bg-gradient-to-r from-blue-600/10 to-indigo-600/10 dark:from-blue-900/20 dark:to-indigo-900/20" />
 
-              <CardContent className="p-6">
-                <div className="text-center space-y-2 mb-8">
-                  <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
-                    ผลการลงมติรายบุคคล
-                  </h2>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    รายละเอียดการลงคะแนนแต่ละคน
-                  </p>
-                </div>
-                <SearchBar />
-                <ImprovedVoteTable agrees={voteResultPerPartyLists.result.agrees} disagrees={voteResultPerPartyLists.result.disagrees} abstains={voteResultPerPartyLists.result.abstains} noVotes={voteResultPerPartyLists.result.noVotes} />
-              </CardContent>
-            </div>
-          </Card>
+                <CardContent className="p-6">
+                  <div className="text-center space-y-2 mb-8">
+                    <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+                      ผลการลงมติรายบุคคล
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      รายละเอียดการลงคะแนนแต่ละคน
+                    </p>
+                  </div>
+                  <SearchBar />
+                  <ImprovedVoteTable agrees={voteResultPerPartyLists.result.agrees} disagrees={voteResultPerPartyLists.result.disagrees} abstains={voteResultPerPartyLists.result.abstains} noVotes={voteResultPerPartyLists.result.noVotes} />
+                </CardContent>
+              </div>
+            </Card>
+          )}
+
 
         </div>
+
+
       </div>
     </div>
   );

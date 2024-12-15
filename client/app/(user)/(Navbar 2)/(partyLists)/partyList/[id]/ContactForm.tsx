@@ -9,7 +9,7 @@ import { SendMessageToPartyList } from '@/app/functions/PartyList';
 import { Response } from '@/app/interfaces/Response';
 import { toast } from 'react-toastify';
 
-const ContactForm = ({ partyList }:{ partyList : PartyList }) => {
+const ContactForm = ({ partyList }: { partyList: PartyList }) => {
   const [formData, setFormData] = useState({
     message: ''
   });
@@ -33,14 +33,14 @@ const ContactForm = ({ partyList }:{ partyList : PartyList }) => {
     }
 
     try {
-      const res: Response = await SendMessageToPartyList({partyListId: partyList.id, message: formData.message})
+      const res: Response = await SendMessageToPartyList({ partyListId: partyList.id, message: formData.message })
       setFormData({
         message: ''
       });
-      if(res.message && res.type) {
-        return toast[res.type](res.message,{position: 'bottom-right'})
+      if (res.message && res.type) {
+        return toast[res.type](res.message, { position: 'bottom-right' })
       }
-    } catch (e : unknown) {
+    } catch (e: unknown) {
       console.error(e);
       throw new Error(`Failed To Send Message`);
     } finally {
@@ -63,16 +63,16 @@ const ContactForm = ({ partyList }:{ partyList : PartyList }) => {
               </div>
             </div>
           </CardHeader>
-          
+
           <CardContent className="p-8 space-y-6 bg-white dark:bg-slate-700">
             <form onSubmit={handleSubmit} className="space-y-4">
-        
+
 
               <div>
                 <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   ข้อความ
                 </label>
-                <Textarea 
+                <Textarea
                   id="message"
                   name="message"
                   value={formData.message}
@@ -83,10 +83,12 @@ const ContactForm = ({ partyList }:{ partyList : PartyList }) => {
                   className="w-full"
                 />
               </div>
-
-              <div className="pt-4">
-                <Button 
-                  type="submit" 
+              <div className="text-right">
+                <span className='text-gray-600 opacity-60'>ข้อความของทุกคนจะถูกเก็บเป็นความลับ</span>
+              </div>
+              <div>
+                <Button
+                  type="submit"
                   disabled={isSubmitting}
                   className="w-full bg-pink-400 hover:bg-pink-600 text-white"
                 >
@@ -100,7 +102,7 @@ const ContactForm = ({ partyList }:{ partyList : PartyList }) => {
                   )}
                 </Button>
               </div>
-        
+
             </form>
           </CardContent>
         </Card>

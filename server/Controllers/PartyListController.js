@@ -26,6 +26,10 @@ exports.AllPartyLists = async (req, res, next) => {
                       {
                           bio: {
                               classroom: { contains: search },
+                          },
+                      },
+                      {
+                          bio: {
                               skills: {
                                   some: {
                                       skill: { name: { contains: search } },
@@ -119,11 +123,11 @@ exports.SupportPartyList = async (req, res, next) => {
     try {
         const { partyListId } = req.body;
 
-        if(!partyListId) {
+        if (!partyListId) {
             return res.json({
                 message: "เกิดปัญหาบางอย่างกับเซิร์ฟเวอร์",
                 type: "error",
-            })
+            });
         }
 
         const partyList = await prisma.partyList.update({
@@ -132,29 +136,29 @@ exports.SupportPartyList = async (req, res, next) => {
             },
             data: {
                 support: {
-                    increment: 1
+                    increment: 1,
                 },
             },
         });
         res.status(200).json({
             message: `ส่งกำลังใจให้ ${partyList.nickName} เรียบร้อยแล้ว`,
             type: "success",
-        })
+        });
     } catch (e) {
         e.status = 400;
         next(e);
     }
-}
+};
 
 exports.SendMessage = async (req, res, next) => {
     try {
         const { partyListId, message } = req.body;
 
-        if(!partyListId) {
+        if (!partyListId) {
             return res.json({
                 message: "เกิดปัญหาบางอย่างกับเซิร์ฟเวอร์",
                 type: "error",
-            })
+            });
         }
         const partyList = await prisma.partyList.findFirst({
             where: {
@@ -171,12 +175,12 @@ exports.SendMessage = async (req, res, next) => {
         res.status(200).json({
             message: `ส่งข้อความถึง ${partyList.nickName} เรียบร้อยแล้ว`,
             type: "success",
-        })
+        });
     } catch (e) {
         e.status = 400;
         next(e);
     }
-}
+};
 
 exports.HomePagePartyLists = async (req, res) => {
     try {

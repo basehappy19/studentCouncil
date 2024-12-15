@@ -2,10 +2,11 @@
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 
-export const AllWorks = async ({search}:{search: string | undefined}) => {
+export const AllWorks = async ({search, tag}:{search: string | undefined, tag: string | undefined}) => {
     try {
         const params = new URLSearchParams();
         if (search) params.append("search", search.toString());
+        if (tag) params.append("tag", tag.toString());
 
         const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/works?${params.toString()}`;
         const res = await fetch(url ,{ next: { revalidate: 0 } });
@@ -20,6 +21,26 @@ export const AllWorks = async ({search}:{search: string | undefined}) => {
         } else {
             console.error('An unknown error occurred');
             throw new Error("Failed to Works");
+        }
+    }
+};
+
+export const AllTagsWithWork = async () => {
+    try {
+
+        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/work/tags`;
+        const res = await fetch(url ,{ next: { revalidate: 0 } });
+        if(!res.ok){
+            throw new Error(`Failed To Tags With Work`);
+        }
+        return res.json();
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            console.error(`Error Fetch Tags With Work: ${e.message}`);
+            throw new Error("Failed To Tags With Work");
+        } else {
+            console.error('An unknown error occurred');
+            throw new Error("Failed To Tags With Work");
         }
     }
 };
@@ -183,8 +204,6 @@ export const getOptionsForAddWork = async () => {
         }
     }
 }
-
-
   
 export const AddWork = async (
     {

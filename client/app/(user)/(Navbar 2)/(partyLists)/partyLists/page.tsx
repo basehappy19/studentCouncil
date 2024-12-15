@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 
 const AllPartyLists = async (props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) => {
   const searchParams = await props.searchParams
-  const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;    
-  const partyLists: PartyList[] = await getPartyLists({search});
+  const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;
+  const partyLists: PartyList[] = await getPartyLists({ search });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-yellow-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -27,7 +27,7 @@ const AllPartyLists = async (props: { searchParams: Promise<{ [key: string]: str
 
         <div className="relative container mx-auto px-4 py-16">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-yellow-500 to-pink-500 py-4">
+            <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-pink-400 dark:bg-pink-500 py-4">
               รายชื่อผู้สมัครสภานักเรียน
             </h1>
 
@@ -38,9 +38,7 @@ const AllPartyLists = async (props: { searchParams: Promise<{ [key: string]: str
 
       {/* Cards Grid Section */}
       <section className="container mx-auto px-4 py-12">
-        <div className="mb-6">
-          <SearchBar />
-        </div>
+        <SearchBar />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {partyLists.map((partyList, index) => (
             <div

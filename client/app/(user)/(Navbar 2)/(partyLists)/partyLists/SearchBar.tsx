@@ -28,7 +28,7 @@ const SearchBar = () => {
     }, [text, router, pathname, searchParams]);
 
     return (
-        <div className="w-full relative">
+        <div className="w-full relative mb-5">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
                 <Search size={24} />
             </div>

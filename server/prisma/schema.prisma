@@ -13,59 +13,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Department {
-  id          Int       @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
-  description String    @db.Text
+  description String     @db.Text
   color       String
   budget      Budget?
-  leaderId    Int?       @unique  
+  leaderId    Int?       @unique
   leader      PartyList? @relation("LeaderToDepartments", fields: [leaderId], references: [id])
+
+  @@index([leaderId])
 }
 
 model Budget {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String @db.Text
-  total       Float @default(0)
-  department  Department?  @relation(fields: [departmentId], references: [id])
-  departmentId    Int?      @unique
+  id           Int           @id @default(autoincrement())
+  title        String
+  description  String        @db.Text
+  total        Float         @default(0)
+  department   Department?   @relation(fields: [departmentId], references: [id])
+  departmentId Int?          @unique
   transactions Transaction[]
 }
 
 enum TransactionType {
-  INCOME   
-  EXPENSE  
+  INCOME
+  EXPENSE
 }
 
 model Transaction {
-  id              Int        @id @default(autoincrement())
-  title           String
-  description     String     @db.Text
-  amount          Float     
-  budgetBefore    Float     
-  budgetAfter     Float     
-  type            TransactionType 
-  byUserId        Int
-  byUser          User       @relation("TransactionsCreated", fields: [byUserId], references: [id])
-  editByUserId    Int?
-  editByUser      User?       @relation("TransactionsEdited", fields: [editByUserId], references: [id])
-  budgetId        Int
-  budget          Budget     @relation(fields: [budgetId], references: [id])
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  id           Int             @id @default(autoincrement())
+  title        String
+  description  String          @db.Text
+  amount       Float
+  budgetBefore Float
+  budgetAfter  Float
+  type         TransactionType
+  byUserId     Int
+  byUser       User            @relation("TransactionsCreated", fields: [byUserId], references: [id])
+  editByUserId Int?
+  editByUser   User?           @relation("TransactionsEdited", fields: [editByUserId], references: [id])
+  budgetId     Int
+  budget       Budget          @relation(fields: [budgetId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  @@index([byUserId])
 }
 
 enum CheckInType {
-  NORMAL           
-  SICK_LEAVE       
-  PERSONAL_LEAVE   
-  NOT_CHECKED_IN   
+  NORMAL
+  SICK_LEAVE
+  PERSONAL_LEAVE
+  NOT_CHECKED_IN
   ABSENT
   REQUEST_FOR_CHECK_IN
   FORGOT_TO_CHECK_IN
-  HOLIDAY          
+  HOLIDAY
   CLOSED_FOR_CHECK_IN
 }
 
@@ -76,111 +79,180 @@ enum SkipType {
 }
 
 model Setting {
-  id                Int      @id @default(autoincrement())
-  checkInOpen       Boolean  @default(true)
-  checkInStartTime  Int      @default(7) 
-  checkInEndTime    Int      @default(12)
-  checkInStartDay   Int      @default(1) 
-  checkInEndDay     Int      @default(5)
-  requestStartTime  Int      @default(9)
-  requestEndTime    Int      @default(12)
-  byUserId          Int
-  ByUser            User?    @relation("SettingSystem", fields: [byUserId], references: [id])
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id               Int      @id @default(autoincrement())
+  checkInOpen      Boolean  @default(true)
+  checkInStartTime Int      @default(7)
+  checkInEndTime   Int      @default(12)
+  checkInStartDay  Int      @default(1)
+  checkInEndDay    Int      @default(5)
+  requestStartTime Int      @default(9)
+  requestEndTime   Int      @default(12)
+  byUserId         Int
+  ByUser           User?    @relation("SettingSystem", fields: [byUserId], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([byUserId])
 }
 
-
 model SkipDay {
-  id         Int       @id @default(autoincrement())
-  date       DateTime  
-  type       SkipType  
-  reason     String?
-  byUserId   Int
-  ByUser     User?     @relation("SkipDay", fields: [byUserId], references: [id])
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  type      SkipType
+  reason    String?
+  byUserId  Int
+  ByUser    User?    @relation("SkipDay", fields: [byUserId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([byUserId])
 }
 
 model User {
-  id           Int        @id @default(autoincrement())
-  email        String
-  username     String
-  password     String
-  fullName     String
-  displayName  String
-  profile_image_full String @default("default-image-user_full.png")
-  profile_image_128x128 String @default("default-image-partyList_128x128.png")
-  order        Int
-  sid          Int
-  accessId     Int
-  access       Access     @relation(fields: [accessId], references: [id])
-  partyListId  Int?       @unique
-  partyList    PartyList? @relation(fields: [partyListId], references: [id])
-  checkIns     CheckIn[]  
-  works        Work[]     
-  operatedWorks WorkOperators[]
-  transactionsCreated Transaction[] @relation("TransactionsCreated")
-  transactionsEdited Transaction[] @relation("TransactionsEdited")
-  settings Setting[] @relation("SettingSystem")
-  createSkipDay SkipDay[] @relation("SkipDay")
-  checkInRequests   CheckInRequest[]
+  id                    Int              @id @default(autoincrement())
+  email                 String
+  username              String
+  password              String
+  fullName              String
+  displayName           String
+  profile_image_full    String           @default("default-image-user_full.png")
+  profile_image_128x128 String           @default("default-image-partyList_128x128.png")
+  order                 Int
+  sid                   Int
+  accessId              Int
+  access                Access           @relation(fields: [accessId], references: [id])
+  partyListId           Int?             @unique
+  partyList             PartyList?       @relation(fields: [partyListId], references: [id])
+  checkIns              CheckIn[]
+  works                 Work[]
+  operatedWorks         WorkOperators[]
+  transactionsCreated   Transaction[]    @relation("TransactionsCreated")
+  transactionsEdited    Transaction[]    @relation("TransactionsEdited")
+  settings              Setting[]        @relation("SettingSystem")
+  createSkipDay         SkipDay[]        @relation("SkipDay")
+  checkInRequests       CheckInRequest[]
+
+  @@index([accessId, partyListId])
 }
 
 model Work {
-  id          Int           @id @default(autoincrement())
+  id          Int             @id @default(autoincrement())
   title       String
-  description String        @db.Text
-  postById    Int           
-  postBy      User          @relation(fields: [postById], references: [id]) 
-  date  DateTime @default(now())
+  description String          @db.Text
+  postById    Int
+  postBy      User            @relation(fields: [postById], references: [id])
+  date        DateTime        @default(now())
   images      WorkImages[]
   operators   WorkOperators[]
   tags        TagInWorks[]
-  updatedAt   DateTime   @updatedAt
+  updatedAt   DateTime        @updatedAt
+
+  @@index([postById])
 }
 
 model WorkImages {
-  id      Int   @id @default(autoincrement())
-  path    String
-  workId  Int   
-  work    Work  @relation(fields: [workId], references: [id], onDelete: Cascade)
+  id     Int    @id @default(autoincrement())
+  path   String
+  workId Int
+  work   Work   @relation(fields: [workId], references: [id], onDelete: Cascade)
+
+  @@index([workId])
 }
 
 model WorkOperators {
-  id      Int   @id @default(autoincrement())
-  userId  Int   
-  workId  Int   
-  user    User  @relation(fields: [userId], references: [id])
-  work    Work  @relation(fields: [workId], references: [id], onDelete: Cascade)
+  id     Int  @id @default(autoincrement())
+  userId Int
+  workId Int
+  user   User @relation(fields: [userId], references: [id])
+  work   Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, workId]) 
+  @@unique([userId, workId])
+  @@index([userId, workId])
 }
 
 model WorkTag {
-  id      Int   @id @default(autoincrement())
-  title   String
-  icon    String?
-  color   String?
-  works   TagInWorks[]    
+  id     Int          @id @default(autoincrement())
+  title  String
+  iconId Int?
+  icon   Icon?        @relation(fields: [iconId], references: [id])
+  works  TagInWorks[]
+
+  @@index([iconId])
+}
+
+model Icon {
+  id           Int                @id @default(autoincrement())
+  name         String             @unique
+  contributors IconContributors[]
+  tags         IconTags[]
+  categories   IconCategories[]
+  workTags     WorkTag[]
+}
+
+model IconContributors {
+  id            Int         @id @default(autoincrement())
+  iconId        Int
+  icon          Icon        @relation(fields: [iconId], references: [id])
+  contributorId Int
+  contributor   Contributor @relation(fields: [contributorId], references: [id])
+
+  @@index([iconId])
+}
+
+model IconTags {
+  id     Int  @id @default(autoincrement())
+  iconId Int
+  icon   Icon @relation(fields: [iconId], references: [id])
+  tagId  Int
+  tag    Tag  @relation(fields: [tagId], references: [id])
+
+  @@index([iconId, tagId])
+}
+
+model IconCategories {
+  id         Int          @id @default(autoincrement())
+  iconId     Int
+  icon       Icon         @relation(fields: [iconId], references: [id])
+  categoryId Int
+  category   IconCategory @relation(fields: [categoryId], references: [id])
+
+  @@index([iconId, categoryId])
+}
+
+model Contributor {
+  id    Int                @id @default(autoincrement())
+  name  String             @unique
+  icons IconContributors[]
+}
+
+model Tag {
+  id    Int        @id @default(autoincrement())
+  name  String     @unique
+  icons IconTags[]
+}
+
+model IconCategory {
+  id    Int              @id @default(autoincrement())
+  name  String           @unique
+  icons IconCategories[]
 }
 
 model TagInWorks {
-  id      Int   @id @default(autoincrement())
-  workId  Int   
-  tagId   Int   
-  work    Work  @relation(fields: [workId], references: [id], onDelete: Cascade)
-  tag     WorkTag @relation(fields: [tagId], references: [id])
+  id     Int     @id @default(autoincrement())
+  workId Int
+  tagId  Int
+  work   Work    @relation(fields: [workId], references: [id], onDelete: Cascade)
+  tag    WorkTag @relation(fields: [tagId], references: [id])
 
   @@unique([workId, tagId])
 }
 
 model CheckInDay {
-  id          Int         @id @default(autoincrement())
-  dateTime    DateTime    @default(now()) 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  checkIns    CheckIn[] 
+  id              Int              @id @default(autoincrement())
+  dateTime        DateTime         @default(now())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  checkIns        CheckIn[]
   checkInRequests CheckInRequest[]
 }
 
@@ -188,11 +260,13 @@ model CheckIn {
   id           Int         @id @default(autoincrement())
   attendTime   DateTime?
   type         CheckInType @default(NOT_CHECKED_IN)
-  reason       String?     
-  userId       Int         
+  reason       String?
+  userId       Int
   user         User        @relation(fields: [userId], references: [id])
-  checkInDayId Int        
+  checkInDayId Int
   checkInDay   CheckInDay  @relation(fields: [checkInDayId], references: [id])
+
+  @@index([userId, checkInDayId])
 }
 
 enum CheckInRequestStatus {
@@ -202,22 +276,29 @@ enum CheckInRequestStatus {
 }
 
 model CheckInRequest {
-  id           Int                @id @default(autoincrement())
-  userId       Int                
-  user         User               @relation(fields: [userId], references: [id])
-  checkInDayId Int        
-  checkInDay   CheckInDay  @relation(fields: [checkInDayId], references: [id])       
-  timeRequested DateTime         
-  status       CheckInRequestStatus @default(PENDING)
-  createdAt    DateTime           @default(now()) 
-  updatedAt    DateTime           @updatedAt    
+  id            Int                  @id @default(autoincrement())
+  userId        Int
+  user          User                 @relation(fields: [userId], references: [id])
+  checkInDayId  Int
+  checkInDay    CheckInDay           @relation(fields: [checkInDayId], references: [id])
+  timeRequested DateTime
+  status        CheckInRequestStatus @default(PENDING)
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  @@index([checkInDayId])
 }
 
 model Access {
-  id  Int @id @default(autoincrement())
-  name String 
-  description String  @db.Text
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String @db.Text
   user        User[]
+}
+
+enum VoteType {
+  PUBLIC
+  SECRET
 }
 
 model Vote {
@@ -228,282 +309,311 @@ model Vote {
   refers      VoteRefer[]
   documents   VoteDocument[]
   result      VoteResult?
+  type        VoteType       @default(PUBLIC)
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 }
 
 model Refer {
-  id     Int        @id @default(autoincrement())
-  name   String
-  votes  VoteRefer[] 
+  id    Int         @id @default(autoincrement())
+  name  String
+  votes VoteRefer[]
 }
 
 model Document {
-  id     Int        @id @default(autoincrement())
-  name   String
-  path   String
-  votes  VoteDocument[]
+  id    Int            @id @default(autoincrement())
+  name  String
+  path  String
+  votes VoteDocument[]
 }
 
 model VoteRefer {
-  id      Int     @id @default(autoincrement())
-  voteId  Int     
-  referId Int     
-  vote    Vote    @relation(fields: [voteId], references: [id], onDelete: Cascade) 
-  refer   Refer   @relation(fields: [referId], references: [id], onDelete: Cascade)
+  id      Int   @id @default(autoincrement())
+  voteId  Int
+  referId Int
+  vote    Vote  @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  refer   Refer @relation(fields: [referId], references: [id], onDelete: Cascade)
 
   @@unique([voteId, referId])
+  @@index([voteId, referId])
 }
 
 model VoteDocument {
-  id         Int     @id @default(autoincrement())
-  voteId     Int     
-  documentId Int     
-  vote       Vote      @relation(fields: [voteId], references: [id], onDelete: Cascade)
-  document   Document  @relation(fields: [documentId], references: [id], onDelete: Cascade) 
+  id         Int      @id @default(autoincrement())
+  voteId     Int
+  documentId Int
+  vote       Vote     @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
   @@unique([voteId, documentId])
+  @@index([voteId, documentId])
 }
 
 model VoteResult {
-  id              Int               @id @default(autoincrement())
-  maxAttendees    VoteMaxAttendees? @relation(fields: [maxAttendeesId], references: [id], onDelete: Cascade) // ใช้ onDelete ที่นี่
-  maxAttendeesId  Int?              @unique
-  agrees          VoteAgree[]
-  disagrees       VoteDisagree[]   
-  abstains        VoteAbstain[]     
-  noVotes         NoVote[]          
-  vote            Vote              @relation(fields: [voteId], references: [id], onDelete: Cascade)
-  voteId          Int               @unique
+  id             Int               @id @default(autoincrement())
+  maxAttendeesId Int?              @unique
+  maxAttendees   VoteMaxAttendees? @relation(fields: [maxAttendeesId], references: [id], onDelete: Cascade)
+  agrees         VoteAgree[]
+  disagrees      VoteDisagree[]
+  abstains       VoteAbstain[]
+  noVotes        NoVote[]
+  voteId         Int               @unique
+  vote           Vote              @relation(fields: [voteId], references: [id], onDelete: Cascade)
+
+  @@index([maxAttendeesId, voteId])
 }
 
 model VoteMaxAttendees {
-  id     Int @id @default(autoincrement())
+  id     Int         @id @default(autoincrement())
   number Int
-  result VoteResult? @relation() 
+  result VoteResult? @relation()
 }
 
 model VoteAgree {
   id          Int        @id @default(autoincrement())
-  partyListId Int        
-  resultId    Int        
-  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade) 
-  partyList   PartyList  @relation(fields: [partyListId], references: [id]) 
+  partyListId Int
+  resultId    Int
+  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
+  partyList   PartyList  @relation(fields: [partyListId], references: [id])
 
-  @@unique([partyListId, resultId]) 
+  @@unique([partyListId, resultId])
+  @@index([partyListId, resultId])
 }
 
 model VoteDisagree {
   id          Int        @id @default(autoincrement())
-  partyListId Int        
-  resultId    Int        
-  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade) 
+  partyListId Int
+  resultId    Int
+  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
   partyList   PartyList  @relation(fields: [partyListId], references: [id])
 
-  @@unique([partyListId, resultId]) 
+  @@unique([partyListId, resultId])
+  @@index([partyListId, resultId])
 }
 
 model VoteAbstain {
   id          Int        @id @default(autoincrement())
-  partyListId Int        
-  resultId    Int        
-  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade) 
+  partyListId Int
+  resultId    Int
+  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
   partyList   PartyList  @relation(fields: [partyListId], references: [id])
 
-  @@unique([partyListId, resultId]) 
+  @@unique([partyListId, resultId])
+  @@index([partyListId, resultId])
 }
 
 model NoVote {
   id          Int        @id @default(autoincrement())
-  partyListId Int        
+  partyListId Int
   reason      String?    @default("ไม่อยู่ลงคะแนน")
-  resultId    Int        
-  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade) 
-  partyList   PartyList  @relation(fields: [partyListId], references: [id]) 
+  resultId    Int
+  result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
+  partyList   PartyList  @relation(fields: [partyListId], references: [id])
 
-  @@unique([partyListId, resultId]) 
+  @@unique([partyListId, resultId])
+  @@index([partyListId, resultId])
 }
 
 model PartyList {
-  id                     Int                @id @default(autoincrement())
-  firstName              String
-  middleName             String?
-  lastName               String
-  nickName               String
-  fullName               String
-  bio                    Bio?               @relation(fields: [bioId], references: [id])
-  bioId                  Int?               @unique
-  contacts               Contact[]
-  rank                   String             @unique
-  profile_image_full     String             @default("default-image-partyList.png")
-  profile_image_128x128  String             @default("default-image-partyList_128x128.png")
-  roles                  RoleForPartyList[]
-  showInHomepage         Boolean            @default(false)
-  order                  Int
-  orderInHomepage        Int?
-  support                Int                @default(0)
-  user                   User?              @relation 
-  voteAgrees             VoteAgree[]
-  voteDisagrees          VoteDisagree[]
-  voteAbstains           VoteAbstain[]
-  noVotes                NoVote[]
-  departmentsLeader      Department[]       @relation("LeaderToDepartments")
-  messagesToPartyList    MessageToPartyList[]
+  id                    Int                  @id @default(autoincrement())
+  firstName             String
+  middleName            String?
+  lastName              String
+  nickName              String
+  fullName              String
+  bio                   Bio?                 @relation(fields: [bioId], references: [id])
+  bioId                 Int?                 @unique
+  contacts              Contact[]
+  rank                  String               @unique
+  profile_image_full    String               @default("default-image-partyList.png")
+  profile_image_128x128 String               @default("default-image-partyList_128x128.png")
+  roles                 RoleForPartyList[]
+  showInHomepage        Boolean              @default(false)
+  order                 Int
+  orderInHomepage       Int?
+  support               Int                  @default(0)
+  user                  User?                @relation
+  voteAgrees            VoteAgree[]
+  voteDisagrees         VoteDisagree[]
+  voteAbstains          VoteAbstain[]
+  noVotes               NoVote[]
+  departmentsLeader     Department[]         @relation("LeaderToDepartments")
+  messagesToPartyList   MessageToPartyList[]
 }
 
-
 model MessageToPartyList {
-  id Int @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   partyListId Int
   partyList   PartyList @relation(fields: [partyListId], references: [id])
-  message   String @db.Text
+  message     String    @db.Text
+
+  @@index([partyListId])
 }
 
 model Role {
-  id Int @id @default(autoincrement())
-  name String
+  id      Int                @id @default(autoincrement())
+  name    String
   parties RoleForPartyList[]
 }
 
 model RoleForPartyList {
   id          Int       @id @default(autoincrement())
-  partyListId Int       
-  roleId      Int       
+  partyListId Int
+  roleId      Int
   partyList   PartyList @relation(fields: [partyListId], references: [id])
   role        Role      @relation(fields: [roleId], references: [id])
 
-  @@unique([partyListId, roleId]) 
+  @@unique([partyListId, roleId])
+  @@index([partyListId, roleId])
 }
 
 model Bio {
-  id                Int           @id @default(autoincrement())
-  shortMessage      String
-  classroom         String
-  experiences       ExperienceOwnPartyList[]
-  skills            SkillOwnPartyList[]
-  messageToStudent  String
-  partyList         PartyList?    @relation 
+  id               Int                      @id @default(autoincrement())
+  shortMessage     String
+  classroom        String
+  experiences      ExperienceOwnPartyList[]
+  skills           SkillOwnPartyList[]
+  messageToStudent String
+  partyList        PartyList?               @relation
 }
 
 model Experience {
-  id Int @id @default(autoincrement())
-  title String
-  owners      ExperienceOwnPartyList[]
+  id     Int                      @id @default(autoincrement())
+  title  String
+  owners ExperienceOwnPartyList[]
 }
 
 model ExperienceOwnPartyList {
-  id            Int        @id @default(autoincrement())
-  experienceId  Int       
-  bioId         Int        
-  experience    Experience @relation(fields: [experienceId], references: [id])
-  bio           Bio        @relation(fields: [bioId], references: [id])
-  @@unique([experienceId, bioId]) 
+  id           Int        @id @default(autoincrement())
+  experienceId Int
+  bioId        Int
+  experience   Experience @relation(fields: [experienceId], references: [id])
+  bio          Bio        @relation(fields: [bioId], references: [id])
+
+  @@unique([experienceId, bioId])
+  @@index([experienceId, bioId])
 }
 
 model Skill {
-  id Int @id @default(autoincrement())
-  name String
-  icon String?
+  id     Int                 @id @default(autoincrement())
+  name   String
+  icon   String?
   owners SkillOwnPartyList[]
 }
 
 model SkillOwnPartyList {
-  id Int @id @default(autoincrement())
+  id      Int   @id @default(autoincrement())
   skillId Int
-  bioId Int
-  skill Skill @relation(fields: [skillId], references: [id])
-  bio Bio @relation(fields: [bioId], references: [id])
+  bioId   Int
+  skill   Skill @relation(fields: [skillId], references: [id])
+  bio     Bio   @relation(fields: [bioId], references: [id])
+
+  @@index([skillId, bioId])
 }
 
 model Contact {
-  id          Int        @id @default(autoincrement())
-  username    String?     
-  link        String     
-  partyListId Int        
-  partyList   PartyList  @relation(fields: [partyListId], references: [id])
-  platformId  Int        
-  platform    Platform   @relation(fields: [platformId], references: [id])
+  id          Int       @id @default(autoincrement())
+  username    String?
+  link        String
+  partyListId Int
+  partyList   PartyList @relation(fields: [partyListId], references: [id])
+  platformId  Int
+  platform    Platform  @relation(fields: [platformId], references: [id])
 
-  @@unique([partyListId, platformId]) 
+  @@unique([partyListId, platformId])
+  @@index([partyListId, platformId])
 }
 
 model Platform {
-  id     Int     @id @default(autoincrement())
-  name   String  
-  icon   String  
-  color  String  
-  contacts Contact[] 
+  id       Int       @id @default(autoincrement())
+  name     String
+  icon     String
+  color    String
+  contacts Contact[]
 }
 
 model Category {
-  id    Int    @id @default(autoincrement())
-  title String
-  icon  String?
-  thumbnailImage  String
-  subCategories SubCategory[] 
-  policies Policy[]
+  id             Int           @id @default(autoincrement())
+  title          String
+  icon           String?
+  thumbnailImage String
+  subCategories  SubCategory[]
+  policies       Policy[]
 }
 
 model SubCategory {
-  id          Int              @id @default(autoincrement())
-  title       String
-  icon        String?
-  categoryId  Int              
-  category    Category         @relation(fields: [categoryId], references: [id])
-  policies    PolicySubCategory[] 
+  id         Int                 @id @default(autoincrement())
+  title      String
+  icon       String?
+  categoryId Int
+  category   Category            @relation(fields: [categoryId], references: [id])
+  policies   PolicySubCategory[]
+
+  @@index([categoryId])
 }
 
 model Policy {
-  id              Int                @id @default(autoincrement())
-  rank            String
-  title           String
-  thumbnailImage  String
-  categoryId      Int              
-  category        Category           @relation(fields: [categoryId], references: [id])
-  isApproved      Boolean            @default(true)
-  subCategories   PolicySubCategory[]
-  progresses      ProgressPolicy[] 
-  description     PolicyDescription @relation(fields: [descriptionId], references: [id])
-  descriptionId   Int             @unique
+  id             Int                 @id @default(autoincrement())
+  rank           String
+  title          String
+  thumbnailImage String
+  categoryId     Int
+  category       Category            @relation(fields: [categoryId], references: [id])
+  like           Int                 @default(0)
+  isApproved     Boolean             @default(true)
+  subCategories  PolicySubCategory[]
+  progresses     ProgressPolicy[]
+  description    PolicyDescription   @relation(fields: [descriptionId], references: [id])
+  descriptionId  Int                 @unique
+  messagesToPolicy   CommentPolicy[]
+
+  @@index([categoryId, descriptionId])
+}
+
+model CommentPolicy {
+  id       Int    @id @default(autoincrement())
+  policyId Int
+  policy   Policy @relation(fields: [policyId], references: [id])
+  message  String @db.Text
+
+  @@index([policyId])
 }
 
 model PolicyDescription {
-  id        Int     @id @default(autoincrement())
-  problem   String  @db.Text
-  offer     String  @db.Text
-  budget    String  @db.Text
-  policy    Policy? @relation
+  id      Int     @id @default(autoincrement())
+  problem String  @db.Text
+  offer   String  @db.Text
+  budget  String  @db.Text
+  policy  Policy? @relation
 }
 
-
 model PolicySubCategory {
-  id             Int          @id @default(autoincrement())
-  policyId       Int          
-  subCategoryId  Int          
-  policy         Policy       @relation(fields: [policyId], references: [id])
-  subCategory    SubCategory  @relation(fields: [subCategoryId], references: [id])
+  id            Int         @id @default(autoincrement())
+  policyId      Int
+  subCategoryId Int
+  policy        Policy      @relation(fields: [policyId], references: [id])
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id])
 
-  @@unique([policyId, subCategoryId]) 
+  @@unique([policyId, subCategoryId])
+  @@index([policyId, subCategoryId])
 }
 
 model Status {
-  id     Int      @id @default(autoincrement())
-  name   String   
-  color  String   
-  step   Int?  @unique
-  progresses ProgressPolicy[] 
+  id         Int              @id @default(autoincrement())
+  name       String
+  color      String
+  step       Int?             @unique
+  progresses ProgressPolicy[]
 }
 
 model ProgressPolicy {
   id          Int      @id @default(autoincrement())
-  statusId    Int      
-  policyId    Int      
+  statusId    Int
+  policyId    Int
   description String   @db.Text
-  startedAt   DateTime @default(now()) 
+  startedAt   DateTime @default(now())
   status      Status   @relation(fields: [statusId], references: [id])
   policy      Policy   @relation(fields: [policyId], references: [id])
+
+  @@index([statusId, policyId])
 }
-
-
-
-

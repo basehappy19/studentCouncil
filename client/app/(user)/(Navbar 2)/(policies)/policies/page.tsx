@@ -2,11 +2,11 @@ import { RecommendPolicies } from "@/app/functions/Policy"
 import { Policy } from "@/app/interfaces/Policy/Policy"
 import { Category } from "@/app/interfaces/Category/category"
 import CategoryCard from "@/components/Policy/CategoryCard"
-import Link from "next/link"
 import type { Metadata } from "next"
 import { AllCategories } from "@/app/functions/Category"
-import { ArrowRight, Layout, Bookmark } from "lucide-react"
 import TagInHeader from "@/app/layouts/TagInHeader"
+import RecommendPolicy from "./RecommendPolicy"
+import { Bookmark, Layout } from "lucide-react"
 
 export const metadata: Metadata = {
   title: `หมวดนโยบาย ${process.env.NEXT_PUBLIC_APP_TITLE}`,
@@ -34,8 +34,8 @@ async function PolicyCategories() {
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <TagInHeader icon="Sparkles" color="text-yellow-400" title="นโยบายทั้งหมด" />
 
-            <h1 className="text-5xl md:text-7xl font-bold">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-yellow-500 to-pink-500">
+            <h1 className="text-3xl md:text-7xl font-bold">
+              <span className="bg-clip-text text-transparent bg-pink-400 dark:bg-pink-500">
                 นโยบายทั้งหมด
               </span>
             </h1>
@@ -49,33 +49,20 @@ async function PolicyCategories() {
 
       <section className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">
-          <Bookmark className={`w-6 h-6 dark:text-blue-400 text-blue-600`} />
+          <Bookmark className={`w-6 h-6 dark:text-pink-400 text-pink-600`} />
           <h2 className={`text-2xl font-semibold dark:text-gray-200 text-gray-800`}>
             นโยบายที่คุณอาจสนใจ
           </h2>
         </div>
 
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 w-1 bg-blue-400 dark:bg-white pointer-events-none" />
-          <div className="absolute inset-y-0 right-0 w-1 bg-blue-400 dark:bg-white pointer-events-none" />
+          <div className="absolute inset-y-0 left-0 w-1 bg-pink-400 dark:bg-white pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-1 bg-pink-400 dark:bg-white pointer-events-none" />
           
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex items-center flex-row px-4 gap-4">
               {policies.map((policy) => (
-                <Link
-                  key={policy.id}
-                  href={`/policy/detail/${policy.id}`}
-                  className={`
-                    group flex items-center gap-2
-                    whitespace-nowrap px-6 py-4 rounded-full
-                    transition-all duration-300 
-                    dark:bg-blue-500 dark:hover:bg-blue-600 dark:text-gray-200
-                    bg-white hover:bg-blue-500 text-gray-800 hover:text-white
-                  `}
-                >
-                  <span>{policy.title}</span>
-                  <ArrowRight className="w-4 h-4 opacity-100 transition-opacity" />
-                </Link>
+                <RecommendPolicy key={policy.id} policy={policy} />
               ))}
             </div>
           </div>
@@ -84,7 +71,7 @@ async function PolicyCategories() {
 
       <section className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-12">
-          <Layout className={`w-6 h-6 dark:text-blue-400 text-blue-600`} />
+          <Layout className={`w-6 h-6 dark:text-pink-400 text-pink-600`} />
           <h2 className={`text-2xl font-semibold dark:text-gray-200 text-gray-800`}>
             หมวดนโยบาย
           </h2>

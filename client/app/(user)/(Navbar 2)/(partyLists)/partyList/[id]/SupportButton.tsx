@@ -1,25 +1,17 @@
-'use client'
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PartyList } from '@/app/interfaces/PartyList/partylist';
 import { SupportPartyList } from '@/app/functions/PartyList';
 
 const SupportButton = ({ partyList }: { partyList: PartyList }) => {
-    const [isSupported, setIsSupported] = useState(false);
 
-    useEffect(() => {
-        const supportedParties = JSON.parse(localStorage.getItem('supportedParties') || '[]');
-        if (supportedParties.includes(partyList.id)) {
-            setIsSupported(true);
-        }
-    }, [partyList.id]);
-
+    const supportedParties = JSON.parse(localStorage.getItem('supportedParties') || '[]');
+    const canSupport = supportedParties.includes(partyList.id) ? false : true
     const handleSupport = async () => {
-        if (!isSupported) {
+        if (canSupport) {
             try {
                 await SupportPartyList({ partyListId: partyList.id });
-                setIsSupported(true);
 
                 const supportedParties = JSON.parse(localStorage.getItem('supportedParties') || '[]');
                 supportedParties.push(partyList.id);
@@ -45,10 +37,10 @@ const SupportButton = ({ partyList }: { partyList: PartyList }) => {
                             </div>
                             <Button
                                 onClick={handleSupport}
-                                disabled={isSupported}
+                                disabled={!canSupport}
                                 className={`
                                     relative group
-                                    ${isSupported
+                                    ${!canSupport
                                         ? 'bg-pink-600 cursor-not-allowed'
                                         : 'bg-pink-600 hover:bg-pink-700'}
                                     text-white py-6 px-8 rounded-full text-xl
@@ -60,15 +52,15 @@ const SupportButton = ({ partyList }: { partyList: PartyList }) => {
                                 <Heart
                                     className={`
                                         w-10 h-10 
-                                        ${isSupported
+                                        ${!canSupport
                                         ? 'text-red-500 dark:text-red-400'
                                         : 'text-white group-hover:scale-110 transition-transform'}
-                                        ${isSupported ? '' : 'animate-pulse'}
+                                        ${!canSupport ? '' : 'animate-pulse'}
                                     `}
-                                    fill={isSupported ? 'currentColor' : 'none'}
+                                    fill={!canSupport ? 'currentColor' : 'none'}
                                 />
                                 <span>
-                                    {isSupported
+                                    {!canSupport
                                         ? 'ให้กำลังใจแล้ว'
                                         : 'ให้กำลังใจ'}
                                 </span>

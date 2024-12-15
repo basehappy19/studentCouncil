@@ -2,7 +2,7 @@ import { Category } from "@/app/interfaces/Category/category";
 import { Policy, StatisticProgresses as InterfaceStatisticProgresses, Status } from "@/app/interfaces/Policy/Policy";
 import { AllCategories } from "@/app/functions/Category";
 import { AllPolicyProgresses, AllStatuses, StatisticProgresses } from "@/app/functions/Policy";
-import SectionComponents from "./section";
+import Section from "./section";
 import type { Metadata } from "next";
 
 export const metadata : Metadata = {
@@ -53,7 +53,7 @@ async function PolicyTrack(props: { params: Promise<{ slug: string[] }> }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-yellow-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      <SectionComponents policyProgressesStatus={policyProgressesStatus} params={params} categories={categories} policies={policies} statuses={statuses}/>
+      <Section policyProgressesStatus={policyProgressesStatus} params={params} categories={categories} policies={policies} statuses={statuses}/>
     </div>
   );
 }

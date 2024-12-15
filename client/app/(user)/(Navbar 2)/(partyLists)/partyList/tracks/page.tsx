@@ -56,8 +56,8 @@ const CheckInTrack = async (props: {
                             title="ติดตามสภานักเรียนทุกคน"
                         />
 
-                        <h1 className="text-5xl md:text-7xl font-bold">
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-yellow-500 to-pink-500">
+                        <h1 className="text-3xl md:text-7xl font-bold">
+                            <span className="bg-clip-text text-transparent bg-pink-400 dark:bg-pink-500">
                                 ติดตามการเข้าทำงาน
                             </span>
                         </h1>

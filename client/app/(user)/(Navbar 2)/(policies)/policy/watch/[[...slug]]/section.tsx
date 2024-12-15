@@ -1,11 +1,8 @@
-'use client'
-import { motion } from "framer-motion";
 import {
     CheckCircle,
     PlusCircle,
     ClipboardCheck,
-    TrendingUp,
-    Users
+    LayoutDashboard
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -15,142 +12,83 @@ import { Policy, StatisticProgresses as InterfaceStatisticProgresses, Status } f
 import { Category } from "@/app/interfaces/Category/category";
 import TagInHeader from "@/app/layouts/TagInHeader";
 
-const SectionComponents = ({ policyProgressesStatus, params, categories, policies, statuses }: { policyProgressesStatus: InterfaceStatisticProgresses, params: { slug: string[] }, categories: Category[], policies: Policy[], statuses: Status[] }) => {
+const Section = ({ policyProgressesStatus, params, categories, policies, statuses }: { policyProgressesStatus: InterfaceStatisticProgresses, params: { slug: string[] }, categories: Category[], policies: Policy[], statuses: Status[] }) => {
 
-    const fadeInUp = {
-        initial: { opacity: 0, y: 20 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.5 }
-    };
-
-    const staggerContainer = {
-        animate: {
-            transition: {
-                staggerChildren: 0.1
-            }
-        }
-    };
     return (
         <>
-            <HeroSection fadeInUp={fadeInUp} staggerContainer={staggerContainer} />
-            <StatsSection fadeInUp={fadeInUp} staggerContainer={staggerContainer} policyProgressesStatus={policyProgressesStatus} />
-            <CategoriesAndPoliciesSection fadeInUp={fadeInUp} staggerContainer={staggerContainer} params={params} categories={categories} policies={policies} statuses={statuses} />
+            <HeroSection />
+            <StatsSection policyProgressesStatus={policyProgressesStatus} />
+            <CategoriesAndPoliciesSection params={params} categories={categories} policies={policies} statuses={statuses} />
         </>
     )
 }
 
-export default SectionComponents
+export default Section
 
-export const HeroSection = ({ fadeInUp, staggerContainer }:
-    {
-        fadeInUp: {
-            initial: { opacity: number, y: number },
-            animate: { opacity: number, y: number },
-            transition: { duration: number }
-        },
-        staggerContainer: {
-            animate: {
-                transition: {
-                    staggerChildren: number
-                }
-            }
-        }
-    }
-) => {
-
+export const HeroSection = () => {
     return (
-        <motion.section
-            initial="initial"
-            animate="animate"
-            variants={fadeInUp}
+        <section
             className="relative py-20 overflow-hidden"
         >
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-yellow-400/20 to-pink-400/20 backdrop-blur-sm" />
             <div className="relative container mx-auto px-4">
-                <motion.div
+                <div
                     className="flex flex-col items-center space-y-4"
-                    variants={staggerContainer}
                 >
-                    <motion.div
-                        variants={fadeInUp}
-                    >
+                    <div>
 
                         <TagInHeader icon="Rocket" color="text-blue-500" title="ติดตามความคืบหน้า" />
 
-                    </motion.div>
+                    </div>
 
-                    <motion.h1
-                        variants={fadeInUp}
-                        className="text-center text-5xl md:text-7xl font-bold mb-3"
+                    <h1
+                        className="text-center text-3xl md:text-7xl font-bold mb-3"
                     >
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-yellow-500 to-pink-500">
+                        <span className="bg-clip-text text-transparent bg-pink-400 dark:bg-pink-500">
                             จับตานโยบายเดินทาง
                         </span>
-                    </motion.h1>
-                    <motion.h1
-                        variants={fadeInUp}
-                        className="text-center text-5xl md:text-7xl font-bold"
+                    </h1>
+                    <h1
+                        className="text-center text-3xl md:text-7xl font-bold"
                     >
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-yellow-500 to-pink-500">
+                        <span className="bg-clip-text text-transparent bg-pink-400 dark:bg-pink-500">
                             ไปถึงขั้นตอนไหนแล้ว
                         </span>
-                    </motion.h1>
-                </motion.div>
+                    </h1>
+                </div>
             </div>
-        </motion.section>
+        </section>
     )
 }
 
-export const StatsSection = ({ fadeInUp, staggerContainer, policyProgressesStatus }:
-    {
-        fadeInUp: {
-            initial: { opacity: number, y: number },
-            animate: { opacity: number, y: number },
-            transition: { duration: number }
-        },
-        staggerContainer: {
-            animate: {
-                transition: {
-                    staggerChildren: number
-                }
-            }
-        },
-        policyProgressesStatus: InterfaceStatisticProgresses
-    }
-) => {
+export const StatsSection = ({ policyProgressesStatus }: { policyProgressesStatus: InterfaceStatisticProgresses }) => {
 
     return (
-        <motion.section
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
+        <section
             className="container mx-auto px-4 pt-12"
         >
             <div className="grid grid-cols-2 md:grid-cols-12 gap-4">
-                <motion.div
-                    variants={fadeInUp}
+                <div
                     className="col-span-2 md:col-span-6"
                 >
                     <Card className="hover:shadow-lg transition-all duration-300">
                         <CardContent className="flex items-center justify-between p-6">
                             <div className="flex items-center gap-3">
                                 <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
-                                    <Users className="w-6 h-6 text-blue-600 dark:text-blue-300" />
+                                    <LayoutDashboard className="w-6 h-6 text-blue-600 dark:text-blue-300" />
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">นโยบายทั้งหมด</p>
                                     <h4 className="text-2xl font-bold">{policyProgressesStatus.policies}</h4>
                                 </div>
                             </div>
-                            <TrendingUp className="w-8 h-8 text-blue-500/50" />
                         </CardContent>
                     </Card>
-                </motion.div>
+                </div>
 
                 {policyProgressesStatus.statistic.map((status) => (
-                    <motion.div
+                    <div
                         key={status.statusId}
-                        variants={fadeInUp}
                         className="col-span-1 md:col-span-3"
                     >
                         <Card className="hover:shadow-lg transition-all duration-300">
@@ -164,27 +102,15 @@ export const StatsSection = ({ fadeInUp, staggerContainer, policyProgressesStatu
                                 </div>
                             </CardContent>
                         </Card>
-                    </motion.div>
+                    </div>
                 ))}
             </div>
-        </motion.section>
+        </section>
     )
 }
 
-export const CategoriesAndPoliciesSection = ({ fadeInUp, staggerContainer, params, categories, policies, statuses }:
+export const CategoriesAndPoliciesSection = ({ params, categories, policies, statuses }:
     {
-        fadeInUp: {
-            initial: { opacity: number, y: number },
-            animate: { opacity: number, y: number },
-            transition: { duration: number }
-        },
-        staggerContainer: {
-            animate: {
-                transition: {
-                    staggerChildren: number
-                }
-            }
-        },
         params: { slug: string[] },
         categories: Category[],
         policies: Policy[],
@@ -193,28 +119,26 @@ export const CategoriesAndPoliciesSection = ({ fadeInUp, staggerContainer, param
 ) => {
 
     return (
-        <motion.section
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
+        <section
             className="container mx-auto px-4 py-12"
         >
             <div className="space-y-8">
                 {/* Categories */}
-                <motion.div variants={fadeInUp} className="space-y-4">
+                <div className="space-y-4">
                     <div className="relative">
-                        <div className="absolute inset-y-0 left-0 w-1 bg-blue-400 dark:bg-white pointer-events-none" />
-                        <div className="absolute inset-y-0 right-0 w-1 bg-blue-400 dark:bg-white pointer-events-none" />
+                        <div className="absolute inset-y-0 left-0 w-1 bg-pink-400 dark:bg-white pointer-events-none" />
+                        <div className="absolute inset-y-0 right-0 w-1 bg-pink-400 dark:bg-white pointer-events-none" />
                         <div className="overflow-x-auto scrollbar-hide">
                             <div className="flex items-center flex-row px-4 gap-4">
                                 <Link
+                                    scroll={false}
                                     href="/policy/watch"
                                     className={cn(
-                                        "inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300",
+                                        "text-nowrap inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300",
                                         "hover:shadow-md hover:-translate-y-1 hover:text-white",
                                         !params.slug || params.slug.length !== 1
-                                            ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-                                            : "bg-white dark:bg-gray-800 dark:text-white hover:bg-blue-500 dark:hover:bg-blue-500"
+                                            ? "bg-pink-500 text-white shadow-lg shadow-pink-500/30"
+                                            : "bg-white dark:bg-gray-800 dark:text-white hover:bg-pink-500 dark:hover:bg-pink-500"
                                     )}
                                 >
                                     ทั้งหมด
@@ -227,14 +151,15 @@ export const CategoriesAndPoliciesSection = ({ fadeInUp, staggerContainer, param
 
                                 {categories.map((category) => (
                                     <Link
+                                        scroll={false}
                                         key={category.id}
                                         href={`/policy/watch/${category.id}`}
                                         className={cn(
-                                            "inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300",
+                                            "text-nowrap inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300",
                                             "hover:shadow-md hover:-translate-y-1 hover:text-white",
                                             params.slug && Number(params.slug[0]) === category.id
-                                                ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-                                                : "bg-white dark:bg-gray-800 dark:text-white hover:bg-blue-500 dark:hover:bg-blue-500"
+                                                ? "bg-pink-500 text-white shadow-lg shadow-pink-500/30"
+                                                : "bg-white dark:bg-gray-800 dark:text-white hover:bg-pink-500 dark:hover:bg-pink-500"
                                         )}
                                     >
                                         {category.title}
@@ -249,25 +174,22 @@ export const CategoriesAndPoliciesSection = ({ fadeInUp, staggerContainer, param
                         </div>
                     </div>
                     <p className="text-gray-600 dark:text-gray-300">หมวดหมู่นโยบาย</p>
-                </motion.div>
+                </div>
 
                 {/* Policy Cards Grid */}
-                <motion.div
-                    variants={staggerContainer}
+                <div
                     className="grid grid-cols-1 md:grid-cols-3 gap-6"
                 >
-                    {policies.map((policy, index) => (
-                        <motion.div
+                    {policies.map((policy) => (
+                        <div
                             key={policy.id}
-                            variants={fadeInUp}
-                            custom={index}
                             className="transform transition-all duration-300 hover:-translate-y-2"
                         >
                             <PolicyTrackCard policy={policy} statuses={statuses} />
-                        </motion.div>
+                        </div>
                     ))}
-                </motion.div>
+                </div>
             </div>
-        </motion.section>
+        </section>
     )
 }

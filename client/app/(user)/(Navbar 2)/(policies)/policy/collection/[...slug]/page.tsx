@@ -56,11 +56,11 @@ async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }
                   href={`/policy/collection/${category.id}`}
                 >
                   <div
-                    className={`inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
+                    className={`text-nowrap inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
                     hover:shadow-md hover:-translate-y-1 hover:text-white
                     ${Number(slug[0]) === category.id
-                        ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-                        : "bg-white dark:bg-gray-800 dark:text-white hover:bg-blue-500 dark:hover:bg-blue-500"
+                        ? "bg-pink-500 text-white shadow-lg shadow-pink-500/30"
+                        : "bg-white dark:bg-gray-800 dark:text-white hover:bg-pink-500 dark:hover:bg-pink-500"
                       }`}
                   >
                     {category.title}{" "}
@@ -74,7 +74,7 @@ async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }
               ))}
             </div>
           </div>
-          <div className="flex flex-col justify-between md:flex-row items-center">
+          <div className="my-10 flex flex-col gap-5 justify-between md:flex-row items-center">
             <h1 className="text-center text-5xl md:text-7xl font-bold w-full md:w-1/2">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-yellow-500 to-pink-500">
                 {categoryData.title}
@@ -94,18 +94,18 @@ async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }
       </section>
       <section className="container mx-auto px-4 py-12">
         <div className="relative container mx-auto px-4">
-          <div className="absolute inset-y-0 left-0 w-1 bg-blue-400 dark:bg-white pointer-events-none" />
-          <div className="absolute inset-y-0 right-0 w-1 bg-blue-400 dark:bg-white pointer-events-none" />
+          <div className="absolute inset-y-0 left-0 w-1 bg-pink-400 dark:bg-white pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-1 bg-pink-400 dark:bg-white pointer-events-none" />
 
           
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4">
               <Link href={`/policy/collection/${categoryData.id}`}
-                className={`inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
+                className={`text-nowrap inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
                 hover:shadow-md hover:-translate-y-1 hover:text-white
                 ${slug.length !== 2
-                    ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-                    : "bg-white dark:bg-gray-800 dark:text-white hover:bg-blue-500 dark:hover:bg-blue-500"
+                    ? "bg-pink-500 text-white shadow-lg shadow-pink-500/30"
+                    : "bg-white dark:bg-gray-800 dark:text-white hover:bg-pink-500 dark:hover:bg-pink-500"
                   }`}
               >
                 ทั้งหมด{" "}
@@ -122,7 +122,7 @@ async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }
                     href={`/policy/collection/${categoryData.id}/${subCategory.id}`}
                   >
                     <div
-                      className={`inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
+                      className={`text-nowrap inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
                 hover:shadow-md hover:-translate-y-1 hover:text-white
                       ${Number(slug[1]) === subCategory.id
                           ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
@@ -143,7 +143,7 @@ async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }
           </div>
         </div>
         <p className="text-gray-600 dark:text-gray-100 my-3 font-medium">หมวดหมู่เพิ่มเติม</p>
-        <div className="grid grid-cols-1 items-center justify-center space-y-6">
+        <div className="grid grid-cols-1 items-center justify-center space-y-12">
           {policies.map((policy) => (
             <div className="col-span-1" key={policy.id}>
               <PolicyCard policy={policy} />

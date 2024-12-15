@@ -54,8 +54,13 @@ interface TagInWorks {
 }
 
 export interface Tag {
+    id: number,
+    title: string,
+    icon: Icon,
+    works: Work[],
+}
+
+export interface Icon {
     id: number;
-    title: string;
-    icon?: string;
-    color?: string;
+    name: string;
 }

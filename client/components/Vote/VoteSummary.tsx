@@ -6,7 +6,7 @@ const VoteSummary = ({ summary }: { summary: TypeSummary }) => {
   const getStatusColor = (type : string) => {
     switch (type) {
       case 'Agree':
-        return 'bg-blue-500 hover:bg-blue-600';
+        return 'bg-green-500 hover:bg-green-600';
       case 'Disagree':
         return 'bg-rose-500 hover:bg-rose-600';
       case 'Abstention':

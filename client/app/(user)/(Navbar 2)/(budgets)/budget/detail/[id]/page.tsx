@@ -37,7 +37,7 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
                   className="w-48 h-48 rounded-full flex items-center justify-center"
                   style={{ backgroundColor: budget.department.color }}
                 >
-                  <span className="text-4xl font-bold text-white">
+                  <span className="text-center text-3xl font-bold text-white">
                     {budget.title}
                   </span>
                 </div>

@@ -7,6 +7,7 @@ export interface Policy {
   thumbnailImage: string;
   category: Category;
   isApproved: boolean;
+  like: number;
   description: Description;
   subCategories: SubCategories[];
   progresses: Progresses[];

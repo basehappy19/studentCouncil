@@ -5,7 +5,27 @@ const validateRequiredFields = require('../Functions/ValidateRequiredFields');
 exports.AllWorkTags = async(req, res, next)=>{
     try {
         const tags = await prisma.workTag.findMany()
-        res.send(tags).status(200)
+        res.status(200).send(tags)
+    } catch (e) {
+        e.status = 400; 
+        next(e);
+    }
+}
+
+exports.AllWorkTagsWithWork = async(req, res, next)=>{
+    try {
+        const tags = await prisma.workTag.findMany({
+            where:{
+                works: {
+                    some: {} 
+                }
+            },
+            include:{
+                works: true,
+                icon: true,
+            }
+        })
+        res.status(200).send(tags)
     } catch (e) {
         e.status = 400; 
         next(e);
@@ -34,7 +54,7 @@ exports.AddWorkTag = async(req, res, next)=>{
             },
         })
 
-        res.json({ message: `เพิ่มแท็กงาน ${title} เรียบร้อยแล้ว`, type:'success' }).status(201);
+        res.status(201).json({ message: `เพิ่มแท็กงาน ${title} เรียบร้อยแล้ว`, type:'success' })
     } catch (e) {
         e.status = 400; 
         next(e);

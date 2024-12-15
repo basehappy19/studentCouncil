@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Policy } from "@/app/interfaces/Policy/Policy";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -12,73 +12,79 @@ const PolicyCard = ({ policy }: { policy: Policy }) => {
   const policySrc = process.env.NEXT_PUBLIC_POLICY_IMG_PATH || "";
   const subcategoryIconSrc = process.env.NEXT_PUBLIC_POLICY_ICON_PATH || "";
   const categoryIconSrc = process.env.NEXT_PUBLIC_POLICY_CATEGORY_ICON_PATH || "";
-  
+
   return (
-    <Card 
+    <Card
       className={cn(
         "transition-all duration-300 hover:shadow-lg cursor-pointer",
-        "hover:translate-y-[-4px]"
+        "hover:translate-y-[-4px]",
       )}
       onClick={() => router.push(`/policy/detail/${policy.id}`)}
     >
-      <CardHeader className="p-0">
-        <div className="relative w-full h-48">
+      <div className="md:p-8 flex flex-col md:flex-row">
+        <div className="relative w-full md:w-1/3 h-48 md:h-auto">
           <Image
             fill
             src={policySrc + policy.thumbnailImage}
             alt={policy.title}
-            className="object-cover rounded-t-lg"
+            className="object-center object-cover rounded-md"
           />
-          <Badge 
-            variant="secondary" 
-            className="absolute top-4 right-4 bg-white/90 dark:bg-black backdrop-blur-sm"
+        </div>
+
+        {/* Content Container - Full width on mobile, right side on larger screens */}
+        <CardContent className="flex-grow p-6 space-y-4 md:w-2/3">
+          <Badge
+            variant="secondary"
+            className="bg-pink-200 dark:bg-pink-600"
           >
             {policy.rank}
           </Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="p-6">
-        <h3 className="text-2xl font-bold mb-4 line-clamp-2">
-          {policy.title}
-        </h3>
-        
-        <div className="flex flex-wrap gap-2">
-          <div className="flex items-center gap-1.5 text-sm">
-            <div className="relative w-4 h-4">
-              <Image
-                width={16}
-                height={16}
-                src={categoryIconSrc + policy.category.icon}
-                alt={policy.category.title}
-                className="object-contain"
-              />
-            </div>
-            <span className="text-muted-foreground">
-              {policy.category.title}
-            </span>
-          </div>
+          <h3 className="text-2xl font-bold line-clamp-2">
+            {policy.title}
+          </h3>
 
-          {policy.subCategories.map((subCategory) => (
-            <div 
-              key={subCategory.subCategory.id} 
-              className="flex items-center gap-1.5 text-sm"
-            >
+          <div className="flex flex-wrap gap-2">
+            {/* Category */}
+            <div className="flex items-center gap-1.5 text-sm">
               <div className="relative w-4 h-4">
                 <Image
                   width={16}
                   height={16}
-                  src={subcategoryIconSrc + subCategory.subCategory.icon}
-                  alt={subCategory.subCategory.title}
+                  src={categoryIconSrc + policy.category.icon}
+                  alt={policy.category.title}
                   className="object-contain"
                 />
               </div>
               <span className="text-muted-foreground">
-                {subCategory.subCategory.title}
+                {policy.category.title}
               </span>
             </div>
-          ))}
-        </div>
-      </CardContent>
+
+            {/* Subcategories */}
+            {policy.subCategories.map((subCategory) => (
+              <div
+                key={subCategory.subCategory.id}
+                className="flex items-center gap-1.5 text-sm"
+              >
+                <div className="relative w-4 h-4">
+                  <Image
+                    width={16}
+                    height={16}
+                    src={subcategoryIconSrc + subCategory.subCategory.icon}
+                    alt={subCategory.subCategory.title}
+                    className="object-contain"
+                  />
+                </div>
+                <span className="text-muted-foreground">
+                  {subCategory.subCategory.title}
+                </span>
+              </div>
+            ))}
+          </div>
+
+
+        </CardContent>
+      </div>
     </Card>
   );
 };

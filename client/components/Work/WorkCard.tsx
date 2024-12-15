@@ -14,81 +14,87 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { Calendar, FileText, Users } from 'lucide-react';
-
-
+import { Calendar, FileText, Users, ChevronRight } from 'lucide-react';
 
 const WorkCard = ({ work }: { work: Work }) => {
   const [hoveredOperatorId, setHoveredOperatorId] = useState<number | null>(null);
-  
-  return (
-    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg bg-gradient-to-br from-blue-50 to-pink-50 dark:bg-none dark:border-none dark:bg-slate-700 border-2 border-blue-200">
-      <div className="relative">
-        <div className="carousel-container">
-          <Carousel images={work.images} />
-        </div>
 
-        {/* Tags Container */}
-        <div className="absolute flex flex-wrap gap-2 top-4 left-4">
+  return (
+    <Card className="overflow-hidden shadow-lg rounded-xl transition-all duration-300 hover:shadow-2xl bg-white dark:bg-slate-800 border-none">
+      {/* Carousel Section */}
+      <div className="relative">
+        <Carousel images={work.images} />
+
+        {/* Tags Overlay */}
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2 z-10">
           {work.tags.map((tag) => (
             <Badge
               key={tag.id}
-              className="flex flex-row items-center gap-1 px-3 py-1 bg-blue-500/90 hover:bg-blue-600 backdrop-blur-sm"
+              className="flex items-center gap-1.5 px-3 py-1 bg-white/80 hover:bg-white backdrop-blur-md rounded-full shadow-sm"
             >
               <Image
-                loading = 'lazy'
+                loading='lazy'
                 width={16}
                 height={16}
-                src={`${process.env.NEXT_PUBLIC_WORK_ICON_PATH}${tag.tag.icon}`}
-                alt={tag.tag.title}
+                src={`${process.env.NEXT_PUBLIC_WORK_ICON_PATH}${tag.tag.icon.name}`}
+                alt={tag.tag.icon.name}
+                className="mr-1"
               />
-              <span className="text-white font-medium">{tag.tag.title}</span>
+              <span className="text-slate-700 font-medium text-sm">{tag.tag.title}</span>
             </Badge>
           ))}
         </div>
       </div>
 
-      <CardContent className="p-6 space-y-4">
-        {/* Title Section */}
-        <div className="flex items-center gap-2 pb-2 border-b border-blue-100">
-          <FileText className="w-5 h-5 text-blue-500" />
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-semibold text-blue-800 dark:text-blue-500">ชื่อผลงาน</span>
-            <span className="text-gray-700 dark:text-gray-200">{work.title}</span>
+      {/* Content Section */}
+      <CardContent className="p-6 space-y-5">
+        {/* Title */}
+        <div className="flex items-center gap-2 pb-3 border-b border-slate-200 dark:border-slate-700">
+          <FileText className="w-6 h-6 text-blue-600" />
+          <div className="flex-grow">
+            <h3 className="text-lg font-bold text-slate-800 dark:text-slate-200">ชื่อผลงาน</h3>
+            <p className="text-slate-600 dark:text-slate-300">{work.title}</p>
           </div>
         </div>
 
-        {/* Description Section */}
-        <div className="space-y-1">
-          <span className="font-semibold text-blue-800 dark:text-blue-500">คำอธิบาย</span>
-          <p className="text-gray-700 dark:text-gray-200 leading-relaxed">{work.description}</p>
+        {/* Description */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <ChevronRight className="w-5 h-5 text-blue-500" />
+            <h4 className="font-semibold text-slate-700 dark:text-blue-400">คำอธิบาย</h4>
+          </div>
+          <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm">
+            {work.description}
+          </p>
         </div>
 
-        {/* Date Section */}
-        <div className="flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-yellow-500" />
-          <span className="font-semibold text-blue-800 dark:text-blue-500">วันที่</span>
-          <span className="text-gray-700 dark:text-gray-200">
-            {(() => {
-              if (work.date !== null && work.date !== undefined) {
-                const date = new Date(work.date);
-                const thaiDate = date.toLocaleDateString('th-TH', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                });
-                return `${thaiDate}`;
-              }
-              return null;
-            })()}
-          </span>
+        {/* Date */}
+        <div className="flex items-center gap-3">
+          <Calendar className="w-5 h-5 text-amber-500" />
+          <div>
+            <h4 className="font-semibold text-slate-700 dark:text-blue-400">วันที่</h4>
+            <p className="text-slate-600 dark:text-slate-300">
+              {(() => {
+                if (work.date !== null && work.date !== undefined) {
+                  const date = new Date(work.date);
+                  const thaiDate = date.toLocaleDateString('th-TH', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  });
+                  return `${thaiDate}`;
+                }
+                return null;
+              })()}
+            </p>
+          </div>
         </div>
 
-        {/* Operators Section */}
-        <div className="flex items-start gap-2">
-          <Users className="w-5 h-5 text-pink-500" />
-          <div className="flex flex-col gap-2">
-            <span className="font-semibold text-blue-800 dark:text-blue-500">ผู้ดำเนินงาน</span>
+        {/* Operators */}
+        <div className="flex items-start gap-3">
+          <Users className="w-5 h-5 text-purple-500" />
+          <div>
+            <h4 className="font-semibold text-slate-700 dark:text-blue-400 mb-2">ผู้ดำเนินงาน</h4>
             <div className="flex flex-wrap gap-2">
               {work.operators.map((operator) => (
                 <TooltipProvider key={operator.id}>
@@ -98,7 +104,7 @@ const WorkCard = ({ work }: { work: Work }) => {
                       onMouseEnter={() => setHoveredOperatorId(operator.id)}
                       onMouseLeave={() => setHoveredOperatorId(null)}
                     >
-                      <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-pink-200">
+                      <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
                         <Image
                           fill={true}
                           src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + operator.user.partyList.profile_image_128x128}
@@ -107,8 +113,8 @@ const WorkCard = ({ work }: { work: Work }) => {
                         />
                       </div>
                     </TooltipTrigger>
-                    <TooltipContent className="bg-white border border-blue-100 shadow-lg">
-                      <p className="text-sm text-gray-700">
+                    <TooltipContent className="bg-white border border-slate-200 shadow-lg rounded-md">
+                      <p className="text-sm text-slate-700 p-1">
                         {operator.user.partyList.fullName}
                       </p>
                     </TooltipContent>
