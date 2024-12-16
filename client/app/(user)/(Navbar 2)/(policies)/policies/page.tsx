@@ -34,7 +34,7 @@ async function PolicyCategories() {
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <TagInHeader icon="Sparkles" color="text-yellow-400" title="นโยบายทั้งหมด" />
 
-            <h1 className="text-3xl md:text-7xl font-bold">
+            <h1 className="text-5xl md:text-7xl font-bold">
               <span className="bg-clip-text text-transparent bg-pink-400 dark:bg-pink-500">
                 นโยบายทั้งหมด
               </span>
