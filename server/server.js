@@ -12,6 +12,7 @@ const errorHandler = require("./Middlewares/ErrorHandler");
 const rateLimiter = new RateLimiterMemory({ points: 20, duration: 1 });
 const VerifyToken = require("./Middlewares/Verify");
 const AccessControlMiddleware = require("./Middlewares/AccessControlMiddleware.js");
+const path = require("path");
 const port = process.env.PORT || 8000;
 
 const app = express();
