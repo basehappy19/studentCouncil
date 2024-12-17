@@ -19,17 +19,20 @@ const app = express();
 if (process.env.NODE_ENV === "production") {
     dotenv.config({ path: ".env.production" });
     app.use(helmet());
+    app.use(morgan("combined"));
 } else {
     dotenv.config({ path: ".env.development" });
+    app.use(morgan("dev"));
 }
 
-app.use(morgan("dev"));
 app.use(cors());
 app.use(bodyParse.json({ limit: "10mb" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/px/Uploads", express.static("Uploads"));
 app.use("/Uploads", express.static("Uploads"));
+
 app.use("/px", require("./Routes/index.js"));
 app.use("", require("./Routes/index.js"));
 
@@ -48,8 +51,13 @@ app.use(async (req, res, next) => {
 });
 
 readdirSync("./Routes")
-    .filter((file) => file !== "index.js") 
-    .forEach((r) => app.use("/api", require("./Routes/" + r)));
+    .filter((file) => file !== "index.js")
+    .forEach((r) => {
+        const routePath = path.join(__dirname, "Routes", r);
+        const route = require(routePath);
+        app.use("/api", route);
+        app.use("/px/api", route);
+    });
 
 // ใช้ Error Handler
 app.use(errorHandler);
