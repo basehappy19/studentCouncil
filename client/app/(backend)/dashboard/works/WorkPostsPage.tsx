@@ -34,10 +34,7 @@ export const WorkPostsPage = ({ work } : { work : WorkStatistics }) => {
                         {work.tags.map(tagItem => (
                             <Badge
                                 key={tagItem.id}
-                                style={{
-                                    backgroundColor: tagItem.tag?.color || '#e0e0e0',
-                                    color: 'white'
-                                }}
+                                className='text-white'
                             >
                                 {tagItem.tag.title}
                             </Badge>
