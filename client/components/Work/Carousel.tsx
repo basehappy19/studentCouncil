@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { WorkImages } from "@/app/interfaces/Work/Work";
 import '@splidejs/react-splide/css';
-
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 
 const Carousel = ({ images }: { images: WorkImages[] }) => {
