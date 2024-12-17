@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
