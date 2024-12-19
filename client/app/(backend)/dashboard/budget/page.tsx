@@ -17,8 +17,8 @@ export const metadata: Metadata = {
             "หน้าจัดการงบประมาณสำหรับการวางแผนและบริหารจัดการงบประมาณโครงการภายในสภานักเรียน ทำให้ทุกคนสามารถติดตามได้อย่างโปร่งใสและมีประสิทธิภาพ",
     },
 };
-export const dynamic = 'force-dynamic'
 
+export const dynamic = 'force-dynamic'
 
 const DashBoardBudget = async (props: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>

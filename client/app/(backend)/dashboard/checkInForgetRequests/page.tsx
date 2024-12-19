@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import ActionButtons from './ActionButtons';
-export const dynamic = 'force-dynamic'
 
+export const dynamic = 'force-dynamic'
 const RequestForgetCheckIn = async () => {
     const requests: RequestData = await getForgetCheckInRequests();
 

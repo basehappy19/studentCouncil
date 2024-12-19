@@ -2,6 +2,7 @@ import { getUserData } from "@/app/functions/Auth";
 import CheckInStatus from "@/components/Backend/CheckIn/CheckInStatus";
 import ProfileCard from "@/components/Backend/Profile";
 import WorkStatisticsCard from "@/components/Backend/WorkStatisticsCard";
+
 export const dynamic = 'force-dynamic'
 
 const DashBoardIndex = async () => {

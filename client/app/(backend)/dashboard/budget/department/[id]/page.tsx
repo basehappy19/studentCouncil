@@ -2,6 +2,7 @@ import { getBudgetInDepartment } from '@/app/functions/Budget'
 import { Budget } from '@/app/interfaces/Budget/Budget'
 import TransactionZone from './TransactionZone'
 
+export const dynamic = 'force-dynamic'
 
 const TransactionInBudget = async (props: { params: Promise<{ id: string }> }) => {
     const params = await props.params
