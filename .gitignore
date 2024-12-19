@@ -46,8 +46,7 @@ server/.pnp
 server/.pnp.js
 server/.yarn/install-state.gz
 server/logs
-
-
+server/logs/api-log.json
 server/.env
 
 

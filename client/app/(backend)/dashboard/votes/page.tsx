@@ -3,7 +3,7 @@ import VoteZone from "./VoteZone"
 import { Vote } from "@/app/interfaces/Vote/Vote";
 import { User } from "@/app/interfaces/User/User";
 import { AllUsers } from "@/app/functions/User";
-
+export const dynamic = 'force-dynamic'
 
 const Votes = async () => {
     const votes : Vote[] = await AllVotes();

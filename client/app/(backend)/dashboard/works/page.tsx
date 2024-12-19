@@ -8,6 +8,7 @@ import SearchBar from "./SearchBar";
 import WorkPostModal from "./WorkPostModal";
 import Pagination from "./Pagination";
 
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: `โพสต์การทำงาน ${process.env.NEXT_PUBLIC_APP_TITLE}`,
