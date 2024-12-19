@@ -2,15 +2,15 @@
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 
-export const AllWorks = async ({search, tag}:{search: string | undefined, tag: string | undefined}) => {
+export const AllWorks = async ({ search, tag }: { search: string | undefined, tag: string | undefined }) => {
     try {
         const params = new URLSearchParams();
         if (search) params.append("search", search.toString());
         if (tag) params.append("tag", tag.toString());
 
         const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/works?${params.toString()}`;
-        const res = await fetch(url ,{ next: { revalidate: 0 } });
-        if(!res.ok){
+        const res = await fetch(url, { next: { revalidate: 0 } });
+        if (!res.ok) {
             throw new Error(`Failed to fetch works`);
         }
         return res.json();
@@ -29,8 +29,8 @@ export const AllTagsWithWork = async () => {
     try {
 
         const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/work/tags`;
-        const res = await fetch(url ,{ next: { revalidate: 0 } });
-        if(!res.ok){
+        const res = await fetch(url, { next: { revalidate: 0 } });
+        if (!res.ok) {
             throw new Error(`Failed To Tags With Work`);
         }
         return res.json();
@@ -54,14 +54,14 @@ export const getUserWorkStatistics = async () => {
         }
         const token = session.user.token;
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/userWorkStatistics`,{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/userWorkStatistics`, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': token
             },
-            next: { revalidate: 0 } 
+            next: { revalidate: 0 }
         });
-        if(!res.ok){
+        if (!res.ok) {
             throw new Error(`Failed to fetch UserWorkStatistics`);
         }
         return res.json();
@@ -76,7 +76,7 @@ export const getUserWorkStatistics = async () => {
     }
 };
 
-export const getWork = async ({id:id}:{id:number | null;}) => {
+export const getWork = async ({ id: id }: { id: number | null; }) => {
     try {
 
         const params = new URLSearchParams();
@@ -132,7 +132,7 @@ export const getUserWorks = async ({
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
         };
-        
+
         if (token) {
             headers['Authorization'] = token;
         }
@@ -177,7 +177,7 @@ export const getOptionsForAddWork = async () => {
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
         };
-        
+
         if (token) {
             headers['Authorization'] = token;
         }
@@ -204,19 +204,19 @@ export const getOptionsForAddWork = async () => {
         }
     }
 }
-  
+
 export const AddWork = async (
     {
         title, description, images, operators, tags
     }: {
-        title: string, 
-        description: string, 
-        images: File[],  
-        operators: number[], 
+        title: string,
+        description: string,
+        images: File[],
+        operators: number[],
         tags: number[]
     }
 ) => {
-    try {        
+    try {
         const session = await auth();
 
         if (!session) {
@@ -228,7 +228,7 @@ export const AddWork = async (
         const headers: Record<string, string> = {
             'X-Upload-Type': 'work',
         };
-        
+
         if (token) {
             headers['Authorization'] = token;
         }
@@ -258,10 +258,10 @@ export const AddWork = async (
             headers: headers,
             body: formData,
         });
-                    
+
         if (!res.ok) {
             throw new Error('Failed To Add Work');
-        }        
+        }
         revalidatePath(`/dashboard/works`);
         return await res.json();
     } catch (e: unknown) {
@@ -275,8 +275,68 @@ export const AddWork = async (
     }
 };
 
+export const CommentWork = async ({workId, message} : { workId: number, message: string }) => {
+    try {
+        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/work/comment`;
+
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                workId,
+                message
+            }),
+        })
+
+        if(!res.ok){
+            throw new Error('Failed To Comment');
+        }
+
+        revalidatePath(`/works`);
+        return await res.json();
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            console.error(`Error Comment: ${e.message}`);
+            throw new Error("Failed To Comment");
+        } else {
+            console.error('An unknown error occurred');
+            throw new Error("Failed To Comment");
+        }
+    }
+}
+
+export const LikeComment = async ({commentId} : { commentId: number }) => {
+    try {
+        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/work/comment`;
+
+        const res = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                commentId,
+            }),
+        })
+
+        if(!res.ok){
+            throw new Error('Failed To Like Comment');
+        }
+
+        revalidatePath(`/works`);
+        return await res.json();
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            console.error(`Error Like Comment: ${e.message}`);
+            throw new Error("Failed To Like Comment");
+        } else {
+            console.error('An unknown error occurred');
+            throw new Error("Failed To Like Comment");
+        }
+    }
+}
 
 
-  
 
-  

@@ -9,10 +9,14 @@ const {
     UserWorks,
     OptionsForAddWork,
     getWorkForEdit,
+    Comment,
+    LikeComment,
 } = require("../Controllers/WorkController");
 
 router.get("/works", AllWorks);
 router.get("/work", getWorkForEdit);
+router.post("/work/comment", Comment);
+router.put("/work/comment", LikeComment);
 router.get("/userWorkStatistics", UserWorkStatistics);
 router.get("/userWorks", UserWorks);
 router.get("/optionsForAddWork", OptionsForAddWork);

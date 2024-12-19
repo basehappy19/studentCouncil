@@ -146,8 +146,22 @@ model Work {
   operators   WorkOperators[]
   tags        TagInWorks[]
   updatedAt   DateTime        @updatedAt
+  comments    CommentInWork[]
 
   @@index([postById])
+}
+
+model CommentInWork {
+  id        Int      @id @default(autoincrement())
+  workId    Int
+  work      Work     @relation(fields: [workId], references: [id])
+  name      String   @default("นักเรียน")
+  message   String   @db.Text
+  like      Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workId])
 }
 
 model WorkImages {
@@ -553,19 +567,19 @@ model SubCategory {
 }
 
 model Policy {
-  id             Int                 @id @default(autoincrement())
-  rank           String
-  title          String
-  thumbnailImage String
-  categoryId     Int
-  category       Category            @relation(fields: [categoryId], references: [id])
-  like           Int                 @default(0)
-  isApproved     Boolean             @default(true)
-  subCategories  PolicySubCategory[]
-  progresses     ProgressPolicy[]
-  description    PolicyDescription   @relation(fields: [descriptionId], references: [id])
-  descriptionId  Int                 @unique
-  messagesToPolicy   CommentPolicy[]
+  id               Int                 @id @default(autoincrement())
+  rank             String
+  title            String
+  thumbnailImage   String
+  categoryId       Int
+  category         Category            @relation(fields: [categoryId], references: [id])
+  like             Int                 @default(0)
+  isApproved       Boolean             @default(true)
+  subCategories    PolicySubCategory[]
+  progresses       ProgressPolicy[]
+  description      PolicyDescription   @relation(fields: [descriptionId], references: [id])
+  descriptionId    Int                 @unique
+  messagesToPolicy CommentPolicy[]
 
   @@index([categoryId, descriptionId])
 }

@@ -28,6 +28,15 @@ export interface Work {
     operators: WorkOperators[];
     tags: TagInWorks[];
     updatedAt: string;
+    comments: Comment[];
+}
+
+export interface Comment {
+    id: number,
+    name: string,
+    message: string,
+    like: number,
+    createdAt: string,
 }
 
 export interface WorkStatistics {

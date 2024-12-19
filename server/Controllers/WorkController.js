@@ -70,7 +70,7 @@ exports.AllWorks = async (req, res, next) => {
                       some: {
                           tag: {
                               id: {
-                                  equals: parseInt(tag), 
+                                  equals: parseInt(tag),
                               },
                           },
                       },
@@ -161,9 +161,69 @@ exports.AllWorks = async (req, res, next) => {
                         },
                     },
                 },
+                comments: {
+                    select: {
+                        id: true,
+                        name: true,
+                        message: true,
+                        like: true,
+                        createdAt: true,
+                    },
+                },
             },
         });
         res.status(200).send(works);
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+};
+
+exports.Comment = async (req, res, next) => {
+    try {
+        const { workId, message } = req.body;
+
+        if (!workId || !message) {
+            return res.json({
+                message: "กรุณาเขียนคอมเม้นก่อนส่ง",
+                type: "error",
+            });
+        }
+
+        await prisma.commentInWork.create({
+            data: {
+                workId,
+                message,
+            },
+        });
+
+        res.status(201).json({
+            message: "ส่งคอมเม้นเรียบร้อยแล้ว",
+            type: "success",
+        });
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+};
+
+exports.LikeComment = async (req, res, next) => {
+    try {
+        const { commentId } = req.body;
+        const like = await prisma.commentInWork.update({
+            data: {
+                like: {
+                    increment: 1,
+                }
+            },
+            where: {
+                id: commentId,
+            },
+        });
+        if (!like) {
+            return res.status(200).json({ message: `ไม่พบคอมเม้น หรือคอมเม้นนี้ถูกลบไปแล้ว`, type: `success`})
+        }
+        res.status(201).json({message: `กดถูกใจความคิดเห็นคอมเม้นเรียบร้อยแล้ว`, type: `success`})
     } catch (e) {
         e.status = 400;
         next(e);

@@ -15,10 +15,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { Calendar, FileText, Users, ChevronRight } from 'lucide-react';
+import Comment from './Comment';
 
 const WorkCard = ({ work }: { work: Work }) => {
   const [hoveredOperatorId, setHoveredOperatorId] = useState<number | null>(null);
-
+  
   return (
     <Card className="overflow-hidden shadow-lg rounded-xl transition-all duration-300 hover:shadow-2xl bg-white dark:bg-slate-800 border-none">
       {/* Carousel Section */}
@@ -124,6 +125,9 @@ const WorkCard = ({ work }: { work: Work }) => {
             </div>
           </div>
         </div>
+
+        <Comment work={work} />
+
       </CardContent>
     </Card>
   );
