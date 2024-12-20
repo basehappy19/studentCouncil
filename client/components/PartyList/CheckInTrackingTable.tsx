@@ -21,6 +21,10 @@ import SearchBar from '@/app/(user)/(Navbar 2)/(partyLists)/partyList/tracks/Sea
 import DateFilter from '@/app/(user)/(Navbar 2)/(partyLists)/partyList/tracks/DateFilter';
 
 const CheckInTrackingTable = ({ checkIns }: { checkIns: CheckIns }) => {
+  console.log(checkIns.days[0].checkIns.find(
+    (checkIn) => checkIn.user.partyList.id === 1
+  ));
+
   return (
     <Card className="w-full">
       <CardHeader>
@@ -70,7 +74,7 @@ const CheckInTrackingTable = ({ checkIns }: { checkIns: CheckIns }) => {
                     <span>{partyMember.nickName}</span>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className='text-nowrap'>
                   {partyMember.roles.map(role => role.role.name).join(', ')}
                 </TableCell>
                 {checkIns.days.map((day) => {

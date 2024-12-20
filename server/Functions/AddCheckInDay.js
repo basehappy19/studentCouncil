@@ -218,47 +218,15 @@ const checkAndAddCheckInDay = async () => {
 
 const scheduleCronJobs = async () => {
     try {
-        const latestSettingTime = await prisma.setting.findFirst({
-            select: {
-                checkInStartTime: true,
-                checkInEndTime: true,
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-        });
-
-        const startTime = latestSettingTime.checkInStartTime;
-        const endTime = latestSettingTime.checkInEndTime;
-        const requestStartTime = latestSettingTime.requestStartTime;
-        const requestEndTime = latestSettingTime.requestEndTime;
-
-        cron.schedule(`${startTime} * * * *`, async () => {
+        cron.schedule('* * * * *', async () => {
             await checkAndAddCheckInDay();
-        });
-
-        cron.schedule(`${endTime} * * * *`, async () => {
-            await checkAndAddCheckInDay();
-        });
-
-        cron.schedule(`${requestStartTime} * * * *`, async () => {
-            console.log("Starting Request Check-In Process...");
-            await checkAndAddCheckInDay();
-        });
-
-        cron.schedule(`${requestEndTime} * * * *`, async () => {
-            console.log("Ending Request Check-In Process...");
-            await checkAndAddCheckInDay();
-        });
+        });        
 
     } catch (error) {
         console.error("Error scheduling cron jobs:", error);
     }
 };
 
-const startAddCheckInDay = async () => {
-    await checkAndAddCheckInDay();
-};
-module.exports = {
-    startAddCheckInDay,
-};
+module.exports = scheduleCronJobs;
+
+

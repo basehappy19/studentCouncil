@@ -1,4 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 exports.AllCheckIns = async (req, res, next) => {
@@ -207,17 +207,17 @@ exports.CheckIn = async (req, res, next) => {
         const id = req.user.id;
 
         const user = await prisma.user.findUnique({
-            where:{
+            where: {
                 id: id,
-            }
+            },
         });
-        
+
         if (!user) {
             return res
                 .json({ message: "ไม่พบข้อมูลผู้ใช้", type: "error" })
                 .status(404);
         }
-        
+
         const dateNow = new Date();
         const dayOfWeek = dateNow.getDay();
         const hours = dateNow.getHours();
@@ -237,29 +237,34 @@ exports.CheckIn = async (req, res, next) => {
                 dateTime: startOfToday,
             },
         });
-        
+
         const checkInRecord = await prisma.checkIn.findFirst({
             where: {
                 checkInDayId: day.id,
                 userId: id,
-            }
-            
+            },
         });
-        
+
         const requestCheckIn = await prisma.checkInRequest.findFirst({
             where: {
                 checkInDayId: day.id,
                 userId: id,
-            }
-        })
+            },
+        });
 
-        if (requestCheckIn || checkInRecord.type === "NORMAL" || checkInRecord.type === "SICK_LEAVE" || checkInRecord.type === "PERSONAL_LEAVE" || checkInRecord.type === "ABSENT") {
+        if (
+            requestCheckIn ||
+            checkInRecord.type === "NORMAL" ||
+            checkInRecord.type === "SICK_LEAVE" ||
+            checkInRecord.type === "PERSONAL_LEAVE" ||
+            checkInRecord.type === "ABSENT"
+        ) {
             return res.json({
                 message: "เช็คอินซ้ำไม่ได้",
                 type: "error",
             });
         }
-        
+
         const latestSettingTime = await prisma.setting.findFirst({
             select: {
                 checkInStartDay: true,
@@ -273,35 +278,44 @@ exports.CheckIn = async (req, res, next) => {
             orderBy: {
                 createdAt: "desc",
             },
-        }); 
-        
-        if (checkInRecord.type === 'REQUEST_FOR_CHECK_IN' 
-            && (dayOfWeek >= latestSettingTime.checkInStartDay 
-                && dayOfWeek < latestSettingTime.checkInEndDay 
-                && hours >= latestSettingTime.requestStartTime 
-                && hours < latestSettingTime.requestEndTime
-            ) && !requestCheckIn
+        });
+
+        if (
+            checkInRecord.type === "REQUEST_FOR_CHECK_IN" &&
+            dayOfWeek >= latestSettingTime.checkInStartDay &&
+            dayOfWeek < latestSettingTime.checkInEndDay &&
+            hours >= latestSettingTime.requestStartTime &&
+            hours < latestSettingTime.requestEndTime &&
+            !requestCheckIn
         ) {
             await prisma.checkInRequest.create({
                 data: {
                     checkInDayId: day.id,
                     userId: id,
-                    timeRequested: dateNow
+                    timeRequested: dateNow,
                 },
-            })
+            });
             await prisma.checkIn.update({
                 data: {
-                    attendTime: attendTime
+                    attendTime: attendTime,
                 },
-                where:{
+                where: {
                     id: checkInRecord.id,
-                }
-            })
+                },
+            });
 
-            return res.json({ message: "ยื่นคำขอลืมเช็คอินเรียบร้อยแล้ว", type: "success" });
+            return res.json({
+                message: "ยื่นคำขอลืมเช็คอินเรียบร้อยแล้ว",
+                type: "success",
+            });
         }
-        
-        if (dayOfWeek < latestSettingTime.checkInStartDay || dayOfWeek > latestSettingTime.checkInEndDay || hours < latestSettingTime.checkInStartTime || hours >= latestSettingTime.checkInEndTime) {
+
+        if (
+            dayOfWeek < latestSettingTime.checkInStartDay ||
+            dayOfWeek > latestSettingTime.checkInEndDay ||
+            hours < latestSettingTime.checkInStartTime ||
+            hours >= latestSettingTime.checkInEndTime
+        ) {
             return res.json({ message: "ปิดให้เช็คอินแล้ว", type: "error" });
         }
 
@@ -314,7 +328,7 @@ exports.CheckIn = async (req, res, next) => {
             minute: "2-digit",
             second: "2-digit",
             hour12: false,
-        }).format(attendTime);        
+        }).format(attendTime);
 
         await prisma.checkIn.update({
             where: {
@@ -326,7 +340,7 @@ exports.CheckIn = async (req, res, next) => {
                 attendTime: attendTime,
             },
         });
-        
+
         res.status(201).json({
             message: `เช็คอินเรียบร้อยแล้ว ${formattedDate}`,
             type: "success",
@@ -352,20 +366,20 @@ exports.CheckInStatus = async (req, res) => {
 
         const startOfDay = new Date(dateNow.setHours(0, 0, 0, 0));
         const endOfDay = new Date(dateNow.setHours(23, 59, 59, 999));
-        
+
         if (!user) {
             return res
                 .status(404)
                 .json({ message: "ไม่พบข้อมูลผู้ใช้นี้", type: "error" });
         }
         const day = await prisma.checkInDay.findFirst({
-            where:{
+            where: {
                 dateTime: {
                     gte: startOfDay,
                     lte: endOfDay,
-                }
-            }
-        })
+                },
+            },
+        });
 
         const checked = await prisma.checkIn.findFirst({
             select: {
@@ -378,7 +392,7 @@ exports.CheckInStatus = async (req, res) => {
                 user: {
                     id: user.id,
                 },
-                checkInDayId: day.id
+                checkInDayId: day.id,
             },
         });
 
@@ -387,26 +401,26 @@ exports.CheckInStatus = async (req, res) => {
                 user: {
                     id: user.id,
                 },
-                checkInDayId: day.id
-            }
-        })
-        
-        if(checked.type !== 'ABSENT'){
-            if (requestCheckIn && requestCheckIn.status === 'PENDING') {
+                checkInDayId: day.id,
+            },
+        });
+
+        if (checked.type !== "ABSENT") {
+            if (requestCheckIn && requestCheckIn.status === "PENDING") {
                 return res.status(200).json({
                     message: "รออนุมัติคำขอลืมเช็คอิน",
                     attendTime: checked.attendTime,
                     reason: checked.reason,
                     type: "REQUEST_FOR_CHECK_IN",
-                })
+                });
             }
-            if (requestCheckIn && requestCheckIn.status === 'REJECTED') {
+            if (requestCheckIn && requestCheckIn.status === "REJECTED") {
                 return res.status(200).json({
                     message: "คำขอลืมเช็คอินถูกปฏิเสธ",
                     attendTime: checked.attendTime,
                     reason: checked.reason,
                     type: "ABSENT",
-                })
+                });
             }
         }
         if (checked) {
@@ -506,14 +520,12 @@ exports.CheckInStatus = async (req, res) => {
             hours >= latestSettingTime.checkInEndTime ||
             !latestSettingTime.checkInOpen
         ) {
-            return res
-                .status(200)
-                .json({
-                    message: "ปิดให้เช็คอินแล้ว",
-                    attendTime: null,
-                    reason: null,
-                    type: "CLOSED_FOR_CHECK_IN",
-                });
+            return res.status(200).json({
+                message: "ปิดให้เช็คอินแล้ว",
+                attendTime: null,
+                reason: null,
+                type: "CLOSED_FOR_CHECK_IN",
+            });
         }
 
         res.status(200).json({
@@ -699,7 +711,7 @@ exports.RequestCheckIns = async (req, res, next) => {
         });
 
         res.status(200).json({
-            count: requests.length, 
+            count: requests.length,
             requests: requests,
         });
     } catch (e) {
@@ -711,11 +723,11 @@ exports.RequestCheckIns = async (req, res, next) => {
 exports.ActionRequestCheckIn = async (req, res, next) => {
     try {
         const { requestId, status } = req.body;
-        
+
         const dateNow = new Date();
         const dayOfWeek = dateNow.getDay();
         const hours = dateNow.getHours();
-        
+
         const latestSettingTime = await prisma.setting.findFirst({
             select: {
                 id: true,
@@ -735,13 +747,14 @@ exports.ActionRequestCheckIn = async (req, res, next) => {
                 id: requestId,
             },
         });
-        
-        if (requestRecord && requestRecord.status === 'PENDING' 
-            && (dayOfWeek >= latestSettingTime.checkInStartDay 
-                && dayOfWeek < latestSettingTime.checkInEndDay 
-                && hours >= latestSettingTime.checkInStartTime 
-                && hours < latestSettingTime.checkInEndTime
-            )
+
+        if (
+            requestRecord &&
+            requestRecord.status === "PENDING" &&
+            dayOfWeek >= latestSettingTime.checkInStartDay &&
+            dayOfWeek < latestSettingTime.checkInEndDay &&
+            hours >= latestSettingTime.checkInStartTime &&
+            hours < latestSettingTime.checkInEndTime
         ) {
             const checkInDay = await prisma.checkInDay.findFirst({
                 where: {
@@ -755,7 +768,7 @@ exports.ActionRequestCheckIn = async (req, res, next) => {
                     },
                 },
             });
-            
+
             if (checkInDay && checkInDay.checkIns.length > 0) {
                 await prisma.checkInRequest.update({
                     data: {
@@ -765,12 +778,21 @@ exports.ActionRequestCheckIn = async (req, res, next) => {
                                 checkIns: {
                                     update: {
                                         data: {
-                                            type: status === 'APPROVED' ? 'FORGOT_TO_CHECK_IN' : 'ABSENT',
-                                            reason: status === 'APPROVED' ? null : 'คำขอลืมเช็คอินถูกปฏิเสธ',
-                                            attendTime: status === 'APPROVED' ? undefined : null
+                                            type:
+                                                status === "APPROVED"
+                                                    ? "FORGOT_TO_CHECK_IN"
+                                                    : "ABSENT",
+                                            reason:
+                                                status === "APPROVED"
+                                                    ? null
+                                                    : "คำขอลืมเช็คอินถูกปฏิเสธ",
+                                            attendTime:
+                                                status === "APPROVED"
+                                                    ? undefined
+                                                    : null,
                                         },
                                         where: {
-                                            id: checkInDay.checkIns[0].id, 
+                                            id: checkInDay.checkIns[0].id,
                                             userId: requestRecord.userId,
                                         },
                                     },
@@ -783,13 +805,22 @@ exports.ActionRequestCheckIn = async (req, res, next) => {
                         userId: requestRecord.userId,
                     },
                 });
-                
-                return res.json({ message: "ยืนยันคำขอลืมเช็คอินเรียบร้อย", type: "success" });
+
+                return res.json({
+                    message: "ยืนยันคำขอลืมเช็คอินเรียบร้อย",
+                    type: "success",
+                });
             } else {
-                return res.json({ message: "ไม่สามารถยืนยันคำขอลืมเช็คอินได้", type: "error" });
+                return res.json({
+                    message: "ไม่สามารถยืนยันคำขอลืมเช็คอินได้",
+                    type: "error",
+                });
             }
         } else {
-            return res.json({ message: "ไม่สามารถยืนยันคำขอได้ หมดเวลาช่วงยื่นคำขอ", type: "error" });
+            return res.json({
+                message: "ไม่สามารถยืนยันคำขอได้ หมดเวลาช่วงยื่นคำขอ",
+                type: "error",
+            });
         }
     } catch (e) {
         e.status = 400;
@@ -810,7 +841,7 @@ exports.RequestCheckInExist = async (req, res) => {
 
         const startOfDay = new Date(dateNow.setHours(0, 0, 0, 0));
         const endOfDay = new Date(dateNow.setHours(23, 59, 59, 999));
-        
+
         if (!user) {
             return res
                 .status(404)
@@ -818,13 +849,13 @@ exports.RequestCheckInExist = async (req, res) => {
         }
 
         const day = await prisma.checkInDay.findFirst({
-            where:{
+            where: {
                 dateTime: {
                     gte: startOfDay,
                     lte: endOfDay,
-                }
-            }
-        })
+                },
+            },
+        });
 
         const requestCheckIn = await prisma.checkInRequest.findFirst({
             where: {
@@ -833,9 +864,9 @@ exports.RequestCheckInExist = async (req, res) => {
                 },
                 checkInDayId: day.id,
                 status: "PENDING",
-            }
+            },
         });
-        if(!requestCheckIn){
+        if (!requestCheckIn) {
             return res.status(200).send(null);
         }
         res.status(200).send(requestCheckIn);

@@ -5,10 +5,11 @@ const morgan = require("morgan");
 const cors = require("cors");
 const bodyParse = require("body-parser");
 const helmet = require("helmet");
+const chalk = require("chalk"); // สำหรับการจัดสี log
 const { RateLimiterMemory } = require("rate-limiter-flexible");
-const { startAddCheckInDay } = require("./Functions/AddCheckInDay");
 const apiLogger = require("./Middlewares/AppLogger");
 const errorHandler = require("./Middlewares/ErrorHandler");
+const scheduleCronJobs = require("./Functions/AddCheckInDay.js");
 const rateLimiter = new RateLimiterMemory({ points: 20, duration: 1 });
 const VerifyToken = require("./Middlewares/Verify");
 const AccessControlMiddleware = require("./Middlewares/AccessControlMiddleware.js");
@@ -37,7 +38,7 @@ app.use("/Uploads", express.static("Uploads"));
 app.use("/px", require("./Routes/index.js"));
 app.use("", require("./Routes/index.js"));
 
-app.use(VerifyToken);  
+app.use(VerifyToken);
 app.use(AccessControlMiddleware);
 
 app.use(apiLogger);
@@ -64,6 +65,35 @@ readdirSync("./Routes")
 app.use(errorHandler);
 
 app.listen(port, () => {
-    console.log("Server Is Running On Port " + port);
-    startAddCheckInDay();
+    const env = process.env.NODE_ENV || "development";
+    const appStartLog = `
+${chalk.green.bold("==============================================")}
+${chalk.cyan.bold(" 🚀 Server is starting...")}
+${chalk.green.bold("==============================================")}
+
+${chalk.yellow.bold("✔ Environment:")} ${chalk.white(env)}
+${chalk.yellow.bold("✔ Port:")}        ${chalk.white(port)}
+${chalk.yellow.bold("✔ Static Routes:")}
+  ${chalk.white("• /px/Uploads")}
+  ${chalk.white("• /Uploads")}
+${chalk.yellow.bold("✔ API Routes:")}
+  ${chalk.white("• /px")}
+  ${chalk.white("• /")}
+  ${chalk.white("• /api (from Routes folder)")}
+${chalk.yellow.bold("✔ Middleware:")}
+  ${chalk.white("• Helmet (Production Only)")}
+  ${chalk.white("• Rate Limiter")}
+  ${chalk.white("• Body Parser")}
+
+${chalk.green.bold("==============================================")}
+${chalk.cyan.bold(" 🎯 Cron Jobs are starting...")}
+`;
+
+    console.log(appStartLog);
+
+    scheduleCronJobs();
+
+    console.log(
+        chalk.green.bold("✅ Server and Cron Jobs started successfully!")
+    );
 });

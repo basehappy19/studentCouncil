@@ -118,19 +118,19 @@ async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }
               {categoryData.subCategories.map(
                 (subCategory) =>
                   <Link
-                    key={subCategory.id}
-                    href={`/policy/collection/${categoryData.id}/${subCategory.id}`}
+                    key={subCategory.subCategory.id}
+                    href={`/policy/collection/${categoryData.id}/${subCategory.subCategory.id}`}
                   >
                     <div
                       className={`text-nowrap inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
                 hover:shadow-md hover:-translate-y-1 hover:text-white
-                      ${Number(slug[1]) === subCategory.id
-                          ? "bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-                          : "bg-white dark:bg-gray-800 dark:text-white hover:bg-blue-500 dark:hover:bg-blue-500"
+                      ${Number(slug[1]) === subCategory.subCategory.id
+                          ? "bg-pink-500 text-white shadow-lg shadow-pink-500/30"
+                          : "bg-white dark:bg-gray-800 dark:text-white hover:bg-pink-500 dark:hover:bg-pink-500"
                         }`}
                     >
-                      {subCategory.title}{" "}
-                      {Number(slug[1]) === subCategory.id ? (
+                      {subCategory.subCategory.title}{" "}
+                      {Number(slug[1]) === subCategory.subCategory.id ? (
                         <CheckCircle className="w-4 h-4 inline-flex" />
                       ) : (
                         <PlusCircle className="w-4 h-4 inline-flex" />

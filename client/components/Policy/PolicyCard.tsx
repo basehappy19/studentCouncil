@@ -39,7 +39,7 @@ const PolicyCard = ({ policy }: { policy: Policy }) => {
           >
             {policy.rank}
           </Badge>
-          <h3 className="text-2xl font-bold line-clamp-2">
+          <h3 className="text-md md:text-2xl font-bold">
             {policy.title}
           </h3>
 

@@ -42,7 +42,7 @@ const NavbarSecondary = () => {
               className="flex items-center space-x-2"
             >
               <Logo isScrolled={isScrolled} />
-              <span className="text-pink-500 md:hidden font-semibold text-xl">Student Own School</span>
+              <span className="text-pink-500 md:hidden font-semibold text-nowrap text-md md:text-xl">Student Own School</span>
             </Link>
 
             <div className="hidden lg:flex items-center space-x-4">
@@ -50,7 +50,7 @@ const NavbarSecondary = () => {
                 <Link
                   key={index}
                   href={item.path}
-                  className={`relative text-gray-600 ${isScrolled ? `dark:text-gray-300` : `dark:text-gray-400`} hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-2 group`}
+                  className={`text-nowrap relative text-gray-600 ${isScrolled ? `dark:text-gray-300` : `dark:text-gray-400`} hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-2 group`}
                 >
                   {item.title}
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 dark:bg-blue-400 transition-all duration-200 group-hover:w-full" />

@@ -20,7 +20,11 @@ exports.Category = async(req, res, next)=>{
         const { id } = req.query
         const category = await prisma.category.findFirst({
             include: {
-                subCategories: true,
+                subCategories: {
+                    include: {
+                        subCategory: true,
+                    },
+                },
             },
             where:{
                 id:isNaN(parseInt(id)) ? undefined : parseInt(id),

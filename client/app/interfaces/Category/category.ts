@@ -3,7 +3,7 @@ export interface Category {
   title:string,
   icon:string,
   thumbnailImage: string,
-  subCategories: SubCategory[]
+  subCategories: SubCategories[]
 }
 
 export interface SubCategories {

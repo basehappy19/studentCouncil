@@ -29,6 +29,7 @@ export interface CheckIns {
 
 interface Day {
     id: number;
+    user: User[];
     dateTime: string;
     checkIns: CheckIn[];
 }

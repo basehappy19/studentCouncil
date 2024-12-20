@@ -27,7 +27,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
             </Badge>
           )}
           {pathname !== `/partyList/${partyList.id}` && (
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent dark:from-black/80 transition-all duration-300 group-hover:from-black/20 dark:group-hover:from-black/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent dark:from-black/80 transition-all duration-300 group-hover:from-black/20 dark:group-hover:from-black/40" />
           )}
         </div>
 
@@ -41,7 +41,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
                 <Badge
                   key={role.role.id}
                   variant="secondary"
-                  className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                  className="font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-100"
                 >
                   {role.role.name}
                 </Badge>

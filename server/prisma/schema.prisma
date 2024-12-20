@@ -20,7 +20,7 @@ model Department {
   color       String
   budget      Budget?
   leaderId    Int?       @unique
-  leader      PartyList? @relation("LeaderToDepartments", fields: [leaderId], references: [id])
+  leader      PartyList? @relation("LeaderToDepartments", fields: [leaderId], references: [id], onDelete: SetNull)
 
   @@index([leaderId])
 }
@@ -30,7 +30,7 @@ model Budget {
   title        String
   description  String        @db.Text
   total        Float         @default(0)
-  department   Department?   @relation(fields: [departmentId], references: [id])
+  department   Department?   @relation(fields: [departmentId], references: [id], onDelete: Cascade)
   departmentId Int?          @unique
   transactions Transaction[]
 }
@@ -48,12 +48,12 @@ model Transaction {
   budgetBefore Float
   budgetAfter  Float
   type         TransactionType
-  byUserId     Int
-  byUser       User            @relation("TransactionsCreated", fields: [byUserId], references: [id])
+  byUserId     Int?
+  byUser       User?           @relation("TransactionsCreated", fields: [byUserId], references: [id], onDelete: SetNull)
   editByUserId Int?
-  editByUser   User?           @relation("TransactionsEdited", fields: [editByUserId], references: [id])
-  budgetId     Int
-  budget       Budget          @relation(fields: [budgetId], references: [id])
+  editByUser   User?           @relation("TransactionsEdited", fields: [editByUserId], references: [id], onDelete: SetNull)
+  budgetId     Int?
+  budget       Budget?         @relation(fields: [budgetId], references: [id], onDelete: SetNull)
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
 
@@ -87,8 +87,8 @@ model Setting {
   checkInEndDay    Int      @default(5)
   requestStartTime Int      @default(9)
   requestEndTime   Int      @default(12)
-  byUserId         Int
-  ByUser           User?    @relation("SettingSystem", fields: [byUserId], references: [id])
+  byUserId         Int?
+  ByUser           User?    @relation("SettingSystem", fields: [byUserId], references: [id], onDelete: SetNull)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -100,8 +100,8 @@ model SkipDay {
   date      DateTime
   type      SkipType
   reason    String?
-  byUserId  Int
-  ByUser    User?    @relation("SkipDay", fields: [byUserId], references: [id])
+  byUserId  Int?
+  ByUser    User?    @relation("SkipDay", fields: [byUserId], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -119,10 +119,10 @@ model User {
   profile_image_128x128 String           @default("default-image-partyList_128x128.png")
   order                 Int
   sid                   Int
-  accessId              Int
-  access                Access           @relation(fields: [accessId], references: [id])
+  accessId              Int?
+  access                Access?          @relation(fields: [accessId], references: [id], onDelete: SetNull)
   partyListId           Int?             @unique
-  partyList             PartyList?       @relation(fields: [partyListId], references: [id])
+  partyList             PartyList?       @relation(fields: [partyListId], references: [id], onDelete: Cascade)
   checkIns              CheckIn[]
   works                 Work[]
   operatedWorks         WorkOperators[]
@@ -139,8 +139,8 @@ model Work {
   id          Int             @id @default(autoincrement())
   title       String
   description String          @db.Text
-  postById    Int
-  postBy      User            @relation(fields: [postById], references: [id])
+  postById    Int?
+  postBy      User?           @relation(fields: [postById], references: [id], onDelete: SetNull)
   date        DateTime        @default(now())
   images      WorkImages[]
   operators   WorkOperators[]
@@ -154,7 +154,7 @@ model Work {
 model CommentInWork {
   id        Int      @id @default(autoincrement())
   workId    Int
-  work      Work     @relation(fields: [workId], references: [id])
+  work      Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
   name      String   @default("นักเรียน")
   message   String   @db.Text
   like      Int      @default(0)
@@ -174,11 +174,11 @@ model WorkImages {
 }
 
 model WorkOperators {
-  id     Int  @id @default(autoincrement())
-  userId Int
+  id     Int   @id @default(autoincrement())
+  userId Int?
   workId Int
-  user   User @relation(fields: [userId], references: [id])
-  work   Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  work   Work  @relation(fields: [workId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workId])
   @@index([userId, workId])
@@ -204,11 +204,11 @@ model Icon {
 }
 
 model IconContributors {
-  id            Int         @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   iconId        Int
-  icon          Icon        @relation(fields: [iconId], references: [id])
-  contributorId Int
-  contributor   Contributor @relation(fields: [contributorId], references: [id])
+  icon          Icon         @relation(fields: [iconId], references: [id], onDelete: Cascade)
+  contributorId Int?
+  contributor   Contributor? @relation(fields: [contributorId], references: [id], onDelete: SetNull)
 
   @@index([iconId])
 }
@@ -216,19 +216,19 @@ model IconContributors {
 model IconTags {
   id     Int  @id @default(autoincrement())
   iconId Int
-  icon   Icon @relation(fields: [iconId], references: [id])
-  tagId  Int
-  tag    Tag  @relation(fields: [tagId], references: [id])
+  icon   Icon @relation(fields: [iconId], references: [id], onDelete: Cascade)
+  tagId  Int?
+  tag    Tag? @relation(fields: [tagId], references: [id], onDelete: SetNull)
 
   @@index([iconId, tagId])
 }
 
 model IconCategories {
-  id         Int          @id @default(autoincrement())
+  id         Int           @id @default(autoincrement())
   iconId     Int
-  icon       Icon         @relation(fields: [iconId], references: [id])
-  categoryId Int
-  category   IconCategory @relation(fields: [categoryId], references: [id])
+  icon       Icon          @relation(fields: [iconId], references: [id], onDelete: Cascade)
+  categoryId Int?
+  category   IconCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   @@index([iconId, categoryId])
 }
@@ -256,7 +256,7 @@ model TagInWorks {
   workId Int
   tagId  Int
   work   Work    @relation(fields: [workId], references: [id], onDelete: Cascade)
-  tag    WorkTag @relation(fields: [tagId], references: [id])
+  tag    WorkTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@unique([workId, tagId])
 }
@@ -276,9 +276,9 @@ model CheckIn {
   type         CheckInType @default(NOT_CHECKED_IN)
   reason       String?
   userId       Int
-  user         User        @relation(fields: [userId], references: [id])
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   checkInDayId Int
-  checkInDay   CheckInDay  @relation(fields: [checkInDayId], references: [id])
+  checkInDay   CheckInDay  @relation(fields: [checkInDayId], references: [id], onDelete: Cascade)
 
   @@index([userId, checkInDayId])
 }
@@ -291,10 +291,10 @@ enum CheckInRequestStatus {
 
 model CheckInRequest {
   id            Int                  @id @default(autoincrement())
-  userId        Int
-  user          User                 @relation(fields: [userId], references: [id])
+  userId        Int?
+  user          User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
   checkInDayId  Int
-  checkInDay    CheckInDay           @relation(fields: [checkInDayId], references: [id])
+  checkInDay    CheckInDay           @relation(fields: [checkInDayId], references: [id], onDelete: Cascade)
   timeRequested DateTime
   status        CheckInRequestStatus @default(PENDING)
   createdAt     DateTime             @default(now())
@@ -344,8 +344,8 @@ model Document {
 model VoteRefer {
   id      Int   @id @default(autoincrement())
   voteId  Int
-  referId Int
   vote    Vote  @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  referId Int
   refer   Refer @relation(fields: [referId], references: [id], onDelete: Cascade)
 
   @@unique([voteId, referId])
@@ -355,8 +355,8 @@ model VoteRefer {
 model VoteDocument {
   id         Int      @id @default(autoincrement())
   voteId     Int
-  documentId Int
   vote       Vote     @relation(fields: [voteId], references: [id], onDelete: Cascade)
+  documentId Int
   document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
   @@unique([voteId, documentId])
@@ -385,10 +385,10 @@ model VoteMaxAttendees {
 
 model VoteAgree {
   id          Int        @id @default(autoincrement())
-  partyListId Int
+  partyListId Int?
+  partyList   PartyList? @relation(fields: [partyListId], references: [id], onDelete: SetNull)
   resultId    Int
   result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
-  partyList   PartyList  @relation(fields: [partyListId], references: [id])
 
   @@unique([partyListId, resultId])
   @@index([partyListId, resultId])
@@ -396,10 +396,10 @@ model VoteAgree {
 
 model VoteDisagree {
   id          Int        @id @default(autoincrement())
-  partyListId Int
+  partyListId Int?
+  partyList   PartyList? @relation(fields: [partyListId], references: [id], onDelete: SetNull)
   resultId    Int
   result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
-  partyList   PartyList  @relation(fields: [partyListId], references: [id])
 
   @@unique([partyListId, resultId])
   @@index([partyListId, resultId])
@@ -407,10 +407,10 @@ model VoteDisagree {
 
 model VoteAbstain {
   id          Int        @id @default(autoincrement())
-  partyListId Int
+  partyListId Int?
+  partyList   PartyList? @relation(fields: [partyListId], references: [id], onDelete: SetNull)
   resultId    Int
   result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
-  partyList   PartyList  @relation(fields: [partyListId], references: [id])
 
   @@unique([partyListId, resultId])
   @@index([partyListId, resultId])
@@ -418,11 +418,11 @@ model VoteAbstain {
 
 model NoVote {
   id          Int        @id @default(autoincrement())
-  partyListId Int
+  partyListId Int?
+  partyList   PartyList? @relation(fields: [partyListId], references: [id], onDelete: SetNull)
   reason      String?    @default("ไม่อยู่ลงคะแนน")
   resultId    Int
   result      VoteResult @relation(fields: [resultId], references: [id], onDelete: Cascade)
-  partyList   PartyList  @relation(fields: [partyListId], references: [id])
 
   @@unique([partyListId, resultId])
   @@index([partyListId, resultId])
@@ -435,7 +435,7 @@ model PartyList {
   lastName              String
   nickName              String
   fullName              String
-  bio                   Bio?                 @relation(fields: [bioId], references: [id])
+  bio                   Bio?                 @relation(fields: [bioId], references: [id], onDelete: Cascade)
   bioId                 Int?                 @unique
   contacts              Contact[]
   rank                  String               @unique
@@ -446,7 +446,7 @@ model PartyList {
   order                 Int
   orderInHomepage       Int?
   support               Int                  @default(0)
-  user                  User?                @relation
+  user                  User?                
   voteAgrees            VoteAgree[]
   voteDisagrees         VoteDisagree[]
   voteAbstains          VoteAbstain[]
@@ -458,7 +458,7 @@ model PartyList {
 model MessageToPartyList {
   id          Int       @id @default(autoincrement())
   partyListId Int
-  partyList   PartyList @relation(fields: [partyListId], references: [id])
+  partyList   PartyList @relation(fields: [partyListId], references: [id], onDelete: Cascade)
   message     String    @db.Text
 
   @@index([partyListId])
@@ -471,11 +471,11 @@ model Role {
 }
 
 model RoleForPartyList {
-  id          Int       @id @default(autoincrement())
-  partyListId Int
+  id          Int        @id @default(autoincrement())
+  partyListId Int?
+  partyList   PartyList? @relation(fields: [partyListId], references: [id], onDelete: SetNull)
   roleId      Int
-  partyList   PartyList @relation(fields: [partyListId], references: [id])
-  role        Role      @relation(fields: [roleId], references: [id])
+  role        Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@unique([partyListId, roleId])
   @@index([partyListId, roleId])
@@ -501,8 +501,8 @@ model ExperienceOwnPartyList {
   id           Int        @id @default(autoincrement())
   experienceId Int
   bioId        Int
-  experience   Experience @relation(fields: [experienceId], references: [id])
-  bio          Bio        @relation(fields: [bioId], references: [id])
+  experience   Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  bio          Bio        @relation(fields: [bioId], references: [id], onDelete: Cascade)
 
   @@unique([experienceId, bioId])
   @@index([experienceId, bioId])
@@ -519,8 +519,8 @@ model SkillOwnPartyList {
   id      Int   @id @default(autoincrement())
   skillId Int
   bioId   Int
-  skill   Skill @relation(fields: [skillId], references: [id])
-  bio     Bio   @relation(fields: [bioId], references: [id])
+  skill   Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  bio     Bio   @relation(fields: [bioId], references: [id], onDelete: Cascade)
 
   @@index([skillId, bioId])
 }
@@ -530,9 +530,9 @@ model Contact {
   username    String?
   link        String
   partyListId Int
-  partyList   PartyList @relation(fields: [partyListId], references: [id])
+  partyList   PartyList @relation(fields: [partyListId], references: [id], onDelete: Cascade)
   platformId  Int
-  platform    Platform  @relation(fields: [platformId], references: [id])
+  platform    Platform  @relation(fields: [platformId], references: [id], onDelete: Cascade)
 
   @@unique([partyListId, platformId])
   @@index([partyListId, platformId])
@@ -547,66 +547,76 @@ model Platform {
 }
 
 model Category {
-  id             Int           @id @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   title          String
   icon           String?
   thumbnailImage String
-  subCategories  SubCategory[]
+  subCategories  SubCategories[]
   policies       Policy[]
 }
 
-model SubCategory {
-  id         Int                 @id @default(autoincrement())
-  title      String
-  icon       String?
-  categoryId Int
-  category   Category            @relation(fields: [categoryId], references: [id])
-  policies   PolicySubCategory[]
+model SubCategories {
+  id            Int         @id @default(autoincrement())
+  categoryId    Int
+  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  subCategoryId Int
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
 
   @@index([categoryId])
 }
 
-model Policy {
-  id               Int                 @id @default(autoincrement())
-  rank             String
-  title            String
-  thumbnailImage   String
-  categoryId       Int
-  category         Category            @relation(fields: [categoryId], references: [id])
-  like             Int                 @default(0)
-  isApproved       Boolean             @default(true)
-  subCategories    PolicySubCategory[]
-  progresses       ProgressPolicy[]
-  description      PolicyDescription   @relation(fields: [descriptionId], references: [id])
-  descriptionId    Int                 @unique
-  messagesToPolicy CommentPolicy[]
+model SubCategory {
+  id            Int                 @id @default(autoincrement())
+  title         String
+  icon          String?
+  policies      PolicySubCategory[]
+  subCategories SubCategories[]
+}
 
-  @@index([categoryId, descriptionId])
+model Policy {
+  id                  Int                 @id @default(autoincrement())
+  rank                String
+  title               String
+  thumbnailImage      String
+  categoryId          Int
+  category            Category            @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  like                Int                 @default(0)
+  isApproved          Boolean             @default(true)
+  subCategories       PolicySubCategory[]
+  progresses          ProgressPolicy[]
+  description         PolicyDescription?
+  messagesToPolicy    CommentPolicy[]
+
+  @@index([categoryId])
+}
+
+model PolicyDescription {
+  id       Int    @id @default(autoincrement())
+  problem  String @db.Text
+  offer    String @db.Text
+  budget   String @db.Text
+  policyId Int
+  policy   Policy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@index([policyId])
+  @@unique([policyId])
 }
 
 model CommentPolicy {
   id       Int    @id @default(autoincrement())
   policyId Int
-  policy   Policy @relation(fields: [policyId], references: [id])
+  policy   Policy @relation(fields: [policyId], references: [id], onDelete: Cascade)
   message  String @db.Text
 
   @@index([policyId])
-}
-
-model PolicyDescription {
-  id      Int     @id @default(autoincrement())
-  problem String  @db.Text
-  offer   String  @db.Text
-  budget  String  @db.Text
-  policy  Policy? @relation
 }
 
 model PolicySubCategory {
   id            Int         @id @default(autoincrement())
   policyId      Int
   subCategoryId Int
-  policy        Policy      @relation(fields: [policyId], references: [id])
-  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id])
+  policy        Policy      @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
 
   @@unique([policyId, subCategoryId])
   @@index([policyId, subCategoryId])
@@ -622,12 +632,12 @@ model Status {
 
 model ProgressPolicy {
   id          Int      @id @default(autoincrement())
-  statusId    Int
+  statusId    Int?
   policyId    Int
   description String   @db.Text
   startedAt   DateTime @default(now())
-  status      Status   @relation(fields: [statusId], references: [id])
-  policy      Policy   @relation(fields: [policyId], references: [id])
+  status      Status?   @relation(fields: [statusId], references: [id], onDelete: SetNull)
+  policy      Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
 
   @@index([statusId, policyId])
 }
