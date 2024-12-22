@@ -67,7 +67,7 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages, currentPage }) => {
         <Button
           key={page}
           variant={page === currentPage ? 'default' : 'outline'}
-          className={`transition-all ease-in-out duration-300 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 whitespace-nowrap ${page === currentPage ? 'bg-gray-500 hover:bg-gray-600 focus:ring-gray-400' : 'bg-gray-300 hover:bg-gray-500 focus:ring-gray-400'}`}
+          className={`transition-all ease-in-out duration-300 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 whitespace-nowrap ${page === currentPage ? 'bg-blue-500 hover:bg-blue-600 focus:ring-blue-400' : 'bg-blue-300 hover:bg-blue-500 focus:ring-blue-400'}`}
           onClick={() => updatePage(page)}
         >
           {page}

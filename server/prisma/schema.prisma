@@ -210,7 +210,7 @@ model IconContributors {
   contributorId Int?
   contributor   Contributor? @relation(fields: [contributorId], references: [id], onDelete: SetNull)
 
-  @@index([iconId])
+  @@index([iconId, contributorId])
 }
 
 model IconTags {
@@ -259,6 +259,7 @@ model TagInWorks {
   tag    WorkTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@unique([workId, tagId])
+  @@index([workId, tagId])
 }
 
 model CheckInDay {
@@ -300,7 +301,7 @@ model CheckInRequest {
   createdAt     DateTime             @default(now())
   updatedAt     DateTime             @updatedAt
 
-  @@index([checkInDayId])
+  @@index([userId, checkInDayId])
 }
 
 model Access {
@@ -446,7 +447,7 @@ model PartyList {
   order                 Int
   orderInHomepage       Int?
   support               Int                  @default(0)
-  user                  User?                
+  user                  User?
   voteAgrees            VoteAgree[]
   voteDisagrees         VoteDisagree[]
   voteAbstains          VoteAbstain[]
@@ -562,7 +563,7 @@ model SubCategories {
   subCategoryId Int
   subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
 
-  @@index([categoryId])
+  @@index([categoryId, subCategoryId])
 }
 
 model SubCategory {
@@ -574,18 +575,18 @@ model SubCategory {
 }
 
 model Policy {
-  id                  Int                 @id @default(autoincrement())
-  rank                String
-  title               String
-  thumbnailImage      String
-  categoryId          Int
-  category            Category            @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  like                Int                 @default(0)
-  isApproved          Boolean             @default(true)
-  subCategories       PolicySubCategory[]
-  progresses          ProgressPolicy[]
-  description         PolicyDescription?
-  messagesToPolicy    CommentPolicy[]
+  id               Int                 @id @default(autoincrement())
+  rank             String
+  title            String
+  thumbnailImage   String
+  categoryId       Int
+  category         Category            @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  like             Int                 @default(0)
+  isApproved       Boolean             @default(true)
+  subCategories    PolicySubCategory[]
+  progresses       ProgressPolicy[]
+  description      PolicyDescription?
+  messagesToPolicy CommentPolicy[]
 
   @@index([categoryId])
 }
@@ -598,8 +599,8 @@ model PolicyDescription {
   policyId Int
   policy   Policy @relation(fields: [policyId], references: [id], onDelete: Cascade)
 
-  @@index([policyId])
   @@unique([policyId])
+  @@index([policyId])
 }
 
 model CommentPolicy {
@@ -636,8 +637,134 @@ model ProgressPolicy {
   policyId    Int
   description String   @db.Text
   startedAt   DateTime @default(now())
-  status      Status?   @relation(fields: [statusId], references: [id], onDelete: SetNull)
+  status      Status?  @relation(fields: [statusId], references: [id], onDelete: SetNull)
   policy      Policy   @relation(fields: [policyId], references: [id], onDelete: Cascade)
 
   @@index([statusId, policyId])
+}
+
+model Announcement {
+  id              Int                       @id @default(autoincrement())
+  title           String
+  content         String                    @db.Text
+  timestamp       String
+  createdAt       DateTime                  @default(now())
+  order           Int
+  schedules       ScheduleInAnnouncement[]
+  links           LinkInAnnouncement[]
+  iframes         IframeInAnnouncement[]
+  images          ImageInAnnouncement[]
+  newAnnouncement Boolean                   @default(true)
+  highlighted     HighlightedAnnouncement[]
+}
+
+enum AnnouncementPriority {
+  NORMAL
+  IMPORTANT
+  URGENT
+  VERY_URGENT
+}
+
+model HighlightedAnnouncement {
+  id             Int                  @id @default(autoincrement())
+  content        String               @db.Text
+  announcementId Int
+  announcement   Announcement         @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  priority       AnnouncementPriority @default(NORMAL)
+  createdAt      DateTime             @default(now())
+
+  @@index([announcementId])
+}
+
+model ScheduleInAnnouncement {
+  id             Int                  @id @default(autoincrement())
+  scheduleId     Int
+  schedule       AnnouncementSchedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  announcementId Int
+  announcement   Announcement         @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+
+  @@unique([scheduleId, announcementId])
+  @@index([scheduleId, announcementId])
+}
+
+model AnnouncementSchedule {
+  id            Int                      @id @default(autoincrement())
+  date          String
+  time          String?
+  activity      String?
+  location      String?
+  announcements ScheduleInAnnouncement[]
+}
+
+model LinkInAnnouncement {
+  id             Int              @id @default(autoincrement())
+  announcementId Int
+  announcement   Announcement     @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  linkId         Int
+  link           AnnouncementLink @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  @@unique([announcementId, linkId])
+  @@index([announcementId, linkId])
+}
+
+model AnnouncementLink {
+  id            Int                  @id @default(autoincrement())
+  title         String               @db.Text
+  url           String               @db.Text
+  announcements LinkInAnnouncement[]
+}
+
+model AnnouncementIframe {
+  id            Int                    @id @default(autoincrement())
+  title         String                 @db.Text
+  url           String                 @db.Text
+  announcements IframeInAnnouncement[]
+}
+
+model IframeInAnnouncement {
+  id             Int                @id @default(autoincrement())
+  announcementId Int
+  announcement   Announcement       @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  iframeId       Int
+  iframe         AnnouncementIframe @relation(fields: [iframeId], references: [id], onDelete: Cascade)
+
+  @@unique([announcementId, iframeId])
+  @@index([announcementId, iframeId])
+}
+
+model AnnouncementImage {
+  id            Int                   @id @default(autoincrement())
+  title         String                @db.Text
+  description   String                @db.Text
+  path          String
+  announcements ImageInAnnouncement[]
+}
+
+model ImageInAnnouncement {
+  id             Int               @id @default(autoincrement())
+  announcementId Int
+  announcement   Announcement      @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  imageId        Int
+  image          AnnouncementImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+  @@unique([announcementId, imageId])
+  @@index([announcementId, imageId])
+}
+
+enum EventType {
+  MEETING
+  ACTIVITY
+  IMPORTANT
+  WORK
+}
+
+model Event {
+  id          Int          @id @default(autoincrement())
+  title       String       @db.Text
+  description String?       @db.Text
+  date        DateTime
+  time        String?
+  location    String?
+  eventType   EventType    @default(WORK)
+  createdAt   DateTime     @default(now())
 }

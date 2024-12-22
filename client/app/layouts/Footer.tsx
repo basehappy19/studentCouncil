@@ -14,17 +14,15 @@ const Footer = async () => {
       <div className="container mx-auto">
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <p className="hidden text-lg font-medium lg:block">
-            ติดต่อเราผ่านช่องทางโซเชียล
+            ติดตามเราผ่านช่องทางโซเชียล
           </p>
           <div className="flex items-center gap-4">
             <Link
-              href=""
+              href="/"
               target="_blank"
               className="transition-transform hover:scale-110"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-pink-400 dark:hover:text-pink-300 hover:text-pink-500 inline-flex icon icon-tabler icons-tabler-outline icon-tabler-brand-instagram"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" /><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M16.5 7.5l0 .01" /></svg>
-
-
             </Link>
           </div>
         </div>
@@ -32,7 +30,7 @@ const Footer = async () => {
         <div className="grid grid-cols-1 gap-8 p-8 md:grid-cols-2">
           <div className="space-y-4">
             <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400 bg-clip-text text-transparent">
-              พรรค
+              Student Own School
             </h3>
             <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
               เจ้าของโรงเรียนคือนักเรียนทุกคน
@@ -62,7 +60,7 @@ const Footer = async () => {
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-400 dark:border-gray-700 bg-blue-400/50 dark:bg-gray-900/50 p-6 backdrop-blur-sm md:flex-row">
-          <p>© {new Date().getFullYear() + 543} พรรค - สงวนลิขสิทธิ์</p>
+          <p>© {new Date().getFullYear() + 543} Student Own School - สงวนลิขสิทธิ์</p>
 
           {!user ? (
             <Link

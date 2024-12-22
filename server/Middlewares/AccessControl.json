@@ -13,6 +13,12 @@
             "allowedAccessIds": []
         },
         {
+            "path": "/announcements",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
             "path": "/add_user",
             "method": "POST",
             "requiresAuth": true,
@@ -37,24 +43,6 @@
             "method": "GET",
             "requiresAuth": false,
             "allowedAccessIds": []
-        },
-        {
-            "path": "/statistics/budget/all/income_expense",
-            "method": "POST",
-            "requiresAuth": true,
-            "allowedAccessIds": [
-                1,
-                4
-            ]
-        },
-        {
-            "path": "/statistics/budget/income_expense",
-            "method": "GET",
-            "requiresAuth": true,
-            "allowedAccessIds": [
-                1,
-                4
-            ]
         },
         {
             "path": "/statistics/budget/income_expense/:id",
@@ -315,18 +303,6 @@
             "allowedAccessIds": []
         },
         {
-            "path": "/work_tags",
-            "method": "GET",
-            "requiresAuth": false,
-            "allowedAccessIds": []
-        },
-        {
-            "path": "/work_tag",
-            "method": "POST",
-            "requiresAuth": true,
-            "allowedAccessIds": []
-        },
-        {
             "path": "/checkInRequests",
             "method": "GET",
             "requiresAuth": true,
@@ -368,6 +344,12 @@
             "path": "/optionsForAddWork",
             "method": "GET",
             "requiresAuth": true,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/events",
+            "method": "GET",
+            "requiresAuth": false,
             "allowedAccessIds": []
         }
     ]

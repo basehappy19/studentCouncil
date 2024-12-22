@@ -63,4 +63,6 @@ server/.env*.local
 server/.env.development
 server/.env.production
 
-docker-compose.yml
+server/docker-compose.yml
+
+studentCouncil.sql

@@ -26,7 +26,7 @@ const GenerateAccessControl = () => {
             routeModule.stack.forEach(layer => {
                 if (layer.route) {
                     const routePath = layer.route.path;
-                    routePathsInRoutes.push(routePath); // เก็บ path ของ route ที่เจอ
+                    routePathsInRoutes.push(routePath);
                 }
             });
         }

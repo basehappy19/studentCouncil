@@ -6,7 +6,7 @@ import WorkCard from "./WorkCard";
 import FilterButton from "./FilterButton";
 import SearchBar from "./SearchBar";
 import WorkPostModal from "./WorkPostModal";
-import Pagination from "./Pagination";
+import Pagination from "@/components/Pagination";
 
 export const dynamic = 'force-dynamic'
 
