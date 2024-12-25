@@ -14,7 +14,7 @@ interface HighlightAnnouncement {
 
 export type Priority = "NORMAL" | "IMPORTANT" | "URGENT" | "VERY_URGENT";
 
-interface Announcement {
+export interface Announcement {
     id: number;
     title: string;
     content: string;
