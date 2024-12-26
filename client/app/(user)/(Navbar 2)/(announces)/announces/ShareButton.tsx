@@ -9,7 +9,7 @@ const ShareButton = ({ announcement } : { announcement : Announcement }) => {
         <Button
             variant="outline"
             size="icon"
-            onClick={() => navigator.share({ title: announcement.title, url: window.location.href })}
+            onClick={() => navigator.share({ title: announcement.title, url: window.location.href + `/${announcement.id}` })}
             className="shrink-0"
         >
             <Share2 className="h-4 w-4" />
