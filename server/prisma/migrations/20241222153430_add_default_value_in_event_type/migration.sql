@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE `Event` MODIFY `description` TEXT NULL,
-    MODIFY `time` VARCHAR(191) NULL,
-    MODIFY `location` VARCHAR(191) NULL,
-    MODIFY `eventType` ENUM('MEETING', 'ACTIVITY', 'IMPORTANT', 'WORK') NOT NULL DEFAULT 'WORK';

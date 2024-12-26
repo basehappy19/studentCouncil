@@ -65,4 +65,8 @@ server/.env.production
 
 server/docker-compose.yml
 
+server/prisma/migrations/
+
+server/logs/
+
 studentCouncil.sql
