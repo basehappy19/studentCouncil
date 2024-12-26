@@ -26,7 +26,9 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
               {partyList.rank}
             </Badge>
           )}
-          
+          {pathname !== `/partyList/${partyList.id}` && (
+            <div className="dark:block hidden absolute inset-0 bg-gradient-to-t from-black/30 to-transparent dark:from-black/80 transition-all duration-300 group-hover:from-black/20 dark:group-hover:from-black/40" />
+          )}
         </div>
 
         <CardContent className="relative -mt-20 space-y-4 p-6">
