@@ -22,7 +22,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
             alt={partyList.nickName}
           />
           {(pathname === `/partyList/${partyList.id}` || pathname === `/partyLists`) && (
-            <Badge className="absolute top-4 right-4 p-2 font-medium bg-blue-600 dark:bg-blue-900 hover:bg-blue-600 hover:dark:bg-blue-900 dark:text-gray-200">
+            <Badge className="absolute top-4 right-4 p-2 font-light bg-blue-500 dark:bg-blue-900 hover:bg-blue-600 hover:dark:bg-blue-900 dark:text-gray-200">
               {partyList.rank}
             </Badge>
           )}

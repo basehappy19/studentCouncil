@@ -16,7 +16,7 @@ const PartyListLength = ({ count }: { count: number }) => {
                 <p className="text-xl md:text-2xl font-medium dark:text-gray-300">
                     จำนวนผู้สมัครทั้งหมด{' '}
                     <span className="font-bold text-blue-600 dark:text-blue-400">
-                        {partyListLengthRef.current}
+                        69
                     </span>{' '}
                     คน
                 </p>
