@@ -13,7 +13,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string[]
   const categoryData: Category = await getCategory(slug.length >= 1 ? slug[0] : undefined);
   const categorySrc = process.env.NEXT_PUBLIC_POLICY_CATEGORY_IMG_PATH || "";
   const policies: Policy[] = await AllPolicies({ category: slug.length >= 1 ? slug[0] : undefined, subCategory: slug.length >= 2 ? slug[1] : undefined });
-  
+
   return {
     title: `นโยบายหมวด${categoryData.title} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
     description: `พรรคเราได้คิดนโยบายหมวด ${categoryData.title} ออกมา ${policies.length} นโยบาย`,
@@ -29,7 +29,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string[]
   };
 }
 
-async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }) {
+async function PolicyCollection(props: { params: Promise<{ slug: string[] }> }) {
   const params = await props.params
   const slug = params.slug
   const categoryData: Category = await getCategory(slug.length >= 1 ? slug[0] : undefined);
@@ -37,7 +37,7 @@ async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }
   const policies: Policy[] = await AllPolicies({ category: slug.length >= 1 ? slug[0] : undefined, subCategory: slug.length >= 2 ? slug[1] : undefined });
   const categorySrc =
     process.env.NEXT_PUBLIC_POLICY_CATEGORY_IMG_PATH || "";
-  
+
   return (
     <div className="min-h-screen
         dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 
@@ -54,6 +54,7 @@ async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }
                 <Link
                   key={category.id}
                   href={`/policy/collection/${category.id}`}
+                  scroll={false}
                 >
                   <div
                     className={`text-nowrap inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
@@ -97,10 +98,11 @@ async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }
           <div className="absolute inset-y-0 left-0 w-1 bg-pink-400 dark:bg-white pointer-events-none" />
           <div className="absolute inset-y-0 right-0 w-1 bg-pink-400 dark:bg-white pointer-events-none" />
 
-          
+
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex gap-4">
-              <Link href={`/policy/collection/${categoryData.id}`}
+              <Link scroll={false}
+                href={`/policy/collection/${categoryData.id}`}
                 className={`text-nowrap inline-flex items-center gap-2 px-6 py-3 rounded-full transition-all duration-300
                 hover:shadow-md hover:-translate-y-1 hover:text-white
                 ${slug.length !== 2
@@ -118,6 +120,7 @@ async function PolicyCollection( props : { params: Promise<{ slug: string[] }> }
               {categoryData.subCategories.map(
                 (subCategory) =>
                   <Link
+                    scroll={false}
                     key={subCategory.subCategory.id}
                     href={`/policy/collection/${categoryData.id}/${subCategory.subCategory.id}`}
                   >
