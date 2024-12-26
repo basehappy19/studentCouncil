@@ -3,14 +3,26 @@ const path = require("path");
 
 const logFilePath = "./logs/api-log.json";
 
+const ensureLogDirectoryExists = () => {
+    const logDir = path.dirname(logFilePath);
+    if (!fs.existsSync(logDir)) {
+        fs.mkdirSync(logDir, { recursive: true });
+    }
+};
+
 const writeLogToFile = (logData) => {
+    ensureLogDirectoryExists(); 
+
     fs.readFile(logFilePath, "utf-8", (err, data) => {
         let logs = [];
         if (!err && data) {
             try {
                 logs = JSON.parse(data);
             } catch (parseError) {
-                console.error("Invalid JSON in log file. Resetting logs:", parseError);
+                console.error(
+                    "Invalid JSON in log file. Resetting logs:",
+                    parseError
+                );
                 logs = [];
             }
         }
@@ -50,7 +62,13 @@ const apiLogger = (req, res, next) => {
                 ip: req.ip,
             },
             response: {
-                body: responseBody,
+                body: (() => {
+                    try {
+                        return JSON.parse(responseBody);
+                    } catch {
+                        return responseBody;
+                    }
+                })(),
             },
         };
         writeLogToFile(logData);
