@@ -7,8 +7,10 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Announcement } from '@/app/interfaces/Announcement/Announcement';
+import Link from 'next/link';
+import ShareButton from './ShareButton';
 
-const AnnouncementCard = ({announcement}:{announcement: Announcement}) => {
+const AnnouncementCard = ({ announcement }: { announcement: Announcement }) => {
     return (
         <Card key={announcement.id} className="dark:bg-slate-800">
             <CardHeader>
@@ -22,9 +24,12 @@ const AnnouncementCard = ({announcement}:{announcement: Announcement}) => {
                         </p>
                     </div>
                     {announcement.newAnnouncement && (
-                        <Badge variant="secondary" className="shrink-0 bg-red-500 text-white dark:bg-red-600">
-                            ประกาศใหม่
-                        </Badge>
+                        <div className={`flex gap-3`}>
+                            <Badge variant="secondary" className="shrink-0 bg-red-500 text-white dark:bg-red-600">
+                                ประกาศใหม่
+                            </Badge>
+                            <ShareButton announcement={announcement} />
+                        </div>
                     )}
                 </div>
             </CardHeader>
@@ -99,6 +104,16 @@ const AnnouncementCard = ({announcement}:{announcement: Announcement}) => {
                 {/* Action buttons */}
                 {announcement.links && (
                     <div className="flex flex-wrap gap-4">
+                        <Button
+                            variant="default"
+                            asChild
+                            className="inline-flex items-center bg-pink-500 dark:bg-pink-600 hover:bg-pink-600 text-white dark:text-white"
+                        >
+                            <Link href={`/announce/${announcement.id}`} rel="noopener noreferrer">
+                                ดูรายละเอียดเพิ่มเติม
+                                <ExternalLink className="ml-2 h-4 w-4" />
+                            </Link>
+                        </Button>
                         {announcement.links.map((button) => (
                             <Button
                                 key={button.id}
@@ -106,10 +121,10 @@ const AnnouncementCard = ({announcement}:{announcement: Announcement}) => {
                                 asChild
                                 className="inline-flex items-center bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 text-white dark:text-white"
                             >
-                                <a href={button.link.url} target="_blank" rel="noopener noreferrer">
+                                <Link href={button.link.url} target="_blank" rel="noopener noreferrer">
                                     {button.link.title}
                                     <ExternalLink className="ml-2 h-4 w-4" />
-                                </a>
+                                </Link>
                             </Button>
                         ))}
                     </div>

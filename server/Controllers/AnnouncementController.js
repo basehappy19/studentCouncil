@@ -1,6 +1,45 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+exports.GetAnnouncement = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const announcement = await prisma.announcement.findFirst({
+            where: {
+                id: isNaN(parseInt(id)) ? undefined : parseInt(id),
+            },
+            include: {
+                schedules: {
+                    include: {
+                        schedule: true,
+                    },
+                },
+                links: {
+                    include: {
+                        link: true,
+                    },
+                },
+                iframes: {
+                    include: {
+                        iframe: true,
+                    },
+                },
+                images: {
+                    include: {
+                        image: true,
+                    },
+                },
+            },
+        });
+
+        res.status(200).send(announcement);
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+};
+
 exports.AllAnnouncements = async (req, res) => {
     try {
         const { search, page = 1, pageSize = 3 } = req.query;
@@ -52,7 +91,7 @@ exports.AllAnnouncements = async (req, res) => {
                     },
                 },
                 orderBy: {
-                    order: "desc",
+                    order: "asc",
                 },
                 skip: skip,
                 take: size,

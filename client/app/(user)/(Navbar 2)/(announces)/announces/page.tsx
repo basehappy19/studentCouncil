@@ -1,8 +1,8 @@
 import React from 'react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import type { Metadata } from 'next';
-import { AllAnnouncements } from '@/app/functions/Announcement';
-import { Announce, Priority } from '@/app/interfaces/Announcement/Announcement';
+import { AllAnnouncements, GetAnnouncement } from '@/app/functions/Announcement';
+import { Announce, Announcement, Priority } from '@/app/interfaces/Announcement/Announcement';
 import SearchBar from './SearchBar';
 import Pagination from '@/components/Pagination';
 import Calendar from './Calendar';
@@ -24,12 +24,13 @@ export const metadata: Metadata = {
 
 const AnnouncementPage = async (props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) => {
     const searchParams = await props.searchParams
-    const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;    
+    const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;
     const page =
-    typeof searchParams.page === "string"
-      ? parseInt(searchParams.page)
-      : undefined;
+        typeof searchParams.page === "string"
+            ? parseInt(searchParams.page)
+            : undefined;
     const announce: Announce = await AllAnnouncements({ search: search, page: page });
+
     const events: Event[] = await AllEvents();
 
     const getPriorityTitle = (priority: Priority) => {
@@ -88,6 +89,7 @@ const AnnouncementPage = async (props: { searchParams: Promise<{ [key: string]: 
             dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 
             bg-gradient-to-br from-blue-50 via-yellow-50 to-pink-50`}>
             {/* Hero Section */}
+
             <div className="container mx-auto px-4 py-8 space-y-6">
                 {/* Important announcement alert */}
                 <Alert className={styles.container}>
@@ -101,7 +103,7 @@ const AnnouncementPage = async (props: { searchParams: Promise<{ [key: string]: 
                 </Alert>
 
                 {/* Calendar */}
-                <Calendar events={events}/>
+                <Calendar events={events} />
 
                 {/* Search bar and pagination */}
                 <SearchBar />
@@ -109,10 +111,10 @@ const AnnouncementPage = async (props: { searchParams: Promise<{ [key: string]: 
 
                 {/* Announcements list */}
                 <div className="grid gap-6">
-                    {announce.announcements.length > 0 ? ( 
+                    {announce.announcements.length > 0 ? (
                         announce.announcements.map((announcement) => (
-                        <AnnouncementCard key={announcement.id} announcement={announcement} />
-                    ))) : (
+                            <AnnouncementCard key={announcement.id} announcement={announcement} />
+                        ))) : (
                         <div className="text-center text-muted-foreground py-10">
                             ไม่พบประกาศ
                         </div>

@@ -22,3 +22,22 @@ export const AllAnnouncements = async ({ search, page }: { search: string | unde
         }
     }
 };
+
+export const GetAnnouncement = async ({ id }: { id: string }) => {
+    try {
+        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/announcement/${id.toString()}`;
+        const res = await fetch(url, { next: { revalidate: 0 } });
+        if (!res.ok) {
+            throw new Error(`Failed To Fetch Announcement: ${res.status}`);
+        }
+        return res.json();
+    } catch (e: unknown) {
+        if (e instanceof Error) {
+            console.error(`Error Fetch Announcement: ${e.message}`);
+            throw new Error(`Failed To Fetch Announcement`, { cause: e });
+        } else {
+            console.error("Unknown error occurred", e);
+            throw new Error(`Failed To Fetch Announcement`);
+        }
+    }
+};
