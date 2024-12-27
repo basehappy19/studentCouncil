@@ -1,22 +1,31 @@
 'use client'
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PartyList } from '@/app/interfaces/PartyList/partylist';
 import { SupportPartyList } from '@/app/functions/PartyList';
 
 const SupportButton = ({ partyList }: { partyList: PartyList }) => {
+    const [supportedParties, setSupportedParties] = useState<string[]>([]);
+    const [canSupport, setCanSupport] = useState(false);
 
-    const supportedParties = JSON.parse(localStorage.getItem('supportedParties') || '[]');
-    const canSupport = supportedParties.includes(partyList.id) ? false : true
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedParties = JSON.parse(localStorage.getItem('supportedParties') || '[]');
+            setSupportedParties(storedParties);
+            setCanSupport(!storedParties.includes(partyList.id));
+        }
+    }, [partyList.id]);
+
     const handleSupport = async () => {
         if (canSupport) {
             try {
                 await SupportPartyList({ partyListId: partyList.id });
 
-                const supportedParties = JSON.parse(localStorage.getItem('supportedParties') || '[]');
-                supportedParties.push(partyList.id);
-                localStorage.setItem('supportedParties', JSON.stringify(supportedParties));
+                const updatedParties = [...supportedParties, partyList.id.toString()];
+                localStorage.setItem('supportedParties', JSON.stringify(updatedParties));
+                setSupportedParties(updatedParties);
+                setCanSupport(false);
             } catch (error) {
                 console.error('Failed To Support PartyList', error);
             }

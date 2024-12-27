@@ -57,7 +57,11 @@ exports.AllPartyLists = async (req, res, next) => {
                     include: {
                         skills: {
                             include: {
-                                skill: true,
+                                skill: {
+                                    include:{
+                                        icon: true
+                                    }
+                                },
                             },
                         },
                         experiences: {
@@ -100,7 +104,11 @@ exports.PartyList = async (req, res, next) => {
                     include: {
                         skills: {
                             include: {
-                                skill: true,
+                                skill: {
+                                    include:{
+                                        icon: true
+                                    }
+                                },
                             },
                         },
                         experiences: {
@@ -203,7 +211,11 @@ exports.HomePagePartyLists = async (req, res) => {
                     include: {
                         skills: {
                             include: {
-                                skill: true,
+                                skill: {
+                                    include:{
+                                        icon: true
+                                    }
+                                },
                             },
                         },
                     },

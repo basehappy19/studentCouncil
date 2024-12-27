@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation'
 
 const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
   const pathname = usePathname()
-
+  
   return (
     <Card className="group overflow-hidden bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-blue-500/10">
       <div className="relative">
@@ -58,7 +58,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
                     width={16}
                     height={16}
                     quality={100}
-                    src={`${process.env.NEXT_PUBLIC_PARTYLIST_SKILLS_ICON_PATH}${skill.skill.icon}`}
+                    src={`${process.env.NEXT_PUBLIC_PARTYLIST_SKILLS_ICON_PATH}${skill.skill.icon.name}`}
                     className="min-w-4 min-h-4 w-4 h-4 mr-2"
                     alt="skill"
                   />{skill.skill.name}

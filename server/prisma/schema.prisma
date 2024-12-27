@@ -201,6 +201,7 @@ model Icon {
   tags         IconTags[]
   categories   IconCategories[]
   workTags     WorkTag[]
+  skills       Skill[]
 }
 
 model IconContributors {
@@ -488,7 +489,7 @@ model Bio {
   classroom        String
   experiences      ExperienceOwnPartyList[]
   skills           SkillOwnPartyList[]
-  messageToStudent String
+  messageToStudent String                   @db.Text
   partyList        PartyList?               @relation
 }
 
@@ -512,7 +513,8 @@ model ExperienceOwnPartyList {
 model Skill {
   id     Int                 @id @default(autoincrement())
   name   String
-  icon   String?
+  iconId Int?
+  icon   Icon?               @relation(fields: [iconId], references: [id])
   owners SkillOwnPartyList[]
 }
 
@@ -759,12 +761,12 @@ enum EventType {
 }
 
 model Event {
-  id          Int          @id @default(autoincrement())
-  title       String       @db.Text
-  description String?       @db.Text
+  id          Int       @id @default(autoincrement())
+  title       String    @db.Text
+  description String?   @db.Text
   date        DateTime
   time        String?
   location    String?
-  eventType   EventType    @default(WORK)
-  createdAt   DateTime     @default(now())
+  eventType   EventType @default(WORK)
+  createdAt   DateTime  @default(now())
 }

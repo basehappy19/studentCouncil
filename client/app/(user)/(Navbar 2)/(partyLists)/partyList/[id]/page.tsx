@@ -41,32 +41,50 @@ async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
   const id = params.id
   const partyList: PartyList = await getPartyList(parseInt(id));
   const platformIconSrc = process.env.NEXT_PUBLIC_PLATFORM_ICON_PATH || "";
-  
+
   return (
     <div className="relative bg-[#f4f4fc] dark:bg-slate-900 pb-5">
-      <section className="relative min-h-screen bg-gradient-to-br from-blue-100 via-yellow-50 to-pink-100 dark:from-slate-800/50 dark:to-transparent">
-        <div className="absolute inset-0 bg-grid-white/25 bg-grid-8" />
-        <div className="relative pt-20 pb-32 px-4">
-          <div className="container mx-auto">
-            <div className="flex flex-col-reverse md:flex-row-reverse items-center gap-y-20 md:gap-x-20">
-              <div className="flex-1 w-full">
-                <div className="relative">
-                  <PartyListCard partyList={partyList} />
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-100/90 via-yellow-50/90 to-pink-100/90 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900" />
+
+        {/* Grid Pattern Overlay */}
+        <div className="absolute inset-0 bg-grid-slate-200/50 dark:bg-grid-slate-700/25"
+          style={{ maskImage: 'linear-gradient(to bottom, transparent, black, transparent)' }} />
+
+        {/* Main Content */}
+        <div className="relative py-20 px-4 sm:px-6 lg:px-8">
+          <div className="container mx-auto max-w-7xl pb-20">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
+
+              {/* Left Side - Message */}
+              <div className="w-full lg:w-1/2 space-y-6">
+                <div
+                  className="text-3xl md:text-5xl font-bold text-center lg:text-left"
+                >
+                  <span className="leading-5 md:leading-[1.5] bg-gradient-to-r from-orange-400 to-orange-600 dark:from-orange-500 dark:to-orange-700 bg-clip-text text-transparent">
+                    {partyList.bio.shortMessage}
+                  </span>
                 </div>
+
+                <p
+                  className="text-lg text-gray-600 dark:text-gray-300 text-center lg:text-left"
+                >
+                  เพราะ นักเรียนทุกคนเป็นเจ้าของโรงเรียน
+                </p>
               </div>
 
-              <div className="flex-1 relative">
-                <div className="text-3xl md:text-6xl text-center font-bold text-transparent bg-clip-text bg-orange-400 dark:bg-orange-600">
-                  {partyList.bio.shortMessage}
-                </div>
+              <div
+                className="w-full lg:w-1/2"
+              >
+                <PartyListCard partyList={partyList} />
               </div>
+
             </div>
           </div>
         </div>
 
-        <div className="absolute inset-x-0 bottom-20 flex items-center justify-center animate-bounce">
-          <ChevronDown className="w-8 h-8 text-gray-600" />
-        </div>
+
       </section>
 
       <section className="relative -mt-20 mb-10">
