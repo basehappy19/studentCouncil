@@ -103,16 +103,6 @@ const AnnouncementCard = ({ announcement }: { announcement: Announcement }) => {
 
                 {/* Action buttons */}
                 <div className="flex flex-wrap gap-4">
-                    <Button
-                        variant="default"
-                        asChild
-                        className="inline-flex items-center bg-pink-500 dark:bg-pink-600 hover:bg-pink-600 text-white dark:text-white"
-                    >
-                        <Link href={`/announce/${announcement.id}`} rel="noopener noreferrer">
-                            ดูรายละเอียดเพิ่มเติม
-                            <ExternalLink className="ml-2 h-4 w-4" />
-                        </Link>
-                    </Button>
                     {announcement.links && (
                         announcement.links.map((button) => (
                             <Button
@@ -128,6 +118,16 @@ const AnnouncementCard = ({ announcement }: { announcement: Announcement }) => {
                             </Button>
                         ))
                     )}
+                    <Button
+                        variant="default"
+                        asChild
+                        className="inline-flex items-center bg-pink-500 dark:bg-pink-600 hover:bg-pink-600 text-white dark:text-white"
+                    >
+                        <Link href={`/announce/${announcement.id}`} rel="noopener noreferrer">
+                            ดูรายละเอียดเพิ่มเติม
+                            <ExternalLink className="ml-2 h-4 w-4" />
+                        </Link>
+                    </Button>
                 </div>
             </CardContent>
         </Card>
