@@ -11,7 +11,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
   const pathname = usePathname()
   
   return (
-    <Card className="group overflow-hidden bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-blue-500/10">
+    <Card className="h-full group overflow-hidden bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-blue-500/10">
       <div className="relative">
         <div className="relative h-96 overflow-hidden">
           <Image
@@ -39,9 +39,9 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
             <div className="mb-2 flex flex-wrap gap-2">
               {partyList.roles.map((role) => (
                 <Badge
-                  key={role.role.id}
+                  key={role.id}
                   variant="secondary"
-                  className="font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-100"
+                  className="font-medium bg-blue-100 hover:bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-100"
                 >
                   {role.role.name}
                 </Badge>
@@ -50,7 +50,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
             <div className="mb-4 flex flex-wrap gap-2">
               {partyList.bio.skills.map((skill) => (
                 <Badge
-                  key={skill.skill.id}
+                  key={skill.id}
                   variant="secondary"
                   className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
                 >

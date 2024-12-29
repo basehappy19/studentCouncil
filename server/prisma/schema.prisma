@@ -495,7 +495,7 @@ model Bio {
 
 model Experience {
   id     Int                      @id @default(autoincrement())
-  title  String
+  title  String                   @db.Text
   owners ExperienceOwnPartyList[]
 }
 
@@ -545,7 +545,6 @@ model Platform {
   id       Int       @id @default(autoincrement())
   name     String
   icon     String
-  color    String
   contacts Contact[]
 }
 
