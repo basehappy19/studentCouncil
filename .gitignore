@@ -70,15 +70,15 @@ server/prisma/migrations/
 server/logs/
 
 server/Uploads/Announcements/
-server/PartyLists/128x128
-server/PartyLists/full
-server/Platforms/
-server/Policies/Categories/CategoryIcon/
-server/Policies/PolicyImg/
-server/Policies/SubcategoriesIcon/
-server/TraffyFondues/Locations/
-server/Users/128x128/
-server/Votes/Documents/
-server/Works/Images/
+server/Uploads/PartyLists/128x128
+server/Uploads/PartyLists/full
+server/Uploads/Platforms/
+server/Uploads/Policies/Categories/CategoryIcon/
+server/Uploads/Policies/PolicyImg/
+server/Uploads/Policies/SubcategoriesIcon/
+server/Uploads/TraffyFondues/Locations/
+server/Uploads/Users/128x128/
+server/Uploads/Votes/Documents/
+server/Uploads/Works/Images/
 
 studentCouncil.sql
