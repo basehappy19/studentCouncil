@@ -23,6 +23,7 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
       title: `ติดตามมติ ${vote.title} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
       description: "เพื่อทำให้สภาโปร่งใส มติก็เป็นหนึ่งสิ่งที่เราให้ความสำคัญในการเปิดเผยกับทุกคน",
     },
+    keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
   };
 }
 

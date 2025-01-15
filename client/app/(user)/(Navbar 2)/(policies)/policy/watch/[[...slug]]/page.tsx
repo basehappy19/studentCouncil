@@ -5,7 +5,7 @@ import { AllPolicyProgresses, AllStatuses, StatisticProgresses } from "@/app/fun
 import Section from "./section";
 import type { Metadata } from "next";
 
-export const metadata : Metadata = {
+export const metadata: Metadata = {
   title: `ติดตามนโยบาย - ตรวจสอบความคืบหน้านโยบาย ${process.env.NEXT_PUBLIC_APP_TITLE}`,
   description: "สำรวจและติดตามความคืบหน้าของนโยบายต่าง ๆ ผ่านหมวดหมู่ สถานะ และขั้นตอนที่แตกต่างกัน อัปเดตข้อมูลนโยบายแบบเรียลไทม์",
   keywords: [
@@ -17,6 +17,14 @@ export const metadata : Metadata = {
     "การอัปเดตนโยบาย",
     "การตรวจสอบนโยบาย",
     "สถิตินโยบาย",
+    "สภานักเรียนโปร่งใส",
+    "สภาโปร่งใส",
+    "สภานักเรียน",
+    "นักเรียน",
+    "นโยบาย",
+    "งบประมาณ",
+    "มติ",
+    "โรงเรียนภูเขียว"
   ],
   openGraph: {
     title: "ติดตามนโยบาย - ตรวจสอบความคืบหน้านโยบาย",
@@ -25,7 +33,7 @@ export const metadata : Metadata = {
     type: "website",
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_APP_METADATA}/path/platform/og-image.jpg`, 
+        url: `${process.env.NEXT_PUBLIC_APP_METADATA}/path/platform/og-image.jpg`,
         width: 1200,
         height: 630,
         alt: "หน้าแดชบอร์ดติดตามนโยบาย",
@@ -36,7 +44,7 @@ export const metadata : Metadata = {
     card: "summary_large_image",
     title: "ติดตามนโยบาย - ตรวจสอบความคืบหน้านโยบาย",
     description: "ติดตามการพัฒนานโยบายและสถานะการอัปเดตแบบเรียลไทม์",
-    images: `${process.env.NEXT_PUBLIC_APP_METADATA}/path/platform/twitter-image.jpg`, 
+    images: `${process.env.NEXT_PUBLIC_APP_METADATA}/path/platform/twitter-image.jpg`,
   },
 };
 
@@ -53,7 +61,7 @@ async function PolicyTrack(props: { params: Promise<{ slug: string[] }> }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-yellow-50 to-pink-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      <Section policyProgressesStatus={policyProgressesStatus} params={params} categories={categories} policies={policies} statuses={statuses}/>
+      <Section policyProgressesStatus={policyProgressesStatus} params={params} categories={categories} policies={policies} statuses={statuses} />
     </div>
   );
 }

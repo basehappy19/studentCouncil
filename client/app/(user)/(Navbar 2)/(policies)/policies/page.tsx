@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     title: `หมวดนโยบาย ${process.env.NEXT_PUBLIC_APP_TITLE}`,
     description: "พรรคเราได้คิดหมวดนโยบายออกมาเพิ่มพัฒนาในหลายด้าน หลายมุมภายในโรงเรียน",
   },
+  keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
 }
 
 async function PolicyCategories() {

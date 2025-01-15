@@ -17,8 +17,8 @@ import ImageGallery from '../../announces/Images';
 import ShareButton from './ShareButton';
 
 export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
-    const params = await props.params
-    const id = params.id
+    const params = await props.params;
+    const id = params.id;
     const announcement: Announcement = await GetAnnouncement({ id });
 
     return {
@@ -30,6 +30,7 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
             description:
                 `ประกาศ ${announcement.title} ${announcement.content} เมื่อ : ${announcement.timestamp}`,
         },
+        keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
     };
 }
 

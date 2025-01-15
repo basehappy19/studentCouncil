@@ -32,6 +32,7 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
         url: `${imgSrc}${partyList.profile_image_full}`
       }
     },
+    keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
   };
 }
 

@@ -17,6 +17,7 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
       title: `งบประมาณ${budget.title} ${process.env.NEXT_PUBLIC_APP_TITLE}`,
       description: "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามงบประมาณเราได้ที่นี้",
     },
+    keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
   };
 }
 

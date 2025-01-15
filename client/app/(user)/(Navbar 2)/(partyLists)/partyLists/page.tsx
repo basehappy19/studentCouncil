@@ -12,6 +12,8 @@ export const metadata: Metadata = {
     title: `ทำความรู้จักสภานักเรียน ${process.env.NEXT_PUBLIC_APP_TITLE}`,
     description: "แต่ละคนมักมีความสามารถ SoftSkill HardSkill ที่แตกต่างกัน เราจึงได้คัดสรรการทำงานในความถนัดออกมาแบบในพรรคของเรา",
   },
+  keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
+
 };
 
 const AllPartyLists = async (props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) => {

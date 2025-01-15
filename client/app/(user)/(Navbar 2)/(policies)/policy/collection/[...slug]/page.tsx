@@ -26,6 +26,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string[]
         },
       ],
     },
+    keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
   };
 }
 

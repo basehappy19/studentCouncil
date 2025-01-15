@@ -13,6 +13,7 @@ export const metadata: Metadata = {
     description:
       "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามการทำงานผลงานเราได้ที่นี้",
   },
+  keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
 };
 
 async function TrackWorks(props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
