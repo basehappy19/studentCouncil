@@ -561,8 +561,6 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
                                                 id: contact.id,
                                                 username: contact.username,
                                                 link: contact.link,
-                                                partyListId: user.data.partyList.id,
-                                                platformId: contact.platformId,
                                                 platform: contact.platform,
                                             })}
                                         >
