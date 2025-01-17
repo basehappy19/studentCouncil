@@ -161,7 +161,7 @@ export default function ProblemReportForm({ errors, locations, formData, onHandl
                                     value={formData.selectedSubLocation?.toString() || ""}
                                     onValueChange={(value) => onHandleInputChange('selectedSubLocation', parseInt(value))}
                                 >
-                                    <SelectTrigger className="dark:text-white dark:bg-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors border-l-4 border-l-blue-500">
+                                    <SelectTrigger className="dark:text-white dark:bg-blue-400 bg-blue-50 hover:bg-blue-100 transition-colors border-l-4 border-l-blue-500">
                                         <SelectValue placeholder="📍 เลือกสถานที่ เช่น ห้องน้ำ โรงอาหาร" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -189,7 +189,7 @@ export default function ProblemReportForm({ errors, locations, formData, onHandl
                                     value={formData.selectedRoom?.toString() || ""}
                                     onValueChange={(value) => onHandleInputChange('selectedRoom', parseInt(value))}
                                 >
-                                    <SelectTrigger className="dark:text-white dark:bg-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors border-l-4 border-l-blue-500">
+                                    <SelectTrigger className="dark:text-white dark:bg-blue-400 bg-blue-50 hover:bg-blue-100 transition-colors border-l-4 border-l-blue-500">
                                         <SelectValue placeholder="🚪 เลือกห้องที่พบปัญหา" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -212,7 +212,7 @@ export default function ProblemReportForm({ errors, locations, formData, onHandl
                             value={formData.issueTitle}
                             onChange={(e) => onHandleInputChange("issueTitle", e.target.value)}
                             placeholder="เขียนหัวข้อปัญหาสั้นๆ เช่น 'ก๊อกน้ำรั่ว' 'หลอดไฟดับ'"
-                            className="bg-orange-50 hover:bg-orange-100 transition-colors"
+                            className="bg-orange-50 hover:bg-orange-100 transition-colors dark:text-black"
                         />
                         {errors.issueTitle && (
                             <p className="text-red-500 text-sm mt-1">{errors.issueTitle}</p>
@@ -221,7 +221,7 @@ export default function ProblemReportForm({ errors, locations, formData, onHandl
                             value={formData.issueDescription}
                             onChange={(e) => onHandleInputChange("issueDescription", e.target.value)}
                             placeholder="อธิบายรายละเอียดเพิ่มเติม เช่น 'ก๊อกน้ำอ่างล้างมือตัวที่ 2 มีน้ำหยดตลอดเวลา'"
-                            className="bg-orange-50 hover:bg-orange-100 transition-colors"
+                            className="bg-orange-50 hover:bg-orange-100 transition-colors dark:text-black"
                         />
                         {errors.issueDescription && (
                             <p className="text-red-500 text-sm mt-1">{errors.issueDescription}</p>
