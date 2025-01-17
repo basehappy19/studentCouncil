@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Logo = ({isScrolled}:{isScrolled:boolean}) => (
-    <svg className={`transition-all duration-300 ${isScrolled ? 'w-16 h-16' : 'w-12 h-12'} `} id="Layer_3" data-name="Layer 3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 773.92 830.75">
+    <svg className={`transition-all duration-300 ${isScrolled ? 'w-16 h-16' : 'w-12 h-12'} `} id="Layer_3" data-name="Layer 3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 773.92 830.75">
         <defs>
             <style>
                 {`

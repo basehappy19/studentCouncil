@@ -32,7 +32,26 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
         url: `${imgSrc}${partyList.profile_image_full}`
       }
     },
-    keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
+    keywords: [
+      "Student Own School",
+      "เพราะนักเรียนเป็นเจ้าของโรงเรียน",
+      "ติดตามนโยบาย",
+      "ความคืบหน้านโยบาย",
+      "หมวดหมู่นโยบาย",
+      "สถานะนโยบาย",
+      "นโยบายสภานักเรียน",
+      "การอัปเดตนโยบาย",
+      "การตรวจสอบนโยบาย",
+      "สถิตินโยบาย",
+      "สภานักเรียนโปร่งใส",
+      "สภาโปร่งใส",
+      "สภานักเรียน",
+      "นักเรียน",
+      "นโยบาย",
+      "งบประมาณ",
+      "มติ",
+      "โรงเรียนภูเขียว"
+    ],
   };
 }
 
@@ -63,7 +82,7 @@ async function AboutPartyList(props: { params: Promise<{ id: string }> }) {
                 <div
                   className="text-3xl md:text-5xl font-bold text-center lg:text-left"
                 >
-                  <span className="leading-5 md:leading-[1.5] bg-gradient-to-r from-orange-400 to-orange-600 dark:from-orange-500 dark:to-orange-700 bg-clip-text text-transparent">
+                  <span className="leading-5 md:leading-[1.5] text-orange-400 dark:text-orange-500">
                     {partyList.bio.shortMessage}
                   </span>
                 </div>

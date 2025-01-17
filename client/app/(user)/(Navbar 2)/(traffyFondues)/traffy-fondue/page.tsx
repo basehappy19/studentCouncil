@@ -2,15 +2,44 @@ import TagInHeader from '@/app/layouts/TagInHeader';
 import { getLocations, getReports } from '@/app/functions/TraffyFondue';
 import { Location } from '@/app/interfaces/TraffyFondue/Location';
 import Client from './Client';
+import type { Metadata } from 'next';
 
+export const metadata: Metadata = {
+    title: `แจ้งปัญหา ${process.env.NEXT_PUBLIC_APP_TITLE}`,
+    description: "แพลตฟอร์มแจ้งปัญหาและติดตามการแก้ไขปัญหาในโรงเรียนโดยสภานักเรียน ช่วยให้นักเรียนมีส่วนร่วมในการปรับปรุงสภาพแวดล้อมในโรงเรียน",
+    openGraph: {
+        title: `แจ้งปัญหา ${process.env.NEXT_PUBLIC_APP_TITLE}`,
+        description: "แจ้งปัญหาในโรงเรียนและติดตามการแก้ไขโดยสภานักเรียน เพื่อสร้างความโปร่งใสและการพัฒนาร่วมกัน",
+    },
+    keywords: [
+        "Student Own School",
+        "เพราะนักเรียนเป็นเจ้าของโรงเรียน",
+        "ติดตามนโยบาย",
+        "ความคืบหน้านโยบาย",
+        "หมวดหมู่นโยบาย",
+        "สถานะนโยบาย",
+        "นโยบายสภานักเรียน",
+        "การอัปเดตนโยบาย",
+        "การตรวจสอบนโยบาย",
+        "สถิตินโยบาย",
+        "สภานักเรียนโปร่งใส",
+        "สภาโปร่งใส",
+        "สภานักเรียน",
+        "นักเรียน",
+        "นโยบาย",
+        "งบประมาณ",
+        "มติ",
+        "โรงเรียนภูเขียว"
+    ],
+};
 
 const TraffyFonduePage = async (props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) => {
     const searchParams = await props.searchParams
-    const searchLocation = typeof searchParams.location === 'string' ? searchParams.location : undefined;   
-    const searchReport = typeof searchParams.report === 'string' ? searchParams.report : undefined;   
-    const locations : Location[] = await getLocations({search:searchLocation});
-    const problems = await getReports({search:searchReport});
-    
+    const searchLocation = typeof searchParams.location === 'string' ? searchParams.location : undefined;
+    const searchReport = typeof searchParams.report === 'string' ? searchParams.report : undefined;
+    const locations: Location[] = await getLocations({ search: searchLocation });
+    const problems = await getReports({ search: searchReport });
+
     return (
         <div className={`min-h-screen
         dark:bg-gradient-to-br dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 

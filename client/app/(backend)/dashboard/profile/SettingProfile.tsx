@@ -85,7 +85,9 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
     };
 
     const handleAddExperience = async () => {
-        if (!newExperience.trim()) return;
+        if (!newExperience.trim()) {
+            return toast.error(`กรุณาป้อนผลงาน`, { position: `bottom-right` })
+        };
 
         try {
             const res: Response = await AddExperience({ title: newExperience });
@@ -292,6 +294,11 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
             toast.error('กรุณาเลือกความสามารถพิเศษ', { position: 'bottom-right' });
             return;
         }
+
+        if (formData.skills.length >= 3) {
+            return toast.error('สามารถเลือกความสามารถพิเศษได้แค่ 3 อย่าง', { position: `bottom-right` })
+        }
+
         try {
             const res: Response = await AddSkillInPartyList({
                 skillId: Number(newSkill.id),
@@ -302,21 +309,39 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
                 const newSkillData = res.data
                 setFormData((prev) => ({
                     ...prev,
+                    bio: {
+                        ...prev.bio,
+                        skills: [
+                            ...prev.bio.skills,
+                            {
+                                id: newSkillData.skill.id,
+                                skill: {
+                                    id: newSkillData.skill.id,
+                                    name: newSkillData.skill.name,
+                                    icon: {
+                                        id: newSkillData.skill.icon.id,
+                                        name: newSkillData.skill.icon.name,
+                                    },
+                                },
+                            },
+                        ],
+                    },
                     skills: [
-                        ...prev.bio.skills,
+                        ...prev.skills,
                         {
-                            id: newSkillData.id,
+                            id: newSkillData.skill.id,
                             skill: {
                                 id: newSkillData.skill.id,
                                 name: newSkillData.skill.name,
                                 icon: {
                                     id: newSkillData.skill.icon.id,
-                                    name: newSkillData.skill.icon.name
-                                }
-                            }
+                                    name: newSkillData.skill.icon.name,
+                                },
+                            },
                         },
                     ],
                 }));
+
 
                 setNewSkill({
                     id: "",
@@ -330,7 +355,7 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
                 toast[res.type](res.message, { position: 'bottom-right' });
             }
         } catch (e) {
-            toast.error('ไม่สามารถเพิ่มช่องทางติดต่อได้ กรุณาลองอีกครั้ง', { position: 'bottom-right' });
+            toast.error('ไม่สามารถความสามารถพิเศษได้ กรุณาลองอีกครั้ง', { position: 'bottom-right' });
         }
 
     }

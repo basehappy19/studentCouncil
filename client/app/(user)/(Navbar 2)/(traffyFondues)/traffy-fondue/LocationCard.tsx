@@ -4,19 +4,13 @@ import { Location } from '@/app/interfaces/TraffyFondue/Location';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, Building2, CheckCircle, MessagesSquare, ChevronDown, ChevronUp, Plus, ListFilter } from 'lucide-react';
+import { AlertCircle, Building2, CheckCircle, MessagesSquare, ChevronDown, ChevronUp, Plus, ListFilter, TimerIcon } from 'lucide-react';
 import Image from 'next/image';
 import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 
 const LocationCard = ({ location, onSelect }: { location: Location, onSelect: (locationId: number) => void; }) => {
     const [isOpen, setIsOpen] = React.useState(false);
-
-    const handleLocationClick = (e: React.MouseEvent) => {
-        // Prevent triggering when clicking buttons
-        if ((e.target as HTMLElement).closest('button')) return;
-        onSelect(location.id);
-        setIsOpen(!isOpen);
-    };
+    console.log(location);
 
     const handleReportClick = (e: React.MouseEvent) => {
         e.stopPropagation(); // Prevent card click
@@ -29,14 +23,14 @@ const LocationCard = ({ location, onSelect }: { location: Location, onSelect: (l
     };
 
     const handleViewSublocations = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Prevent card click
+        e.stopPropagation();
         setIsOpen(!isOpen);
     };
 
     return (
         <Card
             key={location.id}
-            className="relative overflow-hidden bg-white dark:bg-slate-800 cursor-pointer hover:shadow-lg transition-shadow"
+            className="relative overflow-hidden bg-white dark:bg-slate-700 cursor-pointer hover:shadow-lg transition-shadow"
         >
             <Image
                 loading="lazy"
@@ -65,18 +59,33 @@ const LocationCard = ({ location, onSelect }: { location: Location, onSelect: (l
                         <span>ปัญหาทั้งหมด: {location.totalProblems.toString()}</span>
                     </div>
                     <div className="flex gap-2">
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                            <CheckCircle className="h-4 w-4" />
+
+                        <Badge variant="secondary" className="font-medium bg-green-400 hover:bg-green-300 dark:bg-green-500 dark:hover:bg-green-500 flex items-center gap-1 text-xs">
+                            <CheckCircle className="h-3 w-3" />
                             {location.stats.RESOLVED.toString()}
                         </Badge>
-                        <Badge variant="destructive" className="flex items-center gap-1">
-                            <AlertCircle className="h-4 w-4" />
+                        <Badge variant="secondary" className="font-medium bg-orange-300 hover:bg-orange-300 dark:bg-orange-500 dark:hover:bg-orange-500 flex items-center gap-1 text-xs">
+                            <AlertCircle className="h-3 w-3" />
+                            {location.stats.IN_PROGRESS.toString()}
+                        </Badge>
+                        <Badge variant="secondary" className="font-medium bg-red-300 hover:bg-red-300 dark:bg-red-500 dark:hover:bg-red-500 flex items-center gap-1 text-xs">
+                            <TimerIcon className="h-3 w-3" />
                             {location.stats.PENDING.toString()}
                         </Badge>
                     </div>
                 </div>
 
                 <div className="flex gap-2 mt-4">
+
+                    <Button
+                        variant="default"
+                        size="sm"
+                        className="flex items-center gap-2"
+                        onClick={handleReportClick}
+                    >
+                        <Plus className="h-4 w-4" />
+                        แจ้งปัญหา
+                    </Button>
                     {location.subLocations.length > 0 && (
                         <Button
                             variant="outline"
@@ -88,15 +97,6 @@ const LocationCard = ({ location, onSelect }: { location: Location, onSelect: (l
                             ดูสถานที่ย่อย
                         </Button>
                     )}
-                    <Button
-                        variant="default"
-                        size="sm"
-                        className="flex items-center gap-2"
-                        onClick={handleReportClick}
-                    >
-                        <Plus className="h-4 w-4" />
-                        แจ้งปัญหา
-                    </Button>
                 </div>
 
                 <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -122,18 +122,22 @@ const LocationCard = ({ location, onSelect }: { location: Location, onSelect: (l
                                         <div className="flex items-center justify-between mb-2">
                                             <span className="font-medium">{subLocation.name}</span>
                                             <div className="flex gap-2">
-                                                <Badge variant="secondary" className="flex items-center gap-1 text-xs">
+                                                <Badge variant="secondary" className="font-medium bg-green-400 hover:bg-green-300 dark:bg-green-500 dark:hover:bg-green-500 flex items-center gap-1 text-xs">
                                                     <CheckCircle className="h-3 w-3" />
-                                                    {subLocation.stats.RESOLVED}
+                                                    {subLocation.stats.RESOLVED.toString()}
                                                 </Badge>
-                                                <Badge variant="destructive" className="flex items-center gap-1 text-xs">
+                                                <Badge variant="secondary" className="font-medium bg-orange-300 hover:bg-orange-300 dark:bg-orange-500 dark:hover:bg-orange-500 flex items-center gap-1 text-xs">
                                                     <AlertCircle className="h-3 w-3" />
-                                                    {subLocation.stats.PENDING}
+                                                    {subLocation.stats.IN_PROGRESS.toString()}
+                                                </Badge>
+                                                <Badge variant="secondary" className="font-medium bg-red-300 hover:bg-red-300 dark:bg-red-500 dark:hover:bg-red-500 flex items-center gap-1 text-xs">
+                                                    <TimerIcon className="h-3 w-3" />
+                                                    {subLocation.stats.PENDING.toString()}
                                                 </Badge>
                                             </div>
                                         </div>
                                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                                            ปัญหาทั้งหมด: {subLocation.totalProblems}
+                                            ปัญหาทั้งหมด: {subLocation.totalProblems.toString()}
                                         </div>
                                     </div>
                                 </div>

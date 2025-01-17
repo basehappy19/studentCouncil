@@ -276,7 +276,7 @@ export default function ProblemReportForm({ errors, locations, formData, onHandl
                     <div className="pt-4">
                         <Button
                             onClick={handleSubmit}
-                            className="w-full md:w-auto dark:text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 hover:dark:bg-blue-700"
+                            className="w-full dark:text-white bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 hover:dark:bg-blue-700"
                         >
                             แจ้งปัญหา
                         </Button>

@@ -13,14 +13,33 @@ export const metadata: Metadata = {
     description:
       "เพื่อทำสภาให้โปร่งใส นักเรียนทุกคนสามารถติดตามการทำงานผลงานเราได้ที่นี้",
   },
-  keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
+  keywords: [
+    "Student Own School",
+    "เพราะนักเรียนเป็นเจ้าของโรงเรียน",
+    "ติดตามนโยบาย",
+    "ความคืบหน้านโยบาย",
+    "หมวดหมู่นโยบาย",
+    "สถานะนโยบาย",
+    "นโยบายสภานักเรียน",
+    "การอัปเดตนโยบาย",
+    "การตรวจสอบนโยบาย",
+    "สถิตินโยบาย",
+    "สภานักเรียนโปร่งใส",
+    "สภาโปร่งใส",
+    "สภานักเรียน",
+    "นักเรียน",
+    "นโยบาย",
+    "งบประมาณ",
+    "มติ",
+    "โรงเรียนภูเขียว"
+  ],
 };
 
 async function TrackWorks(props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const searchParams = await props.searchParams
-  const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;    
-  const tag = typeof searchParams.tag === 'string' ? searchParams.tag : undefined;    
-  const works: Work[] = await AllWorks({search, tag});
+  const search = typeof searchParams.search === 'string' ? searchParams.search : undefined;
+  const tag = typeof searchParams.tag === 'string' ? searchParams.tag : undefined;
+  const works: Work[] = await AllWorks({ search, tag });
   const tags: Tag[] = await AllTagsWithWork();
   return (
     <div className="min-h-screen

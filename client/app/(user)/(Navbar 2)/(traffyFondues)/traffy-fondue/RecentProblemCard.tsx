@@ -30,7 +30,7 @@ const RecentProblemCard = ({ problems }: { problems: Problem[] }) => {
     };
 
     return (
-        <Card className="bg-white dark:bg-slate-800">
+        <Card className="bg-white dark:bg-slate-700">
             <CardHeader className="border-b dark:border-slate-700">
                 <CardTitle className="flex items-center gap-2 text-black dark:text-white">
                     <MessageSquare className="h-6 w-6 text-blue-500" />
@@ -45,7 +45,7 @@ const RecentProblemCard = ({ problems }: { problems: Problem[] }) => {
                     {problems.map((problem) => (
                         <Card
                             key={problem.id}
-                            className="overflow-hidden bg-white dark:bg-slate-700 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                            className="overflow-hidden bg-white dark:bg-slate-800 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
                         >
                             <div className="flex flex-col md:flex-row">
                                 {/* Image Section */}

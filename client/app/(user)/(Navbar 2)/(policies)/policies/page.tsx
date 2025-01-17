@@ -15,7 +15,26 @@ export const metadata: Metadata = {
     title: `หมวดนโยบาย ${process.env.NEXT_PUBLIC_APP_TITLE}`,
     description: "พรรคเราได้คิดหมวดนโยบายออกมาเพิ่มพัฒนาในหลายด้าน หลายมุมภายในโรงเรียน",
   },
-  keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
+  keywords: [
+    "Student Own School",
+    "เพราะนักเรียนเป็นเจ้าของโรงเรียน",
+    "ติดตามนโยบาย",
+    "ความคืบหน้านโยบาย",
+    "หมวดหมู่นโยบาย",
+    "สถานะนโยบาย",
+    "นโยบายสภานักเรียน",
+    "การอัปเดตนโยบาย",
+    "การตรวจสอบนโยบาย",
+    "สถิตินโยบาย",
+    "สภานักเรียนโปร่งใส",
+    "สภาโปร่งใส",
+    "สภานักเรียน",
+    "นักเรียน",
+    "นโยบาย",
+    "งบประมาณ",
+    "มติ",
+    "โรงเรียนภูเขียว"
+  ],
 }
 
 async function PolicyCategories() {
@@ -30,7 +49,7 @@ async function PolicyCategories() {
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-yellow-400/20 to-pink-400/20 backdrop-blur-sm" />
-        
+
         <div className="relative container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <TagInHeader icon="Sparkles" color="text-yellow-400" title="นโยบายทั้งหมด" />
@@ -59,7 +78,7 @@ async function PolicyCategories() {
         <div className="relative">
           <div className="absolute inset-y-0 left-0 w-1 bg-pink-400 dark:bg-white pointer-events-none" />
           <div className="absolute inset-y-0 right-0 w-1 bg-pink-400 dark:bg-white pointer-events-none" />
-          
+
           <div className="overflow-x-auto scrollbar-hide">
             <div className="flex items-center flex-row px-4 gap-4">
               {policies.map((policy) => (

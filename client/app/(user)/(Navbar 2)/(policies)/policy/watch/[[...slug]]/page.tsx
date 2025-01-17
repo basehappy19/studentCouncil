@@ -6,9 +6,15 @@ import Section from "./section";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: `ติดตามนโยบาย - ตรวจสอบความคืบหน้านโยบาย ${process.env.NEXT_PUBLIC_APP_TITLE}`,
+  title: `ติดตามนโยบาย ${process.env.NEXT_PUBLIC_APP_TITLE}`,
   description: "สำรวจและติดตามความคืบหน้าของนโยบายต่าง ๆ ผ่านหมวดหมู่ สถานะ และขั้นตอนที่แตกต่างกัน อัปเดตข้อมูลนโยบายแบบเรียลไทม์",
+  openGraph: {
+    title: `ติดตามนโยบาย ${process.env.NEXT_PUBLIC_APP_TITLE}`,
+    description: "สำรวจและติดตามความคืบหน้าของนโยบายต่าง ๆ ผ่านหมวดหมู่ สถานะ และขั้นตอนที่แตกต่างกัน อัปเดตข้อมูลนโยบายแบบเรียลไทม์",
+  },
   keywords: [
+    "Student Own School",
+    "เพราะนักเรียนเป็นเจ้าของโรงเรียน",
     "ติดตามนโยบาย",
     "ความคืบหน้านโยบาย",
     "หมวดหมู่นโยบาย",
@@ -26,26 +32,6 @@ export const metadata: Metadata = {
     "มติ",
     "โรงเรียนภูเขียว"
   ],
-  openGraph: {
-    title: "ติดตามนโยบาย - ตรวจสอบความคืบหน้านโยบาย",
-    description: "ติดตามความคืบหน้านโยบาย พร้อมสถิติและข้อมูลเชิงลึกในแต่ละหมวดหมู่และสถานะต่าง ๆ แบบเรียลไทม์",
-    url: `${process.env.NEXT_PUBLIC_APP_URL}/policy/watch`,
-    type: "website",
-    images: [
-      {
-        url: `${process.env.NEXT_PUBLIC_APP_METADATA}/path/platform/og-image.jpg`,
-        width: 1200,
-        height: 630,
-        alt: "หน้าแดชบอร์ดติดตามนโยบาย",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "ติดตามนโยบาย - ตรวจสอบความคืบหน้านโยบาย",
-    description: "ติดตามการพัฒนานโยบายและสถานะการอัปเดตแบบเรียลไทม์",
-    images: `${process.env.NEXT_PUBLIC_APP_METADATA}/path/platform/twitter-image.jpg`,
-  },
 };
 
 

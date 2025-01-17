@@ -639,6 +639,17 @@ exports.AddSkillInPartyList = async (req, res, next) => {
             });
         }
 
+        const skillCount = await prisma.skillOwnPartyList.count({
+            where: { bioId },
+        });
+
+        if (skillCount >= 3) {
+            return res.status(200).json({
+                message: `สามารถเลือกความสามารถพิเศษได้แค่ 3 อย่าง`,
+                type: `error`,
+            });
+        }
+
         const skill = await prisma.skill.findUnique({
             where: { id: skillId },
         });

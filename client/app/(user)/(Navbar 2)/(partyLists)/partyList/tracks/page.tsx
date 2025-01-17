@@ -14,7 +14,26 @@ export const metadata: Metadata = {
         description:
             "นักเรียนทุกคนสามารถติดตามการเข้าทำงาน ของพี่ๆสภาได้ทุกคนที่นี่",
     },
-    keywords: ["สภานักเรียนโปร่งใส","สภาโปร่งใส","สภานักเรียน", "นักเรียน", "นโยบาย", "งบประมาณ", "มติ", "โรงเรียนภูเขียว"],
+    keywords: [
+        "Student Own School",
+        "เพราะนักเรียนเป็นเจ้าของโรงเรียน",
+        "ติดตามนโยบาย",
+        "ความคืบหน้านโยบาย",
+        "หมวดหมู่นโยบาย",
+        "สถานะนโยบาย",
+        "นโยบายสภานักเรียน",
+        "การอัปเดตนโยบาย",
+        "การตรวจสอบนโยบาย",
+        "สถิตินโยบาย",
+        "สภานักเรียนโปร่งใส",
+        "สภาโปร่งใส",
+        "สภานักเรียน",
+        "นักเรียน",
+        "นโยบาย",
+        "งบประมาณ",
+        "มติ",
+        "โรงเรียนภูเขียว"
+    ],
 };
 
 const CheckInTrack = async (props: {
@@ -38,8 +57,8 @@ const CheckInTrack = async (props: {
             ? searchParams.search_statistic
             : undefined;
     const checkIns: CheckIns = await AllCheckIns({ startDate, endDate, search });
-    const statistics : CheckInStatistic[] = await CheckInStatistics({ search: search_statistic })    
-    
+    const statistics: CheckInStatistic[] = await CheckInStatistics({ search: search_statistic })
+
     return (
         <div
             className="min-h-screen
