@@ -34,7 +34,7 @@ const FilterButton = ({ additionalData }: { additionalData: AdditionalWork }) =>
     }, [filter, router, pathname, searchParams]);
 
     return (
-        <div className="space-x-2">
+        <div className='flex flex-col md:flex-row gap-3'>
             <Button
                 className={`transition-all ease-in-out duration-300 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 whitespace-nowrap ${filter === '' ? 'bg-blue-700 hover:bg-blue-800 focus:ring-blue-400' : 'bg-blue-400 hover:bg-blue-500 focus:ring-blue-400'}`}
                 variant={filter === '' ? 'default' : 'outline'}

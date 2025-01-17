@@ -22,7 +22,7 @@ const WorkCard = ({ work }: { work: Work }) => {
                                     width={16}
                                     height={16}
                                     src={`${process.env.NEXT_PUBLIC_WORK_ICON_PATH}${tag.tag.icon}`}
-                                    alt={tag.tag.title}
+                                    alt={tag.id.toString()}
                                 />
                             </div>
                         ))}

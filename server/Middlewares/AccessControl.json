@@ -351,6 +351,114 @@
             "method": "GET",
             "requiresAuth": false,
             "allowedAccessIds": []
+        },
+        {
+            "path": "/announcement/:id",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/budget/statistics/income_expense",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/partyList/message",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/partyList/support",
+            "method": "PUT",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/partyList/bio",
+            "method": "PUT",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/partyList/experience",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/platforms",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/partyList/contact",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/partyList/skill",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/policy/comment",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/policy/like",
+            "method": "PUT",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/traffyFondue/locations",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/traffyFondue/reports",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/traffyFondue/report",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/work/comment",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/tags",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/work/tags",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
+            "path": "/tag",
+            "method": "POST",
+            "requiresAuth": false,
+            "allowedAccessIds": []
         }
     ]
 }

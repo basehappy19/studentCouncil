@@ -7,6 +7,7 @@ const GenerateAccessControl = () => {
 
     let accessControl = { routes: [] };
 
+    // Load existing access control file
     if (fs.existsSync(accessControlFile)) {
         accessControl = JSON.parse(fs.readFileSync(accessControlFile, 'utf-8'));
     }
@@ -16,8 +17,9 @@ const GenerateAccessControl = () => {
     }
 
     const routeFiles = fs.readdirSync(routesDir).filter(file => file !== 'index.js');
-    const routePathsInRoutes = [];
+    const routeDefinitions = [];
 
+    // Extract routes from files
     routeFiles.forEach(file => {
         const filePath = path.join(routesDir, file);
         const routeModule = require(filePath);
@@ -25,18 +27,34 @@ const GenerateAccessControl = () => {
         if (routeModule.stack) {
             routeModule.stack.forEach(layer => {
                 if (layer.route) {
-                    const routePath = layer.route.path;
-                    routePathsInRoutes.push(routePath);
+                    const routeDefinition = {
+                        path: layer.route.path,
+                        method: Object.keys(layer.route.methods)[0]?.toUpperCase() || 'GET', // Default to GET
+                        requiresAuth: false, // Default to false
+                        allowedAccessIds: [] // Default to empty
+                    };
+                    routeDefinitions.push(routeDefinition);
                 }
             });
         }
     });
 
-    accessControl.routes = accessControl.routes.filter(route => routePathsInRoutes.includes(route.path));
+    // Remove unused routes
+    accessControl.routes = accessControl.routes.filter(route =>
+        routeDefinitions.some(def => def.path === route.path)
+    );
 
+    // Add new routes
+    routeDefinitions.forEach(routeDef => {
+        if (!accessControl.routes.some(route => route.path === routeDef.path)) {
+            accessControl.routes.push(routeDef);
+        }
+    });
+
+    // Write updated access control to file
     fs.writeFileSync(accessControlFile, JSON.stringify(accessControl, null, 4), 'utf-8');
     console.log('AccessControl.json has been generated/updated.');
-}
+};
 
 GenerateAccessControl();
 

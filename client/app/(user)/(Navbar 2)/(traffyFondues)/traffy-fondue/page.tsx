@@ -1,40 +1,15 @@
 import TagInHeader from '@/app/layouts/TagInHeader';
-import ProblemReportForm from './ReportForm';
-import LocationCard from './LocationCard';
-import RecentProblemCard from './RecentProblemCard';
-import { getLocations } from '@/app/functions/TraffyFondue';
+import { getLocations, getReports } from '@/app/functions/TraffyFondue';
 import { Location } from '@/app/interfaces/TraffyFondue/Location';
-
-const mockProblems = [
-    {
-        id: 1,
-        title: "ก๊อกน้ำรั่ว",
-        description: "ก๊อกน้ำในห้องน้ำชายห้อง 1 มีน้ำรั่วตลอดเวลา",
-        location: "อาคารเรียน 1",
-        subLocation: "ห้องน้ำชาย",
-        room: "ห้อง 1",
-        reportedImages: [],
-        resolvedImages: [],
-        status: "pending",
-        createdAt: "2025-01-04T10:00:00Z"
-    },
-    {
-        id: 2,
-        title: "หลอดไฟเสีย",
-        description: "หลอดไฟในห้องน้ำชายห้อง 2 ดับ",
-        location: "อาคารเรียน 1",
-        subLocation: "ห้องน้ำชาย",
-        room: "ห้อง 2",
-        reportedImages: [],
-        resolvedImages: [],
-        status: "resolved",
-        createdAt: "2025-01-03T15:30:00Z"
-    }
-];
+import Client from './Client';
 
 
-const TraffyFonduePage = async () => {
-    const locations : Location[] = await getLocations();
+const TraffyFonduePage = async (props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) => {
+    const searchParams = await props.searchParams
+    const searchLocation = typeof searchParams.location === 'string' ? searchParams.location : undefined;   
+    const searchReport = typeof searchParams.report === 'string' ? searchParams.report : undefined;   
+    const locations : Location[] = await getLocations({search:searchLocation});
+    const problems = await getReports({search:searchReport});
     
     return (
         <div className={`min-h-screen
@@ -63,18 +38,7 @@ const TraffyFonduePage = async () => {
                 <div className="relative container mx-auto px-4">
 
 
-                    {/* Stats Overview */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        {locations.map((location) => (
-                            <LocationCard key={location.id} location={location} />
-                        ))}
-                    </div>
-
-                    {/* Report Form */}
-                    <ProblemReportForm locations={locations} />
-
-                    {/* Recent Problems */}
-                    <RecentProblemCard mockProblems={mockProblems} />
+                    <Client locations={locations} problems={problems} />
 
                 </div>
             </section>

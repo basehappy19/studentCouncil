@@ -69,6 +69,8 @@ server/prisma/migrations/
 
 server/logs/
 
+server/Uploads/Icons/
+
 server/Uploads/Announcements/
 server/Uploads/PartyLists/128x128/
 server/Uploads/PartyLists/full/

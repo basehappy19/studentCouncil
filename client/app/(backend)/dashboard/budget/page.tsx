@@ -18,8 +18,6 @@ export const metadata: Metadata = {
     },
 };
 
-export const dynamic = 'force-dynamic'
-
 const DashBoardBudget = async (props: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) => {

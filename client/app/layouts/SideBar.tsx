@@ -35,6 +35,7 @@ const SideBar = ({ user, badgeCount = 0 }: { user: UserData | null, badgeCount: 
                     <ul className="space-y-2 font-medium">
                         {user && menuItems
                             .filter(item =>
+                                item.public &&
                                 Array.isArray(item.accessId) && (
                                     item.accessId.includes(0) || item.accessId.includes(user.data.access.id)
                                 )

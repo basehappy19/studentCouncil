@@ -101,7 +101,7 @@ const WorkPostModal = ({ options }: { options: Option }) => {
       }
     } catch (e) {
       console.error(e);
-      toast.error(`มีปัญหาบางอย่างเกิดขึ้น ไม่สามารถโพสต์งานได้`,{position:`bottom-right`});
+      toast.error(`มีปัญหาบางอย่างเกิดขึ้น ไม่สามารถโพสต์งานได้`, { position: `bottom-right` });
     }
   };
 
@@ -241,7 +241,7 @@ const WorkPostModal = ({ options }: { options: Option }) => {
               <div className="flex flex-wrap gap-2 mb-2">
                 {images.map((image, index) => (
                   <div key={index} className="relative w-20 h-20">
-                    <Image fill src={URL.createObjectURL(image)} alt={`Upload ${index}`} className="w-full h-full object-cover rounded" />
+                    <Image fill src={URL.createObjectURL(image)} alt={index.toString()} className="w-full h-full object-cover rounded" />
                     <X className="absolute top-0 right-0 bg-red-500 text-white rounded-full cursor-pointer" size={16} onClick={() => removeImage(index)} />
                   </div>
                 ))}

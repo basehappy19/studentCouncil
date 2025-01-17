@@ -176,13 +176,35 @@ exports.getUserData = async (req, res) => {
                             lastName: true,
                             nickName: true,
                             fullName: true,
-                            bio: true,
+                            bio: {
+                                include: {
+                                    skills: {
+                                        include: {
+                                            skill: {
+                                                include: {
+                                                    icon: true,
+                                                }
+                                            }
+                                        }
+                                    },
+                                    experiences: {
+                                        include: {
+                                            experience: true,
+                                        }
+                                    }
+                                }
+                            },
                             rank: true,
                             roles: {
                                 select: {
                                     id: true,
                                     role: true,
                                 },
+                            },
+                            contacts: {
+                                include: {
+                                    platform: true,
+                                }
                             },
                             profile_image_full: true,
                             profile_image_128x128: true,

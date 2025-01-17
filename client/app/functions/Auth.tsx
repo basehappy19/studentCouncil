@@ -17,6 +17,7 @@ export const getUserData = async (): Promise<UserData | null> => {
                 'Content-Type': 'application/json',
                 'Authorization': token
             },
+            next: { revalidate: 0 }
         });
 
         if (!res.ok) {

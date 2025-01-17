@@ -12,7 +12,7 @@ const VerifyAuth = async (req, res, next) => {
         }
 
         const decoded = jwt.verify(token, process.env.SECRET_KEY); 
-
+        
         const { id } = decoded.user;
         
         const user = await prisma.user.findFirst({
@@ -24,10 +24,11 @@ const VerifyAuth = async (req, res, next) => {
                 profile_image_128x128: true,
                 profile_image_full: true,
                 access: true,
+                partyList: true
             },
             where: { id: id }
         });
-
+        
         req.user = user || null; 
         
         next(); 

@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation'
 
 const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
   const pathname = usePathname()
-  
+
   return (
     <Card className="h-full group overflow-hidden bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-xl dark:hover:shadow-2xl dark:hover:shadow-blue-500/10">
       <div className="relative">
@@ -41,7 +41,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
                 <Badge
                   key={role.id}
                   variant="secondary"
-                  className="font-medium bg-blue-100 hover:bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-100"
+                  className="text-lg font-medium bg-blue-100 hover:bg-blue-100 text-blue-800 dark:bg-blue-700/50 dark:text-blue-100"
                 >
                   {role.role.name}
                 </Badge>
@@ -52,7 +52,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
                 <Badge
                   key={skill.id}
                   variant="secondary"
-                  className="bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300"
+                  className="bg-gray-100 text-gray-600 dark:bg-gray-300 dark:text-gray-700"
                 >
                   <Image
                     width={16}

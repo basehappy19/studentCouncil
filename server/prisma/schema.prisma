@@ -526,6 +526,7 @@ model SkillOwnPartyList {
   bio     Bio   @relation(fields: [bioId], references: [id], onDelete: Cascade)
 
   @@index([skillId, bioId])
+  @@unique([skillId, bioId])
 }
 
 model Contact {
@@ -781,6 +782,7 @@ model Location {
 model SubLocation {
   id         Int               @id @default(autoincrement())
   name       String
+  image      String
   locationId Int
   location   Location          @relation(fields: [locationId], references: [id], onDelete: Cascade)
   rooms      Room[]
@@ -792,6 +794,7 @@ model SubLocation {
 model Room {
   id            Int               @id @default(autoincrement())
   name          String
+  image         String
   subLocationId Int
   subLocation   SubLocation       @relation(fields: [subLocationId], references: [id], onDelete: Cascade)
   problems      ProblemLocation[]
@@ -800,17 +803,18 @@ model Room {
 }
 
 model Problem {
-  id              Int              @id @default(autoincrement())
-  title           String
-  description     String           @db.Text
-  solutionId      Int?
-  solution        Solution?
-  reportedImages  ReportImage[]
-  location        ProblemLocation?
-  status          ProblemStatus    @default(PENDING)
-  statusUpdatedAt DateTime         @default(now())
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  id                Int              @id @default(autoincrement())
+  title             String
+  reportByStudentId Int?
+  description       String           @db.Text
+  solutionId        Int?
+  solution          Solution?        @relation(fields: [solutionId], references: [id])
+  reportedImages    ReportImage[]
+  location          ProblemLocation?
+  status            ProblemStatus    @default(PENDING)
+  statusUpdatedAt   DateTime         @default(now())
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 
   @@unique([solutionId])
   @@index([solutionId])
@@ -851,13 +855,10 @@ model Solution {
   id             Int             @id @default(autoincrement())
   title          String
   description    String          @db.Text
-  problemId      Int
-  problem        Problem         @relation(fields: [problemId], references: [id], onDelete: Cascade)
   resolvedImages ResolvedImage[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
-
-  @@unique([problemId])
+  Problem        Problem?
 }
 
 model ResolvedImage {
