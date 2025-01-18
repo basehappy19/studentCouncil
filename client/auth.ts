@@ -36,12 +36,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                             }),
                         }
                     );
-
+                    
                     if (!res.ok) {
                         throw new Error("Failed Auth");
                     }
-
+                    
                     const user = await res.json();
+
                     return user;
                 } catch (error) {
                     console.error("Authentication error:", error);

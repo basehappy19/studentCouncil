@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react';
-import { PlusCircle, X, Edit2, Save } from 'lucide-react';
+import { PlusCircle, X, Edit2, Save, Plus, AlertCircle } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -363,7 +363,7 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
     return (
         <div className="p-6 space-y-6">
             {/* Bio Section */}
-            <Card>
+            <Card className="bg-white dark:bg-gray-900">
                 <CardHeader>
                     <CardTitle className="flex justify-between items-center">
                         ข้อมูลส่วนตัว
@@ -412,7 +412,7 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
             </Card>
 
             {/* Experiences Section */}
-            <Card>
+            <Card className="bg-white dark:bg-gray-900">
                 <CardHeader>
                     <CardTitle>ผลงานและประสบการณ์</CardTitle>
                 </CardHeader>
@@ -430,7 +430,7 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
 
                     <div className="space-y-2">
                         {formData.bio.experiences.map((exp) => (
-                            <div key={exp.id} className="flex items-center gap-2 border p-2 rounded">
+                            <div key={exp.id} className="flex items-center gap-2 p-2 rounded border dark:border-gray-700 bg-gray-50 dark:bg-gray-500 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all">
                                 {editingExperience && editingExperience.id === exp.experience.id ? (
                                     <>
                                         <Input
@@ -479,7 +479,7 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
             </Card>
 
             {/* Contacts Section */}
-            <Card>
+            <Card className="bg-white dark:bg-gray-900">
                 <CardHeader>
                     <CardTitle>ข้อมูลการติดต่อ</CardTitle>
                 </CardHeader>
@@ -516,7 +516,7 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
 
                     <div className="space-y-2">
                         {formData.contacts.map((contact) => (
-                            <div key={contact.id} className="flex items-center gap-2 border p-2 rounded">
+                            <div key={contact.id} className="flex items-center gap-2 border p-2 rounded-lg dark:border-gray-700 bg-gray-50 dark:bg-gray-500 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all">
                                 {editingContact?.id === contact.id ? (
                                     <>
                                         <Input
@@ -581,51 +581,90 @@ const SettingProfile = ({ user, platforms, skills }: { user: UserData, platforms
             </Card>
 
             {/* Skills Section */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>ความสามารถพิเศษ | งานอดิเรท</CardTitle>
+            <Card className="bg-white dark:bg-gray-900">
+                <CardHeader className="space-y-1">
+                    <CardTitle className="text-xl font-semibold flex items-center gap-2">
+                        ความสามารถพิเศษ | งานอดิเรท
+                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                            (สูงสุด 3 อย่าง)
+                        </span>
+                    </CardTitle>
+                    {(formData.skills.length - 3) > 0 && (
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            เหลือช่องว่างอีก ({formData.skills.length - 3}) ช่อง
+                        </p>
+                    )}
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div>
-                        <Select
-                            value={newSkill.id}
-                            onValueChange={(value) => setNewSkill({ ...newSkill, id: value })}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder={`เลือกความสามารถพิเศษ`} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {skills.map((skill) => (
-                                    <SelectItem key={skill.id} value={skill.id.toString()}>
-                                        {skill.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                    <div className="space-y-4">
+                        <div className="flex gap-2">
+                            <Select
+                                disabled={formData.skills.length >= 3}
+                                value={newSkill.id}
+                                onValueChange={(value) => setNewSkill({ ...newSkill, id: value })}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue
+                                        placeholder={formData.skills.length >= 3
+                                            ? "ครบจำนวนแล้ว"
+                                            : "เลือกความสามารถพิเศษ"
+                                        }
+                                    />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {skills.map((skill) => (
+                                        <SelectItem disabled={formData.skills.some(s => s.skill.id === skill.id)}
+                                            key={skill.id} value={skill.id.toString()}>
+                                            {skill.name}
+                                        </SelectItem>
+                                    ))}
+                                    
+                                </SelectContent>
+                            </Select>
+                            <Button
+                                onClick={handleAddSkill}
+                                disabled={!newSkill.id || formData.skills.length >= 3}
+                                className="flex items-center gap-2 transition-all"
+                            >
+                                <Plus className="w-4 h-4" />
+                                เพิ่ม
+                            </Button>
+                        </div>
 
-                    </div>
-                    <Button onClick={handleAddSkill}>เพิ่มความสามารถพิเศษ</Button>
-
-                    <div className="space-y-2">
-                        {formData.skills.map((skill) => (
-                            <div key={skill.skill.id} className="flex items-center gap-2 border p-2 rounded">
-                                <Image
-                                    width={24}
-                                    height={24}
-                                    src={`${process.env.NEXT_PUBLIC_PARTYLIST_SKILLS_ICON_PATH}${skill.skill.icon.name}`}
-                                    alt={skill.skill.name}
-                                    className="w-6 h-6"
-                                />
-                                <span className="flex-1">{skill.skill.name}</span>
-                                <Button
-                                    variant="ghost"
-                                    onClick={() => handleRemoveSkill(skill.skill.id)}                                        >
-                                    <X className="h-4 w-4" />
-                                </Button>
-
-
+                        {formData.skills.length === 0 && (
+                            <div className="text-center py-6 text-gray-500 dark:text-gray-400 border-2 border-dashed rounded-lg">
+                                <AlertCircle className="w-6 h-6 mx-auto mb-2 opacity-50" />
+                                <p>ยังไม่ได้เลือกความสามารถพิเศษ</p>
                             </div>
-                        ))}
+                        )}
+
+                        <div className="space-y-2">
+                            {formData.skills.map((skill) => (
+                                <div
+                                    key={skill.skill.id}
+                                    className="flex items-center gap-3 p-3 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-500 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all"
+                                >
+                                    <Image
+                                        width={24}
+                                        height={24}
+                                        src={`${process.env.NEXT_PUBLIC_PARTYLIST_SKILLS_ICON_PATH}${skill.skill.icon.name}`}
+                                        alt={skill.skill.name}
+                                        className="w-6 h-6"
+                                    />
+                                    <span className="flex-1 font-medium dark:text-gray-200">
+                                        {skill.skill.name}
+                                    </span>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => handleRemoveSkill(skill.skill.id)}
+                                        className="hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30"
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </CardContent>
             </Card>

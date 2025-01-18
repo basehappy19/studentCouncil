@@ -21,7 +21,7 @@ const WorkCard = ({ work }: { work: Work }) => {
                                     loading='lazy'
                                     width={16}
                                     height={16}
-                                    src={`${process.env.NEXT_PUBLIC_WORK_ICON_PATH}${tag.tag.icon}`}
+                                    src={`${process.env.NEXT_PUBLIC_WORK_ICON_PATH}${tag.tag.icon.name}`}
                                     alt={tag.tag.id.toString()}
                                 />
                             </div>
