@@ -67,8 +67,8 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        <MobileMenu toggleMenu={toggleMenu} isMenuOpen={isMenuOpen}/>
-        
+        <MobileMenu toggleMenu={toggleMenu} isMenuOpen={isMenuOpen} />
+
       </nav>
     </div>
   );

@@ -111,7 +111,7 @@ exports.Login = async (req, res, next) => {
 
         if (!user) {
             return res
-                .status(200)
+                .status(400)
                 .json({ message: "ชื่อผู้ใช้ไม่ถูกต้อง หรือ รหัสผ่านไม่ถูกต้อง", type: "error" });
         }
 
@@ -119,7 +119,7 @@ exports.Login = async (req, res, next) => {
 
         if (!isMatch) {
             return res
-                .status(200)
+                .status(400)
                 .json({ message: "ชื่อผู้ใช้ไม่ถูกต้อง หรือ รหัสผ่านไม่ถูกต้อง", type: "error" });
         }
 

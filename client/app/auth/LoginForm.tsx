@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { toast } from "react-toastify";
 import { User, KeyRound, LucideLoader } from "lucide-react";
+import Link from "next/link";
 
 const LoginForm = () => {
     const router = useRouter();
@@ -17,7 +18,7 @@ const LoginForm = () => {
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-        
+
         const formData = new FormData(e.currentTarget);
         const username = formData.get("username") as string;
         const password = formData.get("password") as string;
@@ -96,9 +97,9 @@ const LoginForm = () => {
                         </div>
                     </CardContent>
                     <CardFooter className="flex flex-col items-center space-y-4">
-                        <Button 
-                            type="submit" 
-                            className="w-full text-base font-medium transition-all hover:scale-[1.02]"
+                        <Button
+                            type="submit"
+                            className="bg-blue-400 hover:bg-blue-500 dark:bg-blue-600 hover:dark:bg-blue-700 w-full text-base font-medium transition-all hover:scale-[1.02]"
                             disabled={isLoading}
                         >
                             {isLoading ? (
@@ -114,6 +115,11 @@ const LoginForm = () => {
                             ลืมรหัสผ่าน? <br />
                             <span className="text-primary hover:underline cursor-pointer">
                                 กรุณาติดต่อประธานสภานักเรียน
+                            </span><br />
+                            <span className="text-primary hover:underline cursor-pointer">
+                            <Link href={`/`}>
+                                กลับหน้าหลัก....
+                            </Link>
                             </span>
                         </p>
                     </CardFooter>
