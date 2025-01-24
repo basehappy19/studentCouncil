@@ -585,6 +585,7 @@ model Policy {
   category         Category            @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   like             Int                 @default(0)
   isApproved       Boolean             @default(true)
+  order            Int?
   subCategories    PolicySubCategory[]
   progresses       ProgressPolicy[]
   description      PolicyDescription?

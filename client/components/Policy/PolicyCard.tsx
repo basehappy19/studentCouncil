@@ -22,7 +22,7 @@ const PolicyCard = ({ policy }: { policy: Policy }) => {
       onClick={() => router.push(`/policy/detail/${policy.id}`)}
     >
       <div className="md:p-8 flex flex-col md:flex-row">
-        <div className="relative w-full md:w-1/3 h-48 md:h-auto">
+        <div className="relative w-full md:w-1/3 h-64">
           <Image
             fill
             src={policySrc + policy.thumbnailImage}

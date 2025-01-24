@@ -37,7 +37,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
               {partyList.nickName}
             </h3>
             <div className="mb-2 flex flex-wrap gap-2">
-              {partyList.roles.map((role) => (
+              {partyList.roles && partyList.roles.map((role) => (
                 <Badge
                   key={role.id}
                   variant="secondary"
@@ -48,7 +48,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
               ))}
             </div>
             <div className="mb-4 flex flex-wrap gap-2">
-              {partyList.bio.skills.map((skill) => (
+              {partyList.bio && partyList.bio.skills.map((skill) => (
                 <Badge
                   key={skill.id}
                   variant="secondary"

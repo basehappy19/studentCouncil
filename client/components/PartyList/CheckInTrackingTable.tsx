@@ -21,9 +21,6 @@ import SearchBar from '@/app/(user)/(Navbar 2)/(partyLists)/partyList/tracks/Sea
 import DateFilter from '@/app/(user)/(Navbar 2)/(partyLists)/partyList/tracks/DateFilter';
 
 const CheckInTrackingTable = ({ checkIns }: { checkIns: CheckIns }) => {
-  console.log(checkIns.days[0].checkIns.find(
-    (checkIn) => checkIn.user.partyList.id === 1
-  ));
 
   return (
     <Card className="w-full">

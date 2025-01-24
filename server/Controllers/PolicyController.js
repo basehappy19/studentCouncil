@@ -65,7 +65,10 @@ exports.AllPolicies = async (req, res, next) => {
                     } 
                     : {}
                 ),
-            }            
+            },
+            orderBy: {
+                order: 'asc'
+            }       
         });
         res.status(200).send(policies);
     } catch (e) {
