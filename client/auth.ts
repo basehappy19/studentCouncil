@@ -12,7 +12,6 @@ declare module "next-auth" {
     }
 }
 
-
 export const { auth, handlers, signIn, signOut } = NextAuth({
     providers: [
         Credentials({
@@ -36,14 +35,22 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                             }),
                         }
                     );
-                    
+
                     if (!res.ok) {
-                        throw new Error("Failed Auth");
+                        throw new Error("Authentication failed");
                     }
-                    
+
                     const user = await res.json();
 
-                    return user;
+                    if (user && user.token) {
+                        return {
+                            id: user.id,
+                            token: user.token,
+                            accessId: user.accessId,
+                        };
+                    }
+
+                    return null;
                 } catch (error) {
                     console.error("Authentication error:", error);
                     return null;
@@ -54,19 +61,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token.id = user.id; 
-                token.token = user.token; 
-                token.accessId = user.accessId; 
-            }            
+                token.id = user.id;
+                token.token = user.token;
+                token.accessId = user.accessId;
+            }
             return token;
         },
 
         async session({ session, token }) {
             if (token?.token) {
-                session.user.id = token.id as string;  
-                session.user.token = token.token as string;  
-                session.user.accessId = token.accessId as number;  
-            }            
+                session.user.id = token.id as string;
+                session.user.token = token.token as string;
+                session.user.accessId = token.accessId as number;
+            }
             return session;
         },
     },

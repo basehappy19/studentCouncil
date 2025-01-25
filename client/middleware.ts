@@ -34,10 +34,6 @@ export default auth(async (req) => {
             }
         }
     }
-
-    if ((nextUrl.pathname === DEFAULT_REDIRECT) && isAuthenticated) {
-        return Response.redirect(new URL(ROOT, nextUrl));
-    }
 });
 
 export const config = {

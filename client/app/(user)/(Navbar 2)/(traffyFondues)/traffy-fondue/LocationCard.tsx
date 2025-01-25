@@ -10,7 +10,6 @@ import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
 
 const LocationCard = ({ location, onSelect }: { location: Location, onSelect: (locationId: number) => void; }) => {
     const [isOpen, setIsOpen] = React.useState(false);
-    console.log(location);
 
     const handleReportClick = (e: React.MouseEvent) => {
         e.stopPropagation(); // Prevent card click

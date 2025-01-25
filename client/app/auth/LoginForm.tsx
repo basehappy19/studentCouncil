@@ -36,8 +36,8 @@ const LoginForm = () => {
                 redirect: false,
             });
 
-            if (!res?.ok) {
-                toast.error("ชื่อผู้ใช้ หรือ รหัสผ่านไม่ถูกต้อง", { position: "bottom-right" });
+            if (res?.error) {
+                toast.error("รหัสมาชิก หรือ รหัสผ่านไม่ถูกต้องลองใหม่ดูครับ", { position: "bottom-right" });
             } else {
                 router.push("/dashboard/home");
             }
@@ -116,10 +116,10 @@ const LoginForm = () => {
                             <span className="text-primary hover:underline cursor-pointer">
                                 กรุณาติดต่อประธานสภานักเรียน
                             </span><br />
-                            <span className="text-primary hover:underline cursor-pointer">
-                            <Link href={`/`}>
-                                กลับหน้าหลัก....
-                            </Link>
+                            <span className="text-blue-600 dark:text-blue-700 hover:underline cursor-pointer">
+                                <Link href={`/`}>
+                                    กลับหน้าหลัก....
+                                </Link>
                             </span>
                         </p>
                     </CardFooter>

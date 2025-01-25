@@ -9,12 +9,12 @@ const chalk = require("chalk");
 const { RateLimiterMemory } = require("rate-limiter-flexible");
 const apiLogger = require("./Middlewares/AppLogger");
 const errorHandler = require("./Middlewares/ErrorHandler");
-const scheduleCronJobs = require("./Functions/AddCheckInDay.js");
 const rateLimiter = new RateLimiterMemory({ points: 20, duration: 1 });
 const VerifyToken = require("./Middlewares/Verify");
 const AccessControlMiddleware = require("./Middlewares/AccessControlMiddleware.js");
 const path = require("path");
 const port = process.env.PORT || 8000;
+const { startCronJobs } = require("./Functions/AddCheckInDay.js");
 
 const app = express();
 
@@ -64,8 +64,11 @@ readdirSync("./Routes")
 // ใช้ Error Handler
 app.use(errorHandler);
 
+startCronJobs();
+
 app.listen(port, () => {
     const env = process.env.NODE_ENV || "development";
+
     const appStartLog = `
 ${chalk.green.bold("==============================================")}
 ${chalk.cyan.bold(" 🚀 Server is starting...")}
@@ -90,8 +93,6 @@ ${chalk.cyan.bold(" 🎯 Cron Jobs are starting...")}
 `;
 
     console.log(appStartLog);
-
-    scheduleCronJobs();
 
     console.log(
         chalk.green.bold("✅ Server and Cron Jobs started successfully!")

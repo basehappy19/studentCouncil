@@ -37,7 +37,7 @@ const checkAndAddCheckInDay = async () => {
                 dateTime: startOfToday,
             },
         });
-
+        
         if (dayOfWeek === 6 || dayOfWeek === 0) {
             if (!existingCheckInDay) {
                 const checkInDay = await prisma.checkInDay.create({
@@ -45,7 +45,7 @@ const checkAndAddCheckInDay = async () => {
                         dateTime: startOfToday,
                     },
                 });
-
+                
                 const allUsers = await prisma.user.findMany({
                     select: {
                         id: true,
@@ -216,17 +216,14 @@ const checkAndAddCheckInDay = async () => {
     }
 };
 
-const scheduleCronJobs = async () => {
+exports.startCronJobs = () => {
     try {
-        cron.schedule('* * * * *', async () => {
+        cron.schedule("*/10 * * * * *", async () => {
             await checkAndAddCheckInDay();
-        });        
-
+        });
+        console.log("Cron jobs initialized.");
     } catch (error) {
-        console.error("Error scheduling cron jobs:", error);
+        console.error("Error initializing cron jobs:", error);
     }
-};
-
-module.exports = scheduleCronJobs;
-
+}
 
