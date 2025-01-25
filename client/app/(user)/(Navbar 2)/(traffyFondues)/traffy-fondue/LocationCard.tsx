@@ -32,8 +32,7 @@ const LocationCard = ({ location, onSelect }: { location: Location, onSelect: (l
             className="relative overflow-hidden bg-white dark:bg-slate-700 cursor-pointer hover:shadow-lg transition-shadow"
         >
             <Image
-                loading="lazy"
-                quality={100}
+                quality={80}
                 width={1092}
                 height={192}
                 src={`${process.env.NEXT_PUBLIC_LOCATION_PATH}${location.image}`}
