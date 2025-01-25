@@ -17,10 +17,11 @@ const ProfileCard = ({ user }: { user: UserData['data'] }) => {
                     <div className="relative group">
                         <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-300 to-orange-300 dark:from-cyan-400 dark:to-orange-400 rounded-full opacity-75 group-hover:opacity-100 transition duration-300 blur" />
                         <Image
-                            src={`${process.env.NEXT_PUBLIC_USER_PROFILE_IMG_128X128_PATH}${user.profile_image_128x128}`}
+                            src={`${process.env.NEXT_PUBLIC_USER_PROFILE_IMG_FULL_PATH}${user.profile_image_full}`}
                             alt={user.displayName}
                             width={192}
                             height={192}
+                            quality={100}
                             className="relative h-48 w-48 object-cover rounded-full border-4 border-white dark:border-gray-800 shadow-xl transform group-hover:scale-105 transition duration-300"
                         />
                     </div>
