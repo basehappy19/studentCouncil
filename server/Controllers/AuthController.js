@@ -157,8 +157,8 @@ exports.getUserData = async (req, res) => {
         }
         const decoded = jwt.verify(token, process.env.SECRET_KEY);
         
-        if (decoded.user !== undefined) {
-            const user = await prisma.user.findUnique({
+        if (decoded.user.id) {
+            const user = await prisma.user.findFirst({
                 where: { id: decoded.user.id },
                 select: {
                     id: true,
