@@ -8,7 +8,7 @@ import { UserData } from '../interfaces/Auth/User'
 import { Home, LogOut, Menu, X, ChevronRight } from 'lucide-react'
 import Logo from '@/public/Logo'
 
-const SideBar = ({ user, badgeCount = 0 }: { user: UserData | null, badgeCount: number }) => {
+const SideBar = ({ user, forgetCheckInRequests = 0 }: { user: UserData | null, forgetCheckInRequests: number }) => {
     const pathname = usePathname()
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -101,10 +101,10 @@ const SideBar = ({ user, badgeCount = 0 }: { user: UserData | null, badgeCount: 
                                         })}
                                         {item.label}
                                     </span>
-                                    {item.href === '/dashboard/checkInForgetRequests' && badgeCount > 0 && (
+                                    {item.href === '/dashboard/checkInForgetRequests' && forgetCheckInRequests > 0 && (
                                         <span className="ml-auto inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium
                                                        bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-full">
-                                            {badgeCount}
+                                            {forgetCheckInRequests}
                                         </span>
                                     )}
                                     <ChevronRight className={`w-4 h-4 ml-auto opacity-0 -translate-x-2

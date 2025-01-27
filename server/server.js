@@ -20,7 +20,19 @@ const app = express();
 
 if (process.env.NODE_ENV === "production") {
     dotenv.config({ path: ".env.production" });
-    app.use(helmet());
+    app.use(
+        helmet({
+            contentSecurityPolicy: {
+                directives: {
+                    defaultSrc: ["'self'"], 
+                    imgSrc: ["'self'", "data:"],
+                    scriptSrc: ["'self'"],
+                    styleSrc: ["'self'", "'unsafe-inline'"], 
+                },
+            },
+            crossOriginEmbedderPolicy: false,
+        })
+    );
     app.use(morgan("combined"));
 } else {
     dotenv.config({ path: ".env.development" });

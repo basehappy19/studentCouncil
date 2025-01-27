@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
         port: '8000',
         pathname: '/Uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'studentownschool.com',
+        port: '',
+        pathname: '/px/Uploads/**',
+      },
     ],
     domains: ['studentownschool.com']
   },

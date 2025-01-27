@@ -466,3 +466,37 @@ export const RemoveSkill = async ({ skillId }: { skillId: number }) => {
     }
   }
 }
+
+export const getMessages = async () => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/partyList/messages`;
+    const session = await auth();
+
+    if (!session) {
+      return null;
+    }
+
+    const token = session?.user?.token || '';
+
+    const res = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': token
+      },
+      next: { revalidate: 0 }
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed To Fetch Messages');
+    }
+    return await res.json();
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      console.error(`Error Fetch Messages: ${e.message}`);
+      throw new Error("Failed Fetch Messages");
+    } else {
+      console.error('An unknown error occurred');
+      throw new Error("Failed Fetch Messages");
+    }
+  }
+}

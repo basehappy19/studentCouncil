@@ -750,3 +750,21 @@ exports.RemoveSkillInPartyList = async (req, res, next) => {
         next(e);
     }
 };
+
+exports.getMessages = async (req, res, next) => {
+    try {
+        
+        const partyList = req.user.partyList;
+
+        const messages = await prisma.messageToPartyList.findMany({
+            where: {
+                partyListId: partyList.id,
+            }
+        });
+
+        res.status(200).send(messages);
+    } catch (e) {
+        e.status = 400;
+        next(e);
+    }
+}
