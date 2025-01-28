@@ -5,6 +5,8 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Mail } from "lucide-react"
 import { Message } from '@/app/interfaces/PartyList/partylist'
 
+export const dynamic = 'force-dynamic'
+
 const InboxMessages = async () => {
     const messages: Message[] = await getMessages();
 
