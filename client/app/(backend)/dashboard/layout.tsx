@@ -21,11 +21,10 @@ export default async function Layout({ children }: { children: ReactNode }) {
     const user = await getUserData();
     const forgetCheckInRequests: RequestData = await getForgetCheckInRequests();
     const messages = await getMessages()
-    console.log(messages);
     
     return (
         <main>
-            {user && (<SideBar forgetCheckInRequests={forgetCheckInRequests.count} user={user} />)}
+            {user && (<SideBar messages={messages} forgetCheckInRequests={forgetCheckInRequests.count} user={user} />)}
             <div className="p-4 sm:ml-64 min-h-screen">
                 {children}
             </div>

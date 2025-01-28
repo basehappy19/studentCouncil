@@ -50,6 +50,7 @@ const PolicyCard = ({ policy }: { policy: Policy }) => {
                 <Image
                   width={16}
                   height={16}
+                  crossOrigin="anonymous"
                   src={categoryIconSrc + policy.category.icon}
                   alt={policy.category.title}
                   className="object-contain"
@@ -70,6 +71,7 @@ const PolicyCard = ({ policy }: { policy: Policy }) => {
                   <Image
                     width={16}
                     height={16}
+                    crossOrigin="anonymous"
                     src={subcategoryIconSrc + subCategory.subCategory.icon}
                     alt={subCategory.subCategory.title}
                     className="object-contain"

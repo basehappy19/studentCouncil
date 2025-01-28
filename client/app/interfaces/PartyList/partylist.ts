@@ -75,3 +75,9 @@ export interface Role {
     partyListId: number;
     roleId: number;
 }
+
+export interface Message {
+    id: number;
+    message: string;
+    createdAt: string;
+}

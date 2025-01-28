@@ -3,6 +3,7 @@ import React from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Menu } from "./Menu";
 import Link from 'next/link';
+import Image from 'next/image';
 
 const MobileMenu = ({ toggleMenu, isMenuOpen }: { toggleMenu: () => void, isMenuOpen: boolean }) => {
     return (
@@ -24,6 +25,7 @@ const MobileMenu = ({ toggleMenu, isMenuOpen }: { toggleMenu: () => void, isMenu
                                     className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-2"
                                     onClick={() => toggleMenu()}
                                 >
+                                    <Image className="mr-2 object-fit inline-flex" width={32} height={32} src={`/${item.icon}`} alt={`${item.title}`} />
                                     {item.title}
                                 </Link>
                             ))}

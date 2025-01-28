@@ -462,6 +462,7 @@ model MessageToPartyList {
   partyListId Int
   partyList   PartyList @relation(fields: [partyListId], references: [id], onDelete: Cascade)
   message     String    @db.Text
+  createdAt   DateTime  @default(now())
 
   @@index([partyListId])
 }

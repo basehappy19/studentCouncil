@@ -4,7 +4,6 @@ const { readdirSync } = require("fs");
 const morgan = require("morgan");
 const cors = require("cors");
 const bodyParse = require("body-parser");
-const helmet = require("helmet");
 const chalk = require("chalk");
 const { RateLimiterMemory } = require("rate-limiter-flexible");
 const apiLogger = require("./Middlewares/AppLogger");
@@ -19,25 +18,11 @@ const { startCronJobs } = require("./Functions/AddCheckInDay.js");
 const app = express();
 
 if (process.env.NODE_ENV === "production") {
-    dotenv.config({ path: ".env.production" });
-    app.use(
-        helmet({
-            contentSecurityPolicy: {
-                directives: {
-                    defaultSrc: ["'self'"], 
-                    imgSrc: ["'self'", "data:"],
-                    scriptSrc: ["'self'"],
-                    styleSrc: ["'self'", "'unsafe-inline'"], 
-                },
-            },
-            crossOriginEmbedderPolicy: false,
-        })
-    );
     app.use(morgan("combined"));
 } else {
-    dotenv.config({ path: ".env.development" });
     app.use(morgan("dev"));
 }
+dotenv.config();
 
 app.use(cors());
 app.use(bodyParse.json({ limit: "10mb" }));

@@ -757,9 +757,10 @@ exports.getMessages = async (req, res, next) => {
         const partyList = req.user.partyList;
 
         const messages = await prisma.messageToPartyList.findMany({
+            
             where: {
                 partyListId: partyList.id,
-            }
+            },
         });
 
         res.status(200).send(messages);

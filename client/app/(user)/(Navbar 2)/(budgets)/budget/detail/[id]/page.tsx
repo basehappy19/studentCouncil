@@ -77,7 +77,7 @@ async function BudgetInDepartment(props: { params: Promise<{ id: string }> }) {
                     <AvatarImage src={`${process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH}/${budget.department.leader.profile_image_128x128}`} />
                     <AvatarFallback>{budget.department.leader.nickName}</AvatarFallback>
                   </Avatar>
-                  หัวหน้วฝ่าย: {' '}
+                  หัวหน้าฝ่าย: {' '}
                   <span className="font-semibold text-blue-600 dark:text-blue-400">
                     {budget.department.leader.fullName}
                   </span>

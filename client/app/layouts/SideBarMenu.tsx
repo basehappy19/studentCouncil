@@ -1,7 +1,8 @@
 import { Backpack, BadgeDollarSign, BellRing, LayoutDashboard, MessageCircleMoreIcon, Monitor, User, UserCog, Vote } from 'lucide-react'
 
 export const menuItems = [
-    {
+    {   
+        id: 1,
         href: '/dashboard/home',
         icon: <LayoutDashboard className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'แดชบอร์ด',
@@ -11,6 +12,7 @@ export const menuItems = [
         public: true
     },
     {
+        id: 2,
         href: '/dashboard/works',
         icon: <Backpack className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'การทำงาน',
@@ -20,6 +22,7 @@ export const menuItems = [
         public: true
     },
     {
+        id: 3,
         href: '/dashboard/checkInForgetRequests',
         icon: <BellRing className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'คำขอลืมเช็คอิน',
@@ -30,6 +33,7 @@ export const menuItems = [
         badgeCount: 12,
     },
     {
+        id: 4,
         href: '/dashboard/votes',
         icon: <Vote className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'การลงมติ',
@@ -39,6 +43,7 @@ export const menuItems = [
         public: false
     },
     {
+        id: 5,
         href: '/dashboard/traffy-fondue',
         icon: <Monitor className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'Traffy Fondue',
@@ -48,6 +53,7 @@ export const menuItems = [
         public: false
     },
     {
+        id: 6,
         href: '/dashboard/budget',
         icon: <BadgeDollarSign className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'งบประมาณ',
@@ -57,6 +63,7 @@ export const menuItems = [
         public: false
     },
     {
+        id: 7,
         href: '/dashboard/users',
         icon: <UserCog className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'สมาชิกสภานักเรียน',
@@ -66,6 +73,7 @@ export const menuItems = [
         public: false
     },
     {
+        id: 8,
         href: '/dashboard/messages',
         icon: <MessageCircleMoreIcon className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'ข้อความ',
@@ -75,6 +83,7 @@ export const menuItems = [
         public: true
     },
     {
+        id: 9,
         href: '/dashboard/profile',
         icon: <User className='w-5 h-5 text-gray-500 dark:text-white' />,
         label: 'แก้ไขข้อมูลส่วนตัว',
