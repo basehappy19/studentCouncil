@@ -526,8 +526,8 @@ model SkillOwnPartyList {
   skill   Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
   bio     Bio   @relation(fields: [bioId], references: [id], onDelete: Cascade)
 
-  @@index([skillId, bioId])
   @@unique([skillId, bioId])
+  @@index([skillId, bioId])
 }
 
 model Contact {
@@ -874,3 +874,14 @@ model ResolvedImage {
 
   @@index([solutionId])
 }
+
+model Fakbok {
+  id        Int      @id @default(autoincrement())
+  publicId  String   @unique @default(uuid()) 
+  content   String   @db.Text
+  likes     Int      @default(0)
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

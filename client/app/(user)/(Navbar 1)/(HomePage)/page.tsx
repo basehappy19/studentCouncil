@@ -6,6 +6,7 @@ import { getPartyListInHomepages } from '@/app/functions/PartyList';
 import Link from 'next/link';
 import { Menu } from '@/app/layouts/Menu';
 import Image from 'next/image';
+import ThankPage from './ThankPage';
 
 export const metadata: Metadata = {
   title: `หน้าแรก ${process.env.NEXT_PUBLIC_APP_TITLE}`,
@@ -64,51 +65,7 @@ async function Home() {
         <div className="relative container mx-auto px-4 py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Main Content */}
-            <div className="text-white space-y-6">
-              <div className="inline-block px-4 py-2 bg-blue-600/80 rounded-full text-sm font-medium backdrop-blur-sm">
-                3 ก.พ. - 6 ก.พ. 2568
-              </div>
-
-              <h1 className="text-5xl md:text-6xl font-bold leading-tight">
-                <span className="text-blue-400">เลือกตั้ง</span>
-                <span className="text-yellow-400"> สภานักเรียน</span>
-              </h1>
-
-              <div className="space-y-4 text-gray-200">
-                <div className="flex items-center space-x-2">
-                  <Calendar className="w-5 h-5 text-yellow-400" />
-                  <p>เลือกตั้งล่วงหน้า: 3 ก.พ. 2567</p>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Calendar className="w-5 h-5 text-yellow-400" />
-                  <p>เลือกตั้งใหญ่: 6 ก.พ. 2567</p>
-                </div>
-              </div>
-
-              <p className="text-xl">
-                ร่วมเป็นส่วนหนึ่งในการสร้างความเปลี่ยนแปลง
-                <span className="text-yellow-400 font-semibold"> กาเบอร์ 1</span>
-                <br />
-                <span className="text-blue-400 font-semibold">Student Own School</span>
-                {" "}สภานักเรียนต้องไม่<span className='line-through'>เหมือนเดิม</span>
-              </p>
-
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/partyLists"
-                  className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 group"
-                >
-                  <span>ดูรายชื่อผู้สมัคร</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link
-                  href="/policies"
-                  className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-6 py-3 rounded-lg font-medium transition-all duration-300"
-                >
-                  ดูนโยบายทั้งหมด
-                </Link>
-              </div>
-            </div>
+            <ThankPage />
 
             {/* Quick Access Menu */}
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-white">
