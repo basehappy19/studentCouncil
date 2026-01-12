@@ -15,8 +15,14 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/px/Uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'studentownschool.basehappy19.site',
+        port: '',
+        pathname: '/px/Uploads/**',
+      },
     ],
-    domains: ['studentownschool.com']
+    domains: ['studentownschool.basehappy19.site']
   },
   experimental: {
     serverActions: {
