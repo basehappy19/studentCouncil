@@ -66,20 +66,20 @@ const ImprovedVoteTable = ({ agrees, disagrees, abstains, noVotes }: { agrees: V
                   <div className="mr-2">
                     <Avatar className="h-14 w-14 border-2 border-gray-100 dark:border-gray-600">
                       <AvatarImage
-                        src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + disagree.partyList.profile_image_128x128}
-                        alt={disagree.partyList.nickName}
+                        src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + disagree.partyList?.profile_image_128x128}
+                        alt={disagree.partyList?.nickName}
                       />
                       <AvatarFallback className="text-gray-900 dark:text-gray-100">
-                        {disagree.partyList.nickName.charAt(0)}
+                        {disagree.partyList?.nickName?.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                   </div>
                   <div className="flex-1">
                     <div className="font-medium text-gray-800 dark:text-gray-200">
-                      {disagree.partyList.firstName} {disagree.partyList.middleName} {disagree.partyList.lastName}
+                      {disagree.partyList?.firstName} {disagree.partyList?.middleName} {disagree.partyList?.lastName}
                     </div>
                     <div className="text-gray-600 dark:text-gray-400 text-sm">
-                      {disagree.partyList.roles.map((role) => role.role.name).join(', ')}
+                      {disagree.partyList?.roles.map((role) => role.role.name).join(', ')}
                     </div>
                   </div>
                   <ThumbsDown className="h-5 w-5 text-red-500 dark:text-red-400" />

@@ -108,7 +108,7 @@ const WorkCard = ({ work }: { work: Work }) => {
                       <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
                         <Image
                           fill={true}
-                          src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + operator.user.partyList.profile_image_128x128}
+                          src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + operator.user?.partyList?.profile_image_128x128}
                           alt={`profile-${operator.id}`}
                           className="object-cover"
                         />
@@ -116,7 +116,7 @@ const WorkCard = ({ work }: { work: Work }) => {
                     </TooltipTrigger>
                     <TooltipContent className="bg-white border border-slate-200 shadow-lg rounded-md">
                       <p className="text-sm text-slate-700 p-1">
-                        {operator.user.partyList.fullName}
+                        {operator.user?.partyList?.fullName}
                       </p>
                     </TooltipContent>
                   </Tooltip>

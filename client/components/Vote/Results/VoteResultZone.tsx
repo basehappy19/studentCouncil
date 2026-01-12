@@ -133,11 +133,11 @@ export const VoteDisagreeZone = ({ disagrees = [] }: { disagrees: VoteDisagree[]
                     onBlur={() => handleCloseTooltip(disagree.id.toString())}
                     className="h-14 w-14 border-2 border-gray-100 dark:border-gray-600 hover:scale-110 transition-transform">
                       <AvatarImage
-                        src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + disagree.partyList.profile_image_128x128}
-                        alt={disagree.partyList.nickName}
+                        src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + disagree?.partyList?.profile_image_128x128}
+                        alt={disagree.partyList?.nickName}
                       />
                       <AvatarFallback className="text-gray-900 dark:text-gray-100">
-                        {disagree.partyList.nickName.charAt(0)}
+                        {disagree.partyList?.nickName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                   </TooltipTrigger>
@@ -146,19 +146,19 @@ export const VoteDisagreeZone = ({ disagrees = [] }: { disagrees: VoteDisagree[]
                       <CardContent className="flex items-center gap-4 p-4">
                         <Avatar className="h-16 w-16 border-2 border-gray-300 dark:border-gray-600">
                           <AvatarImage
-                            src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + disagree.partyList.profile_image_128x128}
-                            alt={disagree.partyList.nickName}
+                            src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + disagree?.partyList?.profile_image_128x128}
+                            alt={disagree.partyList?.nickName}
                           />
                           <AvatarFallback className="text-gray-900 dark:text-gray-100">
-                            {disagree.partyList.nickName.charAt(0)}
+                            {disagree.partyList?.nickName.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
                         <div>
                           <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                            {disagree.partyList.nickName}
+                            {disagree.partyList?.nickName}
                           </h4>
                           <div className="text-sm text-gray-600 dark:text-gray-400">
-                            {disagree.partyList.roles.map((role) => (
+                            {disagree.partyList?.roles.map((role) => (
                               <Badge key={role.role.id} variant="secondary" className="mr-2 mb-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                 {role.role.name}
                               </Badge>
