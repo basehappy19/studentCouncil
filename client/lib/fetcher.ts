@@ -17,7 +17,9 @@ export const baseFetcher = async <T>(
         throw new Error("NEXT_PUBLIC_APP_API_URL is not defined");
     }
 
-    const url = `${baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const url = `${cleanBaseUrl}${cleanEndpoint}`;
 
     try {
         const response = await fetch(url, {

@@ -22,8 +22,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             },
             authorize: async (credentials) => {
                 try {
+                    const baseUrl = process.env.NEXT_PUBLIC_APP_API_URL || "";
+                    const cleanBaseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
                     const res = await fetch(
-                        `${process.env.NEXT_PUBLIC_APP_API_URL}/auth/login`,
+                        `${cleanBaseUrl}/auth/login`,
                         {
                             method: "POST",
                             headers: {

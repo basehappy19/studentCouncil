@@ -31,6 +31,16 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/Uploads", express.static("Uploads"));
 
+// Middleware to strip /api prefix if present
+app.use((req, res, next) => {
+    if (req.url === "/api") {
+        req.url = "/";
+    } else if (req.url.startsWith("/api/")) {
+        req.url = req.url.slice(4);
+    }
+    next();
+});
+
 app.use("/", require("./Routes/index.js"));
 
 app.use(VerifyToken);
@@ -52,7 +62,7 @@ readdirSync("./Routes")
     .forEach((r) => {
         const routePath = path.join(__dirname, "Routes", r);
         const route = require(routePath);
-        app.use("/api", route);
+        app.use("/", route);
     });
 
 // ใช้ Error Handler
@@ -74,7 +84,7 @@ ${chalk.yellow.bold("✔ Static Routes:")}
   ${chalk.white("• /Uploads")}
 ${chalk.yellow.bold("✔ API Routes:")}
   ${chalk.white("• /")}
-  ${chalk.white("• /api (from Routes folder)")}
+  ${chalk.white("• / (from Routes folder)")}
 ${chalk.yellow.bold("✔ Middleware:")}
   ${chalk.white("• Helmet (Production Only)")}
   ${chalk.white("• Rate Limiter")}
