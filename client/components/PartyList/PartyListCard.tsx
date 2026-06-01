@@ -43,7 +43,7 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
                   variant="secondary"
                   className="text-lg font-medium bg-blue-100 hover:bg-blue-100 text-blue-800 dark:bg-blue-700/50 dark:text-blue-100"
                 >
-                  {role.role.name}
+                  {role.role?.name}
                 </Badge>
               ))}
             </div>
@@ -54,14 +54,17 @@ const PartyListCard = ({ partyList }: { partyList: PartyList }) => {
                   variant="secondary"
                   className="bg-gray-100 text-gray-600 dark:bg-gray-300 dark:text-gray-700"
                 >
-                  <Image
-                    width={16}
-                    height={16}
-                    quality={100}
-                    src={`${process.env.NEXT_PUBLIC_PARTYLIST_SKILLS_ICON_PATH}${skill.skill.icon.name}`}
-                    className="min-w-4 min-h-4 w-4 h-4 mr-2"
-                    alt="skill"
-                  />{skill.skill.name}
+                  {skill.skill?.icon?.name && (
+                    <Image
+                      width={16}
+                      height={16}
+                      quality={100}
+                      src={`${process.env.NEXT_PUBLIC_PARTYLIST_SKILLS_ICON_PATH}${skill.skill.icon.name}`}
+                      className="min-w-4 min-h-4 w-4 h-4 mr-2"
+                      alt="skill"
+                    />
+                  )}
+                  {skill.skill?.name}
                 </Badge>
               ))}
             </div>

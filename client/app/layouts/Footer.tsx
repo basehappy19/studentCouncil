@@ -59,6 +59,22 @@ const Footer = async () => {
           </div>
         </div>
 
+        {/* ส่วนเครดิตผู้สร้าง */}
+        <div className="flex items-center justify-center gap-1 py-2 px-6 text-xs text-gray-500 dark:text-gray-500 border-t border-gray-200 dark:border-gray-800">
+          <span>Made with</span>
+          <span className="text-pink-500">♥</span>
+          <span>by</span>
+          <a
+            href="https://www.instagram.com/base_happy19/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 font-medium text-pink-500 hover:text-pink-400 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z"/><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M16.5 7.5l0 .01"/></svg>
+            เบส
+          </a>
+        </div>
+
         <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-400 dark:border-gray-700 bg-blue-400/50 dark:bg-gray-900/50 p-6 backdrop-blur-sm md:flex-row">
           <p>© {new Date().getFullYear() + 543} Student Own School - สงวนลิขสิทธิ์</p>
 

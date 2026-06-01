@@ -33,15 +33,17 @@ const WorkCard = ({ work }: { work: Work }) => {
               key={tag.id}
               className="flex items-center gap-1.5 px-3 py-1 bg-white/80 hover:bg-white backdrop-blur-md rounded-full shadow-sm"
             >
-              <Image
-                loading='lazy'
-                width={16}
-                height={16}
-                src={`${process.env.NEXT_PUBLIC_WORK_ICON_PATH}${tag.tag.icon.name}`}
-                alt={tag.tag.icon.name}
-                className="mr-1"
-              />
-              <span className="text-slate-700 font-medium text-sm">{tag.tag.title}</span>
+              {tag.tag?.icon?.name && (
+                <Image
+                  loading='lazy'
+                  width={16}
+                  height={16}
+                  src={`${process.env.NEXT_PUBLIC_WORK_ICON_PATH}${tag.tag.icon.name}`}
+                  alt={tag.tag.icon.name}
+                  className="mr-1"
+                />
+              )}
+              <span className="text-slate-700 font-medium text-sm">{tag.tag?.title}</span>
             </Badge>
           ))}
         </div>
@@ -106,12 +108,14 @@ const WorkCard = ({ work }: { work: Work }) => {
                       onMouseLeave={() => setHoveredOperatorId(null)}
                     >
                       <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md">
-                        <Image
-                          fill={true}
-                          src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + operator.user?.partyList?.profile_image_128x128}
-                          alt={`profile-${operator.id}`}
-                          className="object-cover"
-                        />
+                        {operator.user?.partyList?.profile_image_128x128 && (
+                          <Image
+                            fill={true}
+                            src={process.env.NEXT_PUBLIC_PARTYLIST_IMG_128X128_PATH + operator.user.partyList.profile_image_128x128}
+                            alt={`profile-${operator.id}`}
+                            className="object-cover"
+                          />
+                        )}
                       </div>
                     </TooltipTrigger>
                     <TooltipContent className="bg-white border border-slate-200 shadow-lg rounded-md">

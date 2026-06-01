@@ -2,6 +2,8 @@ import Footer from "@/app/layouts/Footer";
 import BackButton from "@/app/layouts/BackButton";
 import type { Metadata } from "next";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata : Metadata = {
   title: `หน้าแรก ${process.env.NEXT_PUBLIC_APP_TITLE}`,
   description: "สภานักเรียนโรงเรียนภูเขียว",

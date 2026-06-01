@@ -2,6 +2,8 @@ import React from 'react'
 import MessageCloudPage from './pageCSR'
 import { GetFakbokMessages } from '@/app/functions/Fakbok';
 
+export const dynamic = 'force-dynamic';
+
 export interface Fakbok {
   id: number;
   likes: number;
