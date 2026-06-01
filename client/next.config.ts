@@ -21,6 +21,18 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/px/Uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'sc.phukhieo.ac.th',
+        port: '',
+        pathname: '/px/Uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'sc.phukhieo.ac.th',
+        port: '',
+        pathname: '/api/Uploads/**',
+      }
     ],
     domains: ['studentownschool.basehappy19.site']
   },
