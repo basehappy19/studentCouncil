@@ -2,7 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const validateRequiredFields = require("../Functions/ValidateRequiredFields");
 
-exports.AllAccesses = async (req, res) => {
+exports.AllAccesses = async (req, res, next) => {
     try {
         const accesses = await prisma.access.findMany();
         res.status(200).send(accesses);
@@ -12,7 +12,7 @@ exports.AllAccesses = async (req, res) => {
     }
 };
 
-exports.AddAccess = async (req, res) => {
+exports.AddAccess = async (req, res, next) => {
     try {
         if (req.user.access !== 3) {
             return res
