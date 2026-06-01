@@ -29,11 +29,9 @@ app.use(bodyParse.json({ limit: "10mb" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/px/Uploads", express.static("Uploads"));
 app.use("/Uploads", express.static("Uploads"));
 
-app.use("/px", require("./Routes/index.js"));
-app.use("", require("./Routes/index.js"));
+app.use("/", require("./Routes/index.js"));
 
 app.use(VerifyToken);
 app.use(AccessControlMiddleware);
@@ -55,7 +53,6 @@ readdirSync("./Routes")
         const routePath = path.join(__dirname, "Routes", r);
         const route = require(routePath);
         app.use("/api", route);
-        app.use("/px/api", route);
     });
 
 // ใช้ Error Handler
@@ -74,10 +71,8 @@ ${chalk.green.bold("==============================================")}
 ${chalk.yellow.bold("✔ Environment:")} ${chalk.white(env)}
 ${chalk.yellow.bold("✔ Port:")}        ${chalk.white(port)}
 ${chalk.yellow.bold("✔ Static Routes:")}
-  ${chalk.white("• /px/Uploads")}
   ${chalk.white("• /Uploads")}
 ${chalk.yellow.bold("✔ API Routes:")}
-  ${chalk.white("• /px")}
   ${chalk.white("• /")}
   ${chalk.white("• /api (from Routes folder)")}
 ${chalk.yellow.bold("✔ Middleware:")}

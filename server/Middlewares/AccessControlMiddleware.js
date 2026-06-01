@@ -4,9 +4,11 @@ const path = require('path');
 const accessControl = JSON.parse(fs.readFileSync(path.join(__dirname, 'AccessControl.json'), 'utf-8'));
 
 const AccessControlMiddleware = (req, res, next) => {
+    const pathToCheck = req.originalUrl.startsWith('/api') ? req.originalUrl.replace('/api', '') : req.originalUrl;
+
     const route = accessControl.routes.find(r => {
         const regex = new RegExp(`^${r.path.replace(/:\w+/g, '\\w+')}$`);
-        return regex.test(req.originalUrl) && r.method === req.method;
+        return regex.test(pathToCheck) && r.method === req.method;
     });
 
     if (!route) {
