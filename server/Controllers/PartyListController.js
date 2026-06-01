@@ -1,6 +1,10 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const ValidateRequiredFields = require("../Functions/ValidateRequiredFields");
 
+/**
+ * Get all party lists with search filter
+ */
 exports.AllPartyLists = async (req, res, next) => {
     try {
         const { search } = req.query;
@@ -76,13 +80,16 @@ exports.AllPartyLists = async (req, res, next) => {
                 order: "asc",
             },
         });
-        res.status(200).send(partyLists);
+        res.status(200).json(partyLists);
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Get specific party list by ID
+ */
 exports.PartyList = async (req, res, next) => {
     try {
         const { id } = req.query;
@@ -121,19 +128,27 @@ exports.PartyList = async (req, res, next) => {
                 },
             },
         });
-        res.status(200).send(partyList);
+
+        if (!partyList) {
+            return res.status(404).json({ message: "ไม่พบข้อมูลสมาชิก", type: "error" });
+        }
+
+        res.status(200).json(partyList);
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Increment support count for a party list
+ */
 exports.SupportPartyList = async (req, res, next) => {
     try {
         const { partyListId } = req.body;
 
         if (!partyListId) {
-            return res.json({
+            return res.status(400).json({
                 message: "เกิดปัญหาบางอย่างกับเซิร์ฟเวอร์",
                 type: "error",
             });
@@ -159,21 +174,29 @@ exports.SupportPartyList = async (req, res, next) => {
     }
 };
 
+/**
+ * Send a message to a party list
+ */
 exports.SendMessage = async (req, res, next) => {
     try {
         const { partyListId, message } = req.body;
 
-        if (!partyListId) {
-            return res.json({
-                message: "เกิดปัญหาบางอย่างกับเซิร์ฟเวอร์",
+        if (!partyListId || !message) {
+            return res.status(400).json({
+                message: "กรุณากรอกข้อมูลให้ครบถ้วน",
                 type: "error",
             });
         }
+
         const partyList = await prisma.partyList.findFirst({
             where: {
                 id: partyListId,
             },
         });
+
+        if (!partyList) {
+            return res.status(404).json({ message: "ไม่พบข้อมูลสมาชิก", type: "error" });
+        }
 
         await prisma.messageToPartyList.create({
             data: {
@@ -191,7 +214,10 @@ exports.SendMessage = async (req, res, next) => {
     }
 };
 
-exports.HomePagePartyLists = async (req, res) => {
+/**
+ * Get party lists shown on the home page
+ */
+exports.HomePagePartyLists = async (req, res, next) => {
     try {
         const partyLists = await prisma.partyList.findMany({
             where: {
@@ -226,15 +252,23 @@ exports.HomePagePartyLists = async (req, res) => {
                 orderInHomepage: "asc",
             },
         });
-        res.status(200).send(partyLists);
+        res.status(200).json(partyLists);
     } catch (e) {
-        console.log(e);
-        res.status(500).send("Server Error");
+        e.status = 500;
+        next(e);
     }
 };
 
+/**
+ * Add a new party list (Admin only)
+ */
 exports.AddPartyList = async (req, res, next) => {
     try {
+        // Authorization check
+        if (req.user.accessId !== 3) {
+            return res.status(403).json({ message: "คุณไม่มีสิทธิ์เพิ่มบัญชีรายชื่อ", type: "error" });
+        }
+
         const {
             firstName,
             middleName,
@@ -250,7 +284,6 @@ exports.AddPartyList = async (req, res, next) => {
 
         const requiredFields = {
             firstName: "First Name",
-            middleName: "Middle Name",
             lastName: "Last Name",
             nickName: "Nick Name",
             shortMessage: "Short Message",
@@ -259,7 +292,7 @@ exports.AddPartyList = async (req, res, next) => {
             rank: "Rank",
         };
 
-        const errorMessage = validateRequiredFields(req.body, requiredFields);
+        const errorMessage = ValidateRequiredFields(req.body, requiredFields);
 
         if (errorMessage) {
             return res
@@ -274,28 +307,38 @@ exports.AddPartyList = async (req, res, next) => {
                 lastName,
                 nickName,
                 bio: {
-                    shortMessage,
-                    classroom,
-                    messageToStudent,
+                    create: {
+                        shortMessage,
+                        classroom,
+                        messageToStudent,
+                    }
                 },
                 rank,
                 profileImg,
                 showInHomepage,
             },
         });
-        res.json({
-            message: `เพื่ม ${firstName} ${middleName} ${lastName} ในบัญชีรายชื่อสมาชิกแล้ว`,
+        
+        res.status(201).json({
+            message: `เพื่ม ${firstName} ${middleName ? middleName + ' ' : ''}${lastName} ในบัญชีรายชื่อสมาชิกแล้ว`,
             type: `success`,
-        }).status(201);
+        });
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Update bio of a party list
+ */
 exports.UpdateBioPartyList = async (req, res, next) => {
     try {
         const { shortMessage, messageToStudent, classroom } = req.body;
+        
+        if (!req.user.partyList) {
+            return res.status(403).json({ message: "คุณไม่มีบัญชีรายชื่อสำหรับแก้ไขข้อมูล", type: "error" });
+        }
 
         const partyListId = req.user.partyList.id;
 
@@ -312,7 +355,7 @@ exports.UpdateBioPartyList = async (req, res, next) => {
             },
         });
 
-        res.status(201).json({
+        res.status(200).json({
             message: `แก้ไขข้อมูลเรียบร้อย`,
             type: `success`,
         });
@@ -322,9 +365,17 @@ exports.UpdateBioPartyList = async (req, res, next) => {
     }
 };
 
+/**
+ * Add an experience to a party list profile
+ */
 exports.AddExperiencePartyList = async (req, res, next) => {
     try {
         const { title } = req.body;
+        
+        if (!req.user.partyList) {
+            return res.status(403).json({ message: "คุณไม่มีสิทธิ์แก้ไขข้อมูลนี้", type: "error" });
+        }
+
         const partyListId = req.user.partyList.id;
 
         const partyList = await prisma.partyList.findUnique({
@@ -358,15 +409,22 @@ exports.AddExperiencePartyList = async (req, res, next) => {
             type: `success`,
         });
     } catch (e) {
-        console.error(e);
         e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Update an experience entry
+ */
 exports.UpdateExperiencePartyList = async (req, res, next) => {
     try {
         const { experienceId, title } = req.body;
+        
+        if (!req.user.partyList) {
+            return res.status(403).json({ message: "คุณไม่มีสิทธิ์แก้ไขข้อมูลนี้", type: "error" });
+        }
+
         const partyListId = req.user.partyList.id;
 
         const partyList = await prisma.partyList.findUnique({
@@ -401,7 +459,7 @@ exports.UpdateExperiencePartyList = async (req, res, next) => {
             data: { title },
         });
 
-        res.status(201).json({
+        res.status(200).json({
             message: `แก้ไขผลงานเรียบร้อย`,
             type: `success`,
         });
@@ -411,9 +469,17 @@ exports.UpdateExperiencePartyList = async (req, res, next) => {
     }
 };
 
+/**
+ * Delete an experience entry
+ */
 exports.DeleteExperiencePartyList = async (req, res, next) => {
     try {
         const { experienceId } = req.body;
+        
+        if (!req.user.partyList) {
+            return res.status(403).json({ message: "คุณไม่มีสิทธิ์ลบข้อมูลนี้", type: "error" });
+        }
+
         const partyListId = req.user.partyList.id;
 
         const partyList = await prisma.partyList.findUnique({
@@ -433,7 +499,6 @@ exports.DeleteExperiencePartyList = async (req, res, next) => {
                 experienceId: experienceId,
                 bioId: partyList.bio.id,
             },
-            include: { experience: true },
         });
 
         if (!experience) {
@@ -464,22 +529,18 @@ exports.DeleteExperiencePartyList = async (req, res, next) => {
     }
 };
 
+/**
+ * Add a contact method
+ */
 exports.AddContact = async (req, res, next) => {
     try {
         const { username, link, platformId } = req.body;
-        const partyListId = req.user.partyList.id;
-
-        const partyList = await prisma.partyList.findUnique({
-            where: { id: partyListId },
-            include: { contacts: true },
-        });
-
-        if (!partyList) {
-            return res.status(404).json({
-                message: `ไม่พบข้อมูลไบโอสำหรับผู้สมัคร`,
-                type: `error`,
-            });
+        
+        if (!req.user.partyList) {
+            return res.status(403).json({ message: "คุณไม่มีสิทธิ์แก้ไขข้อมูลนี้", type: "error" });
         }
+
+        const partyListId = req.user.partyList.id;
 
         const platform = await prisma.platform.findUnique({
             where: { id: platformId },
@@ -502,7 +563,7 @@ exports.AddContact = async (req, res, next) => {
         });
 
         if (existingContact) {
-            return res.status(200).json({
+            return res.status(400).json({
                 message: `มีช่องทางติดต่อนี้อยู่แล้ว`,
                 type: `error`,
             });
@@ -531,14 +592,21 @@ exports.AddContact = async (req, res, next) => {
     }
 };
 
+/**
+ * Update a contact method
+ */
 exports.UpdateContact = async (req, res, next) => {
     try {
         const { id, username, link } = req.body;
+        
+        if (!req.user.partyList) {
+            return res.status(403).json({ message: "คุณไม่มีสิทธิ์แก้ไขข้อมูลนี้", type: "error" });
+        }
+
         const partyListId = req.user.partyList.id;
 
         const existingContact = await prisma.contact.findUnique({
             where: { id },
-            include: { partyList: true },
         });
 
         if (!existingContact || existingContact.partyListId !== partyListId) {
@@ -559,7 +627,7 @@ exports.UpdateContact = async (req, res, next) => {
             },
         });
 
-        return res.status(201).json({
+        return res.status(200).json({
             message: `อัพเดทช่องทางการติดต่อเรียบร้อยแล้ว`,
             type: `success`,
             data: updatedContact,
@@ -570,14 +638,21 @@ exports.UpdateContact = async (req, res, next) => {
     }
 };
 
+/**
+ * Remove a contact method
+ */
 exports.RemoveContact = async (req, res, next) => {
     try {
         const { id } = req.body;
+        
+        if (!req.user.partyList) {
+            return res.status(403).json({ message: "คุณไม่มีสิทธิ์ลบข้อมูลนี้", type: "error" });
+        }
+
         const partyListId = req.user.partyList.id;
 
         const existingContact = await prisma.contact.findUnique({
             where: { id },
-            include: { partyList: true },
         });
 
         if (!existingContact || existingContact.partyListId !== partyListId) {
@@ -601,50 +676,51 @@ exports.RemoveContact = async (req, res, next) => {
     }
 };
 
+/**
+ * Get all available platforms
+ */
 exports.AllPlatforms = async (req, res, next) => {
     try {
         const platforms = await prisma.platform.findMany();
-
-        res.status(200).send(platforms);
+        res.status(200).json(platforms);
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Get all available skills
+ */
 exports.AllSkills = async (req, res, next) => {
     try {
         const skills = await prisma.skill.findMany();
-
-        res.status(200).send(skills);
+        res.status(200).json(skills);
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Add a skill to a party list
+ */
 exports.AddSkillInPartyList = async (req, res, next) => {
     try {
         const { skillId } = req.body;
-        const bioId = req.user.partyList.bioId;
-
-        const bio = await prisma.bio.findUnique({
-            where: { id: bioId },
-        });
-
-        if (!bio) {
-            return res.status(404).json({
-                message: `ไม่พบข้อมูลไบโอ`,
-                type: `error`,
-            });
+        
+        if (!req.user.partyList || !req.user.partyList.bioId) {
+            return res.status(403).json({ message: "คุณไม่มีสิทธิ์แก้ไขข้อมูลนี้", type: "error" });
         }
+
+        const bioId = req.user.partyList.bioId;
 
         const skillCount = await prisma.skillOwnPartyList.count({
             where: { bioId },
         });
 
         if (skillCount >= 3) {
-            return res.status(200).json({
+            return res.status(400).json({
                 message: `สามารถเลือกความสามารถพิเศษได้แค่ 3 อย่าง`,
                 type: `error`,
             });
@@ -670,7 +746,7 @@ exports.AddSkillInPartyList = async (req, res, next) => {
         });
         
         if (existingSkill) {
-            return res.status(200).json({
+            return res.status(400).json({
                 message: `มีความสามารถพิเศษนี้อยู่แล้ว`,
                 type: `error`,
             });
@@ -702,20 +778,20 @@ exports.AddSkillInPartyList = async (req, res, next) => {
     }
 };
 
+/**
+ * Remove a skill from a party list
+ */
 exports.RemoveSkillInPartyList = async (req, res, next) => {
     try {
         const { skillId } = req.body;
+        
+        if (!req.user.partyList || !req.user.partyList.bioId) {
+            return res.status(403).json({ message: "คุณไม่มีสิทธิ์ลบข้อมูลนี้", type: "error" });
+        }
+
         const bioId = req.user.partyList.bioId;
 
         const existingSkill = await prisma.skillOwnPartyList.findUnique({
-            include: {
-                skill: {
-                    include: {
-                        icon: true,
-                    }
-                },
-
-            },
             where: {
                 skillId_bioId: {
                     skillId,
@@ -723,7 +799,6 @@ exports.RemoveSkillInPartyList = async (req, res, next) => {
                 },
             },
         });
-
 
         if (!existingSkill) {
             return res.status(404).json({
@@ -741,29 +816,34 @@ exports.RemoveSkillInPartyList = async (req, res, next) => {
             },
         });
 
-        return res.status(201).json({
+        return res.status(200).json({
             message: `ลบความสามารถพิเศษสำเร็จ`,
             type: `success`,
         });
     } catch (e) {
-        e.status = 404;
+        e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Get messages sent to the current user's party list
+ */
 exports.getMessages = async (req, res, next) => {
     try {
-        
+        if (!req.user.partyList) {
+            return res.status(403).json({ message: "คุณไม่มีบัญชีรายชื่อสำหรับดูข้อความ", type: "error" });
+        }
+
         const partyList = req.user.partyList;
 
         const messages = await prisma.messageToPartyList.findMany({
-            
             where: {
                 partyListId: partyList.id,
             },
         });
 
-        res.status(200).send(messages);
+        res.status(200).json(messages);
     } catch (e) {
         e.status = 400;
         next(e);

@@ -213,15 +213,13 @@ exports.CheckIn = async (req, res, next) => {
         });
 
         if (!user) {
-            return res
-                .json({ message: "ไม่พบข้อมูลผู้ใช้", type: "error" })
-                .status(404);
+            return res.status(404).json({ message: "ไม่พบข้อมูลผู้ใช้", type: "error" });
         }
 
         const dateNow = new Date();
         const dayOfWeek = dateNow.getDay();
         const hours = dateNow.getHours();
-        attendTime = new Date();
+        const attendTime = new Date();
 
         const startOfToday = new Date(
             dateNow.getFullYear(),
@@ -259,7 +257,7 @@ exports.CheckIn = async (req, res, next) => {
             checkInRecord.type === "PERSONAL_LEAVE" ||
             checkInRecord.type === "ABSENT"
         ) {
-            return res.json({
+            return res.status(400).json({
                 message: "เช็คอินซ้ำไม่ได้",
                 type: "error",
             });
@@ -304,7 +302,7 @@ exports.CheckIn = async (req, res, next) => {
                 },
             });
 
-            return res.json({
+            return res.status(200).json({
                 message: "ยื่นคำขอลืมเช็คอินเรียบร้อยแล้ว",
                 type: "success",
             });
@@ -316,7 +314,7 @@ exports.CheckIn = async (req, res, next) => {
             hours < latestSettingTime.checkInStartTime ||
             hours >= latestSettingTime.checkInEndTime
         ) {
-            return res.json({ message: "ปิดให้เช็คอินแล้ว", type: "error" });
+            return res.status(400).json({ message: "ปิดให้เช็คอินแล้ว", type: "error" });
         }
 
         const formattedDate = new Intl.DateTimeFormat("th-TH", {
@@ -351,7 +349,7 @@ exports.CheckIn = async (req, res, next) => {
     }
 };
 
-exports.CheckInStatus = async (req, res) => {
+exports.CheckInStatus = async (req, res, next) => {
     try {
         const id = req.user.id;
 
@@ -535,8 +533,8 @@ exports.CheckInStatus = async (req, res) => {
             type: "NOT_CHECKED_IN",
         });
     } catch (e) {
-        console.log(e);
-        res.status(500).send("Server Error");
+        e.status = 500;
+        next(e);
     }
 };
 
@@ -641,7 +639,7 @@ exports.CheckInStatistics = async (req, res, next) => {
             };
         });
 
-        res.status(200).send(statistics);
+        res.status(200).json(statistics);
     } catch (e) {
         e.status = 400;
         next(e);
@@ -806,18 +804,18 @@ exports.ActionRequestCheckIn = async (req, res, next) => {
                     },
                 });
 
-                return res.json({
+                return res.status(200).json({
                     message: "ยืนยันคำขอลืมเช็คอินเรียบร้อย",
                     type: "success",
                 });
             } else {
-                return res.json({
+                return res.status(400).json({
                     message: "ไม่สามารถยืนยันคำขอลืมเช็คอินได้",
                     type: "error",
                 });
             }
         } else {
-            return res.json({
+            return res.status(400).json({
                 message: "ไม่สามารถยืนยันคำขอได้ หมดเวลาช่วงยื่นคำขอ",
                 type: "error",
             });
@@ -828,7 +826,7 @@ exports.ActionRequestCheckIn = async (req, res, next) => {
     }
 };
 
-exports.RequestCheckInExist = async (req, res) => {
+exports.RequestCheckInExist = async (req, res, next) => {
     try {
         const id = req.user.id;
 
@@ -867,11 +865,11 @@ exports.RequestCheckInExist = async (req, res) => {
             },
         });
         if (!requestCheckIn) {
-            return res.status(200).send(null);
+            return res.status(200).json(null);
         }
-        res.status(200).send(requestCheckIn);
+        res.status(200).json(requestCheckIn);
     } catch (e) {
-        console.log(e);
-        res.status(500).send("Server Error");
+        e.status = 500;
+        next(e);
     }
 };

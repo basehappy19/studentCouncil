@@ -25,7 +25,7 @@ exports.RecommendPolicies = async (req, res, next) => {
 
         const policies = _.sampleSize(allPolicies, 10);
 
-        res.send(policies).status(200);
+        res.status(200).json(policies);
     } catch (e) {
         e.status = 400;
         next(e);
@@ -70,12 +70,13 @@ exports.AllPolicies = async (req, res, next) => {
                 order: 'asc'
             }       
         });
-        res.status(200).send(policies);
+        res.status(200).json(policies);
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
+
 exports.Policy = async (req, res, next) => {
     try {
         const policy = await prisma.policy.findFirst({
@@ -116,7 +117,7 @@ exports.Policy = async (req, res, next) => {
             currentProgress,
         };
 
-        res.status(200).send(result);
+        res.status(200).json(result);
     } catch (e) {
         e.status = 400;
         next(e);
@@ -128,8 +129,8 @@ exports.LikePolicy = async (req, res, next) => {
         const { policyId } = req.body;
 
         if (!policyId) {
-            return res.json({
-                message: "เกิดปัญหาบางอย่างกับเซิร์ฟเวอร์",
+            return res.status(400).json({
+                message: "ไม่พบไอดีนโยบาย",
                 type: "error",
             });
         }
@@ -159,8 +160,8 @@ exports.CommentPolicy = async (req, res, next) => {
         const { policyId, message } = req.body;
 
         if (!policyId) {
-            return res.json({
-                message: "เกิดปัญหาบางอย่างกับเซิร์ฟเวอร์",
+            return res.status(400).json({
+                message: "ไม่พบไอดีนโยบาย",
                 type: "error",
             });
         }
@@ -169,6 +170,13 @@ exports.CommentPolicy = async (req, res, next) => {
                 id: policyId,
             },
         });
+
+        if (!policy) {
+            return res.status(404).json({
+                message: "ไม่พบนโยบาย",
+                type: "error",
+            });
+        }
 
         await prisma.commentPolicy.create({
             data: {
@@ -193,11 +201,12 @@ exports.AddPolicy = async (req, res, next) => {
             title,
             thumbnailImage,
             categoryId,
-            subCategoryId,
+            subcategoryId,
             problem,
             offer,
             budget,
         } = req.body;
+        
         const requiredFields = {
             rank: "Rank",
             title: "Title",
@@ -221,13 +230,16 @@ exports.AddPolicy = async (req, res, next) => {
             },
         });
 
-        await prisma.policy.create({
+        if (!category) {
+            return res.status(404).json({ message: "ไม่พบหมวดหมู่", type: "error" });
+        }
+
+        const newPolicy = await prisma.policy.create({
             data: {
                 rank,
                 title,
                 thumbnailImage,
                 categoryId,
-                subcategoryId,
                 problem,
                 offer,
                 budget,
@@ -236,11 +248,13 @@ exports.AddPolicy = async (req, res, next) => {
                         id: categoryId,
                     },
                 },
-                subcategories: {
-                    connect: {
-                        id: subcategoryId,
-                    },
-                },
+                ...(subcategoryId && {
+                    subCategories: {
+                        create: {
+                            subCategoryId: subcategoryId
+                        }
+                    }
+                }),
                 description: {
                     create: {
                         problem,
@@ -252,14 +266,15 @@ exports.AddPolicy = async (req, res, next) => {
             include: {
                 category: true,
                 description: true,
-                subcategories: true,
+                subCategories: true,
                 progresses: true,
             },
         });
-        res.json({
+        res.status(201).json({
             message: `เพื่มนโยบาย ${title} ใน ${category.title} เรียบร้อยแล้ว`,
             type: "success",
-        }).status(201);
+            policy: newPolicy
+        });
     } catch (e) {
         e.status = 400;
         next(e);

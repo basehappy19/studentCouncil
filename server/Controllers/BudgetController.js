@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-exports.BudgetInDepartment = async (req, res) => {
+exports.BudgetInDepartment = async (req, res, next) => {
     try {
         const { id } = req.query;
 
@@ -29,14 +29,15 @@ exports.BudgetInDepartment = async (req, res) => {
                 .json({ message: "ไม่พบงบประมาณ", type: "error" });
         }
 
-        res.status(200).send(budget);
+        return res.status(200).json(budget);
     } catch (e) {
-        e.status = 400;
+        console.error("[BudgetInDepartment Error]:", e);
+        e.status = e.status || 500;
         next(e);
     }
 };
 
-exports.IncomeExpenseStatisticsById = async (req, res) => {
+exports.IncomeExpenseStatisticsById = async (req, res, next) => {
     try {
         const { id } = req.query;
         const currentDate = new Date();
@@ -61,10 +62,11 @@ exports.IncomeExpenseStatisticsById = async (req, res) => {
             },
         });
 
-        res.status(200).send(summary);
-    } catch (err) {
-        console.error("IncomeExpenseStatisticsById Error:", err);
-        res.status(500).send("IncomeExpenseStatisticsById Error");
+        return res.status(200).json(summary);
+    } catch (e) {
+        console.error("[IncomeExpenseStatisticsById Error]:", e);
+        e.status = e.status || 500;
+        next(e);
     }
 };
 
@@ -147,9 +149,10 @@ exports.IncomeExpenseStatistics = async (req, res, next) => {
             budgets: budgetStats,
         };
 
-        res.status(200).send(result);
+        return res.status(200).json(result);
     } catch (e) {
-        e.status = 400;
+        console.error("[IncomeExpenseStatistics Error]:", e);
+        e.status = e.status || 500;
         next(e);
     }
 };

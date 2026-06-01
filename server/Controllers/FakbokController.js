@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-exports.Messages = async (req, res) => {
+exports.Messages = async (req, res, next) => {
     try {
         const messages = await prisma.fakbok.findMany({
             orderBy: {
@@ -9,7 +9,7 @@ exports.Messages = async (req, res) => {
             },
         });
 
-        res.status(200).send(messages);
+        res.status(200).json(messages);
     } catch (e) {
         e.status = 400;
         next(e);
@@ -47,7 +47,7 @@ exports.AddMessage = async (req, res, next) => {
     }
 };
 
-exports.LikeMessage = async (req, res) => {
+exports.LikeMessage = async (req, res, next) => {
     try {
         const { publicId } = req.params;
         const updatedMessage = await prisma.fakbok.update({
@@ -59,7 +59,7 @@ exports.LikeMessage = async (req, res) => {
                 },
             },
         });
-        res.status(200).send(updatedMessage);
+        res.status(200).json(updatedMessage);
     } catch (e) {
         e.status = 400;
         next(e);

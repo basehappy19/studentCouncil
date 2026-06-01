@@ -2,22 +2,22 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const validateRequiredFields = require('../Functions/ValidateRequiredFields');
 
-exports.Transactions = async (req, res) => {
+exports.Transactions = async (req, res, next) => {
     try {
         const { id } = req.query;
         const transactions = await prisma.transaction.findMany({
             where: {
-                budget: id
+                budgetId: isNaN(parseInt(id)) ? undefined : parseInt(id)
             }
         })
-        res.status(200).send(transactions); 
+        res.status(200).json(transactions); 
     } catch (e) {
         e.status = 400; 
         next(e);
     }
 };
 
-exports.AddTransaction = async (req, res) => {
+exports.AddTransaction = async (req, res, next) => {
     try {
         const { title, description, amount, type, budgetId } = req.body;
         
@@ -86,7 +86,7 @@ exports.AddTransaction = async (req, res) => {
     }
 };
 
-exports.UpdateTransaction = async (req, res) => {
+exports.UpdateTransaction = async (req, res, next) => {
     try {
         const { id } = req.query; 
         const { title, description, amount, type, budgetId } = req.body;
@@ -120,18 +120,10 @@ exports.UpdateTransaction = async (req, res) => {
             return res.status(404).json({ message: "ไม่พบบัญชีงบประมาณ", type: "error" });
         }
 
-        const oldAmount = transaction.amount;
-        const oldType = transaction.type;
-
         const transactions = await prisma.transaction.findMany({
             where: { budgetId: budgetId },
             orderBy: { createdAt: 'asc' }, 
         });
-
-        transaction.title = title;
-        transaction.description = description;
-        transaction.amount = amount;
-        transaction.type = type;
 
         let runningTotal = 0;
 
@@ -160,8 +152,14 @@ exports.UpdateTransaction = async (req, res) => {
             await prisma.transaction.update({
                 where: { id: tran.id },
                 data: {
-                    budgetBefore: runningTotal - tran.amount,
+                    budgetBefore: runningTotal - (tran.id === transaction.id ? amount : tran.amount),
                     budgetAfter: runningTotal,
+                    ...(tran.id === transaction.id && {
+                        title,
+                        description,
+                        amount,
+                        type
+                    })
                 },
             });
         }
@@ -172,7 +170,7 @@ exports.UpdateTransaction = async (req, res) => {
         });
 
         res.status(200).json({
-            message: `แก้ไขรายการ ${transaction.title} เรียบร้อยแล้ว`,
+            message: `แก้ไขรายการ ${title} เรียบร้อยแล้ว`,
             type: "success",
         });
     } catch (e) {
@@ -181,7 +179,7 @@ exports.UpdateTransaction = async (req, res) => {
     }
 };
 
-exports.RemoveTransaction = async (req, res) => {
+exports.RemoveTransaction = async (req, res, next) => {
     try {
         const { id } = req.query;
         
@@ -201,14 +199,15 @@ exports.RemoveTransaction = async (req, res) => {
             return res.status(404).json({ message: "ไม่พบบัญชีงบประมาณ", type: "error" });
         }
 
-        if (transactionToDelete.transactionType !== 'EXPENSE') {
-            budget.total -= transactionToDelete.amount;
+        let newTotal = budget.total;
+        if (transactionToDelete.type !== 'EXPENSE') {
+            newTotal -= transactionToDelete.amount;
         } else {
-            budget.total += transactionToDelete.amount;
+            newTotal += transactionToDelete.amount;
         }
 
-        if (budget.total < 0) {
-            return res.status(200).json({
+        if (newTotal < 0) {
+            return res.status(400).json({
                 message: `ลบรายการ "${transactionToDelete.title}" ไม่ได้เนื่องจากเงินในบัญชีจะน้อยกว่าศูนย์`,
                 type: 'error'
             });
@@ -221,19 +220,18 @@ exports.RemoveTransaction = async (req, res) => {
         const remainingTransactions = await prisma.transaction.findMany({
             where: {
                 budgetId: transactionToDelete.budgetId,
-                id: { gt: transactionToDelete.id },
             },
-            orderBy: { id: 'asc' },
+            orderBy: { createdAt: 'asc' },
         });
 
-        let currentBudgetTotal = budget.total;
+        let currentBudgetTotal = 0;
 
         for (let transaction of remainingTransactions) {
             const newBudgetBefore = currentBudgetTotal;
             const newBudgetAfter = 
-                transaction.transactionType === 'EXPENSE'
-                    ? newBudgetBefore - transaction.transactionAmount
-                    : newBudgetBefore + transaction.transactionAmount;
+                transaction.type === 'EXPENSE'
+                    ? newBudgetBefore - transaction.amount
+                    : newBudgetBefore + transaction.amount;
 
             await prisma.transaction.update({
                 where: { id: transaction.id },
@@ -248,14 +246,12 @@ exports.RemoveTransaction = async (req, res) => {
 
         await prisma.budget.update({
             where: { id: budget.id },
-            data: { total: budget.total },
+            data: { total: currentBudgetTotal },
         });
 
-        res.status(204).json({ message: `ลบรายการ ${transactionToDelete.title} เรียบร้อยแล้ว`, type: 'success' });
+        res.status(200).json({ message: `ลบรายการ ${transactionToDelete.title} เรียบร้อยแล้ว`, type: 'success' });
     } catch (e) {
         e.status = 400; 
         next(e);
     }
 };
-
-

@@ -1,6 +1,9 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+/**
+ * Get all works with search and tag filters
+ */
 exports.AllWorks = async (req, res, next) => {
     try {
         const { search, tag } = req.query;
@@ -172,19 +175,22 @@ exports.AllWorks = async (req, res, next) => {
                 },
             },
         });
-        res.status(200).send(works);
+        res.status(200).json(works);
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Add a comment to a work
+ */
 exports.Comment = async (req, res, next) => {
     try {
         const { workId, message } = req.body;
 
         if (!workId || !message) {
-            return res.json({
+            return res.status(400).json({
                 message: "กรุณาเขียนคอมเม้นก่อนส่ง",
                 type: "error",
             });
@@ -207,10 +213,22 @@ exports.Comment = async (req, res, next) => {
     }
 };
 
+/**
+ * Like a comment
+ */
 exports.LikeComment = async (req, res, next) => {
     try {
         const { commentId } = req.body;
-        const like = await prisma.commentInWork.update({
+        
+        const comment = await prisma.commentInWork.findUnique({
+            where: { id: commentId }
+        });
+
+        if (!comment) {
+            return res.status(404).json({ message: `ไม่พบคอมเม้น หรือคอมเม้นนี้ถูกลบไปแล้ว`, type: `error` })
+        }
+
+        await prisma.commentInWork.update({
             data: {
                 like: {
                     increment: 1,
@@ -220,23 +238,30 @@ exports.LikeComment = async (req, res, next) => {
                 id: commentId,
             },
         });
-        if (!like) {
-            return res.status(200).json({ message: `ไม่พบคอมเม้น หรือคอมเม้นนี้ถูกลบไปแล้ว`, type: `success`})
-        }
-        res.status(201).json({message: `กดถูกใจความคิดเห็นคอมเม้นเรียบร้อยแล้ว`, type: `success`})
+        
+        res.status(200).json({ message: `กดถูกใจความคิดเห็นคอมเม้นเรียบร้อยแล้ว`, type: `success` })
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Get work statistics for the current user
+ */
 exports.UserWorkStatistics = async (req, res, next) => {
     try {
-        const id = req.user.id;
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized', type: 'error' });
+        }
+
+        const { id } = req.user;
+        const parsedId = id;
+
         const workPosts = await prisma.work.findMany({
             where: {
                 postBy: {
-                    id: isNaN(parseInt(id)) ? undefined : parseInt(id),
+                    id: parsedId,
                 },
             },
             select: {
@@ -258,17 +283,13 @@ exports.UserWorkStatistics = async (req, res, next) => {
                     {
                         operators: {
                             some: {
-                                userId: isNaN(parseInt(id))
-                                    ? undefined
-                                    : parseInt(id),
+                                userId: parsedId,
                             },
                         },
                     },
                     {
                         NOT: {
-                            postById: isNaN(parseInt(id))
-                                ? undefined
-                                : parseInt(id),
+                            postById: parsedId,
                         },
                     },
                 ],
@@ -294,16 +315,19 @@ exports.UserWorkStatistics = async (req, res, next) => {
             workParticipated: workParticipated,
         };
 
-        res.status(200).send(result);
+        res.status(200).json(result);
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Get specific work data for editing
+ */
 exports.getWorkForEdit = async (req, res, next) => {
     try {
-        const id = req.query;
+        const { id } = req.query;
 
         const work = await prisma.work.findFirst({
             where: {
@@ -317,17 +341,14 @@ exports.getWorkForEdit = async (req, res, next) => {
                 images: true,
                 operators: {
                     select: {
-                        id: true,
+                        userId: true,
                     },
                 },
                 tags: {
                     select: {
-                        id: true,
                         tag: {
                             select: {
                                 id: true,
-                                title: true,
-                                icon: true,
                             },
                         },
                     },
@@ -338,30 +359,35 @@ exports.getWorkForEdit = async (req, res, next) => {
         });
 
         if (!work) {
-            return res.status(200).send(null);
+            return res.status(404).json({ message: "Work not found", type: "error" });
         }
 
-        work.operators = work.operators.map((operator) => operator.id);
-        work.tags = work.tags.map((tag) => tag.id);
+        // Map to simpler format for the frontend
+        work.operators = work.operators.map((op) => op.userId);
+        work.tags = work.tags.map((t) => t.tag.id);
 
-        res.status(200).send(work);
+        res.status(200).json(work);
     } catch (e) {
         e.status = 400;
         next(e);
     }
 };
 
+/**
+ * Get works relevant to the user (owned or participated)
+ */
 exports.UserWorks = async (req, res, next) => {
     try {
         const { search, page = 1, pageSize = 5, filter = "" } = req.query;
-        const id = req.user.id;
+        
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized', type: 'error' });
+        }
 
+        const { id } = req.user;
         const pageNumber = parseInt(page);
         const size = parseInt(pageSize);
-
         const skip = (pageNumber - 1) * size;
-
-        const parsedId = isNaN(parseInt(id)) ? undefined : parseInt(id);
 
         const searchFilter = search
             ? {
@@ -385,17 +411,17 @@ exports.UserWorks = async (req, res, next) => {
         if (filter === "owner") {
             whereCondition = {
                 postBy: {
-                    id: parsedId,
+                    id: id,
                 },
             };
         } else if (filter === "participated") {
             whereCondition = {
                 NOT: {
-                    postById: parsedId,
+                    postById: id,
                 },
                 operators: {
                     some: {
-                        userId: parsedId,
+                        userId: id,
                     },
                 },
             };
@@ -403,15 +429,15 @@ exports.UserWorks = async (req, res, next) => {
             whereCondition = {
                 OR: [
                     {
-                        postById: parsedId,
+                        postById: id,
                     },
                     {
                         NOT: {
-                            postById: parsedId,
+                            postById: id,
                         },
                         operators: {
                             some: {
-                                userId: parsedId,
+                                userId: id,
                             },
                         },
                     },
@@ -456,6 +482,9 @@ exports.UserWorks = async (req, res, next) => {
                     },
                     skip: skip,
                     take: size,
+                    orderBy: {
+                        updatedAt: 'desc'
+                    }
                 }),
 
                 prisma.work.count({
@@ -464,18 +493,18 @@ exports.UserWorks = async (req, res, next) => {
 
                 prisma.work.count({
                     where: {
-                        postById: parsedId,
+                        postById: id,
                     },
                 }),
 
                 prisma.work.count({
                     where: {
                         NOT: {
-                            postById: parsedId,
+                            postById: id,
                         },
                         operators: {
                             some: {
-                                userId: parsedId,
+                                userId: id,
                             },
                         },
                     },
@@ -503,34 +532,25 @@ exports.UserWorks = async (req, res, next) => {
         next(e);
     }
 };
+
+/**
+ * Add a new work
+ */
 exports.AddWork = async (req, res, next) => {
     try {
-        const id = req.user.id;
+        if (!req.user) {
+            return res.status(401).json({ message: 'Unauthorized', type: 'error' });
+        }
+
+        const { id } = req.user;
         const data = req.body;
-        const images = req.files;
+        const images = req.files || [];
 
-        const tagIds = JSON.parse(data.tags);
-        const operatorIds = JSON.parse(data.operators);
+        const tagIds = data.tags ? JSON.parse(data.tags) : [];
+        const operatorIds = data.operators ? JSON.parse(data.operators) : [];
 
-        const existingTags = await prisma.workTag.findMany({
-            where: {
-                id: {
-                    in: tagIds,
-                },
-            },
-        });
-
-        const newTagIds = tagIds.filter(
-            (tagId) =>
-                !existingTags.some((existingTag) => existingTag.id === tagId)
-        );
-
-        const newTags =
-            newTagIds.length > 0
-                ? await prisma.workTag.createMany({
-                      data: newTagIds.map((tagId) => ({ id: tagId })),
-                  })
-                : [];
+        // Filter out the current user if they are already in operatorIds to avoid duplication
+        const otherOperatorIds = operatorIds.filter(opId => opId !== id);
 
         await prisma.work.create({
             data: {
@@ -549,23 +569,18 @@ exports.AddWork = async (req, res, next) => {
                     },
                 },
                 tags: {
-                    connect: existingTags.map((tag) => ({ id: tag.id })),
-                    create: newTags.map((tag) => ({ id: tag.id })),
+                    connect: tagIds.map((tagId) => ({ id: tagId })),
                 },
                 operators: {
-                    create: {
-                        userId: id,
-                    },
-                    createMany: {
-                        data: operatorIds.map((operatorId) => ({
-                            userId: operatorId,
-                        })),
-                    },
+                    create: [
+                        { userId: id }, // Poster is always an operator
+                        ...otherOperatorIds.map(opId => ({ userId: opId }))
+                    ]
                 },
             },
         });
 
-        res.status(200).json({
+        res.status(201).json({
             message: "โพสต์งานเรียบร้อยแล้ว",
             type: "success",
         });
@@ -574,53 +589,56 @@ exports.AddWork = async (req, res, next) => {
         next(e);
     }
 };
+
+/**
+ * Get options for creating a work (users and tags)
+ */
 exports.OptionsForAddWork = async (req, res, next) => {
     try {
-        const users = await prisma.user.findMany({
-            select: {
-                id: true,
-                fullName: true,
-                partyList: {
-                    select: {
-                        id: true,
-                        fullName: true,
-                        nickName: true,
-                        profile_image_128x128: true,
-                        profile_image_full: true,
-                        roles: {
-                            select: {
-                                id: true,
-                                role: true,
+        const [users, tags] = await Promise.all([
+            prisma.user.findMany({
+                select: {
+                    id: true,
+                    fullName: true,
+                    partyList: {
+                        select: {
+                            id: true,
+                            fullName: true,
+                            nickName: true,
+                            profile_image_128x128: true,
+                            profile_image_full: true,
+                            roles: {
+                                select: {
+                                    id: true,
+                                    role: true,
+                                },
                             },
+                            order: true,
                         },
-                        order: true,
                     },
                 },
-            },
-            orderBy: {
-                partyList: {
-                    order: "asc",
+                orderBy: {
+                    partyList: {
+                        order: "asc",
+                    },
                 },
-            },
-        });
+            }),
+            prisma.workTag.findMany({
+                select: {
+                    id: true,
+                    title: true,
+                    icon: true,
+                },
+                orderBy: {
+                    id: "asc",
+                },
+            })
+        ]);
 
-        const tags = await prisma.workTag.findMany({
-            select: {
-                id: true,
-                title: true,
-                icon: true,
-            },
-            orderBy: {
-                id: "asc",
-            },
-        });
-
-        const options = {
+        res.status(200).json({
             users,
             tags,
-        };
-
-        res.status(200).send(options);
+        });
     } catch (e) {
         e.status = 400;
         next(e);

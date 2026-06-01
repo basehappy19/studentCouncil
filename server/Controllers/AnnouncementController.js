@@ -33,14 +33,19 @@ exports.GetAnnouncement = async (req, res, next) => {
             },
         });
 
-        res.status(200).send(announcement);
+        if (!announcement) {
+            return res.status(404).json({ message: "Announcement not found", type: "error" });
+        }
+
+        return res.status(200).json(announcement);
     } catch (e) {
-        e.status = 400;
+        console.error("[GetAnnouncement Error]:", e);
+        e.status = e.status || 500;
         next(e);
     }
 };
 
-exports.AllAnnouncements = async (req, res) => {
+exports.AllAnnouncements = async (req, res, next) => {
     try {
         const { search, page = 1, pageSize = 3 } = req.query;
 
@@ -110,7 +115,7 @@ exports.AllAnnouncements = async (req, res) => {
                 take: 1,
             });
 
-        res.status(200).json({
+        return res.status(200).json({
             announcements: announcements,
             highlight: highlightAnnouncement,
             pagination: {
@@ -121,7 +126,8 @@ exports.AllAnnouncements = async (req, res) => {
             },
         });
     } catch (e) {
-        e.status = 400;
+        console.error("[AllAnnouncements Error]:", e);
+        e.status = e.status || 500;
         next(e);
     }
 };

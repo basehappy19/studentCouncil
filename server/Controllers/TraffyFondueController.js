@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const validateRequiredFields = require("../Functions/ValidateRequiredFields");
 
 exports.getLocations = async (req, res, next) => {
     try {
@@ -209,7 +210,7 @@ exports.getProblems = async (req, res, next) => {
             }
         });
 
-        res.status(200).send(problems);
+        res.status(200).json(problems);
     } catch (e) {
         e.status = 400;
         next(e);
@@ -227,10 +228,15 @@ exports.ReportProblem = async (req, res, next) => {
             issueDescription,
         } = req.body;
 
-        if (!locationId || !issueTitle || !issueDescription) {
-            return res
-                .status(400)
-                .json({ message: "กรุณากรอกให้ครบถ้วน", type: `error` });
+        const requiredFields = {
+            locationId: "Location ID",
+            issueTitle: "Issue Title",
+            issueDescription: "Issue Description",
+        };
+
+        const errorMessage = validateRequiredFields(req.body, requiredFields);
+        if (errorMessage) {
+            return res.status(400).json({ message: errorMessage, type: "error" });
         }
 
         await prisma.problem.create({
@@ -241,9 +247,9 @@ exports.ReportProblem = async (req, res, next) => {
                     ? undefined
                     : parseInt(studentId),
                 reportedImages: {
-                    create: req.files.map((image) => ({
+                    create: req.files ? req.files.map((image) => ({
                         path: `${req.uploadTimestamp}/${image.filename}`,
-                    })),
+                    })) : [],
                 },
                 location: {
                     create: {
