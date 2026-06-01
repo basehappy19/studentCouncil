@@ -33,7 +33,20 @@ router.get("/api-docs", validateKey, (req, res) => {
             return res.status(500).json({ success: false, message: "Cannot read log file" });
         }
 
-        const logs = JSON.parse(data || "[]");
+        const logs = data
+            .trim()
+            .split("\n")
+            .filter((line) => line.trim() !== "")
+            .map((line) => {
+                try {
+                    return JSON.parse(line);
+                } catch (e) {
+                    console.error("Error parsing log line:", e);
+                    return null;
+                }
+            })
+            .filter((log) => log !== null);
+
         res.json({
             success: true,
             logs: logs,
