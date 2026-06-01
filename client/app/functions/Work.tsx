@@ -1,342 +1,164 @@
 'use server'
+
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
+import { baseFetcher } from "@/lib/fetcher";
+import { Work, Tag, WorkStatistics, UserWorks, Option } from "../interfaces/Work/Work";
 
-export const AllWorks = async ({ search, tag }: { search: string | undefined, tag: string | undefined }) => {
-    try {
-        const params = new URLSearchParams();
-        if (search) params.append("search", search.toString());
-        if (tag) params.append("tag", tag.toString());
-
-        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/works?${params.toString()}`;
-        const res = await fetch(url, { next: { revalidate: 0 } });
-        if (!res.ok) {
-            throw new Error(`Failed to fetch works`);
-        }
-        return res.json();
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Fetch Works: ${e.message}`);
-            throw new Error("Failed to Works");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed to Works");
-        }
-    }
+/**
+ * Helper to get authorization header
+ */
+const getAuthHeader = async () => {
+    const session = await auth();
+    return session?.user?.token ? { 'Authorization': session.user.token } : {};
 };
 
-export const AllTagsWithWork = async () => {
-    try {
+/**
+ * Fetch all works with optional search and tag filtering
+ */
+export const AllWorks = async ({ 
+    search, 
+    tag 
+}: { 
+    search?: string; 
+    tag?: string; 
+}): Promise<Work[]> => {
+    const params = new URLSearchParams();
+    if (search) params.append("search", search);
+    if (tag) params.append("tag", tag);
 
-        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/work/tags`;
-        const res = await fetch(url, { next: { revalidate: 0 } });
-        if (!res.ok) {
-            throw new Error(`Failed To Tags With Work`);
-        }
-        return res.json();
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Fetch Tags With Work: ${e.message}`);
-            throw new Error("Failed To Tags With Work");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed To Tags With Work");
-        }
-    }
+    return baseFetcher<Work[]>(`/works?${params.toString()}`);
 };
 
-export const getUserWorkStatistics = async () => {
-    try {
-        const session = await auth();
-
-        if (!session) {
-            return null;
-        }
-        const token = session.user.token;
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/userWorkStatistics`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            },
-            next: { revalidate: 0 }
-        });
-        if (!res.ok) {
-            throw new Error(`Failed to fetch UserWorkStatistics`);
-        }
-        return res.json();
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Fetch UserWorkStatistics: ${e.message}`);
-            throw new Error("Failed to UserWorkStatistics");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed to UserWorkStatistics");
-        }
-    }
+/**
+ * Fetch all tags that have associated works
+ */
+export const AllTagsWithWork = async (): Promise<Tag[]> => {
+    return baseFetcher<Tag[]>("/work/tags");
 };
 
-export const getWork = async ({ id: id }: { id: number | null; }) => {
-    try {
+/**
+ * Fetch work statistics for the currently authenticated user
+ */
+export const getUserWorkStatistics = async (): Promise<WorkStatistics | null> => {
+    const headers = await getAuthHeader();
+    if (!headers.Authorization) return null;
 
-        const params = new URLSearchParams();
-        if (id) params.append("id", id.toString());
-        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/work?${params.toString()}`;
-
-        const res = await fetch(url, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            next: { revalidate: 0 }
-        });
-
-        if (!res.ok) {
-            throw new Error(`Failed to fetch Work`);
-        }
-        const data = await res.json();
-
-        if (!data || Object.keys(data).length === 0 || id === null) {
-            return null;
-        }
-
-        return data;
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Fetch Work: ${e.message}`);
-            throw new Error("Failed to Work");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed to Work");
-        }
-    }
+    return baseFetcher<WorkStatistics>("/userWorkStatistics", { headers });
 };
 
+/**
+ * Fetch a single work by ID
+ */
+export const getWork = async ({ id }: { id: number | null }): Promise<Work | null> => {
+    if (id === null) return null;
+    const params = new URLSearchParams({ id: id.toString() });
+    return baseFetcher<Work | null>(`/work?${params.toString()}`);
+};
+
+/**
+ * Fetch works related to the currently authenticated user
+ */
 export const getUserWorks = async ({
     search,
     page = 1,
     filter = ""
 }: {
-    search: string | undefined;
-    page: number | undefined;
-    filter: string | undefined;
-}) => {
-    try {
-        const session = await auth();
+    search?: string;
+    page?: number;
+    filter?: string;
+}): Promise<UserWorks | null> => {
+    const headers = await getAuthHeader();
+    if (!headers.Authorization) return null;
 
-        if (!session) {
-            return null;
-        }
+    const params = new URLSearchParams();
+    if (search) params.append("search", search);
+    if (page) params.append("page", page.toString());
+    if (filter) params.append("filter", filter);
 
-        const token = session.user.token;
-
-        const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-        };
-
-        if (token) {
-            headers['Authorization'] = token;
-        }
-
-        const params = new URLSearchParams();
-        if (search) params.append("search", search);
-        if (page) params.append("page", page.toString());
-        if (filter) params.append("filter", filter);
-        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/userWorks?${params.toString()}`;
-
-        const res = await fetch(url, {
-            headers: headers,
-            next: { revalidate: 0 }
-        });
-
-        if (!res.ok) {
-            throw new Error(`Failed to fetch UserWorks`);
-        }
-
-        return res.json();
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Fetch UserWorks: ${e.message}`);
-            throw new Error("Failed to UserWorks");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed to UserWorks");
-        }
-    }
+    return baseFetcher<UserWorks>(`/userWorks?${params.toString()}`, { headers });
 };
 
-export const getOptionsForAddWork = async () => {
-    try {
-        const session = await auth();
+/**
+ * Fetch options (users, tags) for adding a new work
+ */
+export const getOptionsForAddWork = async (): Promise<Option | null> => {
+    const headers = await getAuthHeader();
+    if (!headers.Authorization) return null;
 
-        if (!session) {
-            return null;
-        }
+    return baseFetcher<Option>("/optionsForAddWork", { headers });
+};
 
-        const token = session.user.token;
+/**
+ * Add a new work entry with images and metadata
+ */
+export const AddWork = async ({
+    title, 
+    description, 
+    images, 
+    operators, 
+    tags
+}: {
+    title: string;
+    description: string;
+    images: File[];
+    operators: number[];
+    tags: number[];
+}): Promise<any> => {
+    const session = await auth();
+    if (!session?.user?.token) return null;
 
-        const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-        };
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    if (operators) formData.append('operators', JSON.stringify(operators));
+    if (tags) formData.append('tags', JSON.stringify(tags));
 
-        if (token) {
-            headers['Authorization'] = token;
-        }
-
-        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/optionsForAddWork`;
-
-        const res = await fetch(url, {
-            headers: headers,
-            next: { revalidate: 0 }
-        });
-
-        if (!res.ok) {
-            throw new Error(`Failed to fetch UserWorks`);
-        }
-
-        return res.json();
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Fetch Options: ${e.message}`);
-            throw new Error("Failed to Options");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed to Options");
-        }
+    if (images && images.length > 0) {
+        images.forEach(image => formData.append('images', image));
+    } else {
+        throw new Error('At least one image is required');
     }
-}
 
-export const AddWork = async (
-    {
-        title, description, images, operators, tags
-    }: {
-        title: string,
-        description: string,
-        images: File[],
-        operators: number[],
-        tags: number[]
-    }
-) => {
-    try {
-        const session = await auth();
-
-        if (!session) {
-            return null;
-        }
-
-        const token = session.user.token;
-
-        const headers: Record<string, string> = {
+    const result = await baseFetcher("/work", {
+        method: 'POST',
+        headers: {
+            'Authorization': session.user.token,
             'X-Upload-Type': 'work',
-        };
+        },
+        body: formData,
+    });
 
-        if (token) {
-            headers['Authorization'] = token;
-        }
-
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('description', description);
-        if (operators) {
-            formData.append('operators', JSON.stringify(operators));
-        }
-        if (tags) {
-            formData.append('tags', JSON.stringify(tags));
-        }
-
-        if (images && images.length > 0) {
-            images.forEach(image => {
-                if (image instanceof File) {
-                    formData.append('images', image);
-                }
-            });
-        } else {
-            throw new Error('At least one image is required');
-        }
-
-        const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/work", {
-            method: 'POST',
-            headers: headers,
-            body: formData,
-        });
-
-        if (!res.ok) {
-            throw new Error('Failed To Add Work');
-        }
-        revalidatePath(`/dashboard/works`);
-        return await res.json();
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Add Work ${e.message}`);
-            throw new Error("Failed to Add Work");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed to Add Work");
-        }
-    }
+    revalidatePath(`/dashboard/works`);
+    return result;
 };
 
-export const CommentWork = async ({workId, message} : { workId: number, message: string }) => {
-    try {
-        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/work/comment`;
+/**
+ * Add a comment to a work
+ */
+export const CommentWork = async ({ 
+    workId, 
+    message 
+}: { 
+    workId: number; 
+    message: string; 
+}): Promise<any> => {
+    const result = await baseFetcher("/work/comment", {
+        method: 'POST',
+        body: JSON.stringify({ workId, message }),
+    });
+    revalidatePath(`/works`);
+    return result;
+};
 
-        const res = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                workId,
-                message
-            }),
-        })
-
-        if(!res.ok){
-            throw new Error('Failed To Comment');
-        }
-
-        revalidatePath(`/works`);
-        return await res.json();
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Comment: ${e.message}`);
-            throw new Error("Failed To Comment");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed To Comment");
-        }
-    }
-}
-
-export const LikeComment = async ({commentId} : { commentId: number }) => {
-    try {
-        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/work/comment`;
-
-        const res = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                commentId,
-            }),
-        })
-
-        if(!res.ok){
-            throw new Error('Failed To Like Comment');
-        }
-
-        revalidatePath(`/works`);
-        return await res.json();
-    } catch (e: unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Like Comment: ${e.message}`);
-            throw new Error("Failed To Like Comment");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed To Like Comment");
-        }
-    }
-}
-
-
-
+/**
+ * Like a comment on a work
+ */
+export const LikeComment = async ({ commentId }: { commentId: number }): Promise<any> => {
+    const result = await baseFetcher("/work/comment", {
+        method: 'PUT',
+        body: JSON.stringify({ commentId }),
+    });
+    revalidatePath(`/works`);
+    return result;
+};

@@ -1,34 +1,32 @@
 'use server'
+
 import { auth } from "@/auth";
 import { UserData } from "../interfaces/Auth/User";
+import { baseFetcher } from "@/lib/fetcher";
 
+/**
+ * Get the currently authenticated user's data and token
+ */
 export const getUserData = async (): Promise<UserData | null> => {
     try {
         const session = await auth();
         
-        if (!session) {
+        if (!session?.user?.token) {
             return null;  
         }
 
-        const token = session?.user?.token || '';
-
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/user/data`, {
+        const data = await baseFetcher<UserData['data']>(`/user/data`, {
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            },
-            next: { revalidate: 0 }
+                'Authorization': session.user.token
+            }
         });
 
-        if (!res.ok) {
-            throw new Error(`Failed To Fetch User data: ${res.status} ${res.statusText}`);
-        }
-
-        const data = await res.json();
-
-        return { data, token };
-    } catch (e: unknown) {
-        console.error(`Failed to fetch user data: ${e instanceof Error ? e.message : 'Unknown error'}`);
+        return { 
+            data, 
+            token: session.user.token 
+        };
+    } catch (error) {
+        console.error("[getUserData Error]:", error instanceof Error ? error.message : error);
         return null;  
     }
 };

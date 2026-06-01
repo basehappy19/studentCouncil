@@ -1,173 +1,90 @@
 'use server'
 
 import { revalidatePath } from "next/cache";
+import { baseFetcher } from "@/lib/fetcher";
+import { Policy, Status, StatisticProgresses } from "../interfaces/Policy/Policy";
 
-export const RecommendPolicies = async () => {
-  try {
-    const res = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/policies_recommend", { next: { revalidate: 0 } });
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
-    return res.json();
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error(`Error fetching recommendations: ${e.message}`);
-      throw new Error("Failed to fetch recommendations");
-    } else {
-      console.error('An unknown error occurred');
-      throw new Error("Failed to fetch recommendations");
-    }
-  }
-}
-
-export const AllPolicies = async ({ category = undefined, subCategory = undefined }: { category: string | undefined, subCategory: string | undefined }) => {
-  try {
-    const queryParams = new URLSearchParams();
-    if (category) queryParams.append('category', category);
-    if (subCategory) queryParams.append('subCategory', subCategory);
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/policies?${queryParams.toString()}`, { next: { revalidate: 0 } });
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
-    return res.json();
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error(`Error fetching all policies: ${e.message}`);
-      throw new Error("Failed to all policies");
-    } else {
-      console.error('An unknown error occurred');
-      throw new Error("Failed to all policies");
-    }
-  }
+/**
+ * Fetch recommended policies
+ */
+export const RecommendPolicies = async (): Promise<Policy[]> => {
+    return baseFetcher<Policy[]>("/policies_recommend");
 };
 
-export const CommentPolicy = async ({ policyId, message }: { policyId: number, message: string }) => {
-  try {
-    const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/policy/comment`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ policyId: policyId, message: message}),
+/**
+ * Fetch all policies with optional filtering
+ */
+export const AllPolicies = async ({ 
+    category, 
+    subCategory 
+}: { 
+    category?: string; 
+    subCategory?: string; 
+}): Promise<Policy[]> => {
+    const params = new URLSearchParams();
+    if (category) params.append('category', category);
+    if (subCategory) params.append('subCategory', subCategory);
+
+    return baseFetcher<Policy[]>(`/policies?${params.toString()}`);
+};
+
+/**
+ * Add a comment to a policy
+ */
+export const CommentPolicy = async ({ 
+    policyId, 
+    message 
+}: { 
+    policyId: number; 
+    message: string; 
+}): Promise<any> => {
+    const result = await baseFetcher("/policy/comment", {
+        method: 'POST',
+        body: JSON.stringify({ policyId, message }),
     });
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
     revalidatePath(`/policy/detail/${policyId}`);
-    return res.json();
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error(`Error Send Comment Policy: ${e.message}`);
-      throw new Error("Failed To Send Comment Policy");
-    } else {
-      console.error('An unknown error occurred');
-      throw new Error("Failed To Send Comment Policy");
-    }
-  }
-}
+    return result;
+};
 
-export const LikePolicy = async ({ policyId }: { policyId: number }) => {
-  try {
-    
-
-    const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/policy/like`;
-    const res = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ policyId }),
+/**
+ * Like a policy
+ */
+export const LikePolicy = async ({ policyId }: { policyId: number }): Promise<any> => {
+    const result = await baseFetcher("/policy/like", {
+        method: 'PUT',
+        body: JSON.stringify({ policyId }),
     });
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
     revalidatePath(`/policy/detail/${policyId}`);
-    return res.json();
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error(`Error Like Policy: ${e.message}`);
-      throw new Error("Failed To Like Policy");
-    } else {
-      console.error('An unknown error occurred');
-      throw new Error("Failed To Like Policy");
-    }
-  }
-}
-
-export const AllPolicyProgresses = async (category: string | undefined) => {
-  try {
-    const queryParams = new URLSearchParams();
-    if (category) queryParams.set('category', category);
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/policy_track?${queryParams.toString()}`, { next: { revalidate: 0 } });
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
-    return res.json();
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error(`Error fetching policy progress: ${e.message}`);
-      throw new Error("Failed to policy progress:");
-    } else {
-      console.error('An unknown error occurred');
-      throw new Error("Failed to policy progress:");
-    }
-  }
+    return result;
 };
 
-export const AllStatuses = async () => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/policy_statuses`, { next: { revalidate: 0 } });
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
-    return res.json();
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error(`Error fetching Policy statuses: ${e.message}`);
-      throw new Error("Failed To Fetch Policy statuses");
-    } else {
-      console.error('An unknown error occurred');
-      throw new Error("Failed To Fetch Policy statuses");
-    }
-  }
+/**
+ * Fetch policy progresses with optional category filtering
+ */
+export const AllPolicyProgresses = async (category?: string): Promise<Policy[]> => {
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+
+    return baseFetcher<Policy[]>(`/policy_track?${params.toString()}`);
 };
 
-export const StatisticProgresses = async () => {
-  try {
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/policy_track_statistic`, { next: { revalidate: 0 } });
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
-    return res.json();
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error(`Error fetching Policy Statistic: ${e.message}`);
-      throw new Error("Failed To Fetch Policy Statistic");
-    } else {
-      console.error('An unknown error occurred');
-      throw new Error("Failed To Fetch Policy Statistic");
-    }
-  }
+/**
+ * Fetch all policy statuses
+ */
+export const AllStatuses = async (): Promise<Status[]> => {
+    return baseFetcher<Status[]>("/policy_statuses");
 };
 
-export const getPolicy = async (id: string) => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/policy?id=${id}`, { next: { revalidate: 0 } });
-    if (!res.ok) {
-      throw new Error(res.statusText);
-    }
-    return res.json();
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      console.error(`Error fetching Policy: ${e.message}`);
-      throw new Error("Failed To Fetch Policy");
-    } else {
-      console.error('An unknown error occurred');
-      throw new Error("Failed To Fetch Policy");
-    }
-  }
+/**
+ * Fetch policy track statistics
+ */
+export const StatisticProgresses = async (): Promise<StatisticProgresses> => {
+    return baseFetcher<StatisticProgresses>("/policy_track_statistic");
+};
+
+/**
+ * Fetch a single policy by ID
+ */
+export const getPolicy = async (id: string): Promise<Policy> => {
+    return baseFetcher<Policy>(`/policy?id=${id}`);
 };

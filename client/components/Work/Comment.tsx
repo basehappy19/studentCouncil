@@ -7,7 +7,7 @@ import { Work } from '@/app/interfaces/Work/Work';
 import { Response } from '@/app/interfaces/Response';
 import { CommentWork, LikeComment } from '@/app/functions/Work';
 import { toast } from 'react-toastify';
-import { formatRelativeTime } from '@/app/functions/Date';
+import { formatRelativeTime } from '@/lib/utils';
 
 const Comment = ({ work }: { work: Work }) => {
     const [newComment, setNewComment] = useState<string>('');

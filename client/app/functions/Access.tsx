@@ -1,5 +1,11 @@
 'use server'
-export const AllAccesses = async () => {
-    const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/accesses",{ next: { revalidate: 0 } });
-    return response.json();
-}
+
+import { baseFetcher } from "@/lib/fetcher";
+import { Access } from "../interfaces/User/User";
+
+/**
+ * Fetch all access levels
+ */
+export const AllAccesses = async (): Promise<Access[]> => {
+    return baseFetcher<Access[]>("/accesses");
+};

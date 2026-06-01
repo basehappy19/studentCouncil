@@ -1,36 +1,44 @@
 'use server'
 
 import { revalidatePath } from "next/cache";
+import { baseFetcher } from "@/lib/fetcher";
 
-export const GetFakbokMessages = async () => {
-    const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/fakbok", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
-    return response.json();
+export interface Fakbok {
+    id: number;
+    likes: number;
+    color: string;
+    content: string;
+    publicId: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
-export const AddFakbokMessage = async (content: string) => {
-    const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/fakbok", {
+/**
+ * Fetch all Fakbok messages
+ */
+export const GetFakbokMessages = async (): Promise<Fakbok[]> => {
+    return baseFetcher<Fakbok[]>("/fakbok");
+}
+
+/**
+ * Add a new Fakbok message
+ */
+export const AddFakbokMessage = async (content: string): Promise<any> => {
+    const result = await baseFetcher("/fakbok", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
         body: JSON.stringify({ content })
     });
-    revalidatePath('/fakbok')
-    return response.json();
+    revalidatePath('/fakbok');
+    return result;
 }
 
-export const LikeFakbokMessage = async (id: string) => {
-    const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + `/fakbok/like/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        }
+/**
+ * Like a Fakbok message
+ */
+export const LikeFakbokMessage = async (id: string): Promise<any> => {
+    const result = await baseFetcher(`/fakbok/like/${id}`, {
+        method: "PUT"
     });
-    revalidatePath('/fakbok')
-    return response.json();
+    revalidatePath('/fakbok');
+    return result;
 }

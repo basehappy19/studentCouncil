@@ -1,58 +1,58 @@
 'use server'
 
-export const AllBudget = async () => {
-    const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/budget",{ next: { revalidate: 0 } });
-    return response.json();
+import { baseFetcher } from "@/lib/fetcher";
+import { Budget } from "../interfaces/Budget/Budget";
+
+export interface IncomeExpenseStatistics {
+    totalIncome: number;
+    totalExpense: number;
+    balance: number;
+    budgets: {
+        budgetData: {
+            title: string;
+            description: string;
+            department: string;
+        };
+        income: number;
+        expense: number;
+        balance: number;
+    }[];
+}
+
+/**
+ * Fetch all budgets
+ */
+export const AllBudget = async (): Promise<Budget[]> => {
+    return baseFetcher<Budget[]>("/budget");
 };
 
-export const getBudgetInDepartment = async (id: number) => {
-    try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_APP_API_URL}/budget/department?id=${id.toString()}`,{ next: { revalidate: 0 } });
-        if(!res.ok) {
-            throw new Error(res.statusText);
-        }
-        return res.json();
-    } catch (e : unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Fetch Budget In Department: ${e.message}`);
-            throw new Error("Failed to Budget In Department");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed to Budget In Department");
-        }
-    }
+/**
+ * Fetch budget details for a specific department
+ */
+export const getBudgetInDepartment = async (id: number): Promise<Budget> => {
+    return baseFetcher<Budget>(`/budget/department?id=${id}`);
 };
 
-export const getIncomeExpenseStatistics = async ({month,year}:{month: string | undefined, year: string | undefined}) => {
-    try {
-        const params = new URLSearchParams();
-        if (month) params.append("month", month.toString());
-        if (year) params.append("year", year.toString());
-        const url = `${process.env.NEXT_PUBLIC_APP_API_URL}/budget/statistics/income_expense?${params.toString()}`;
+/**
+ * Fetch global income and expense statistics with optional month/year filtering
+ */
+export const getIncomeExpenseStatistics = async ({
+    month,
+    year
+}: {
+    month?: string;
+    year?: string;
+}): Promise<IncomeExpenseStatistics> => {
+    const params = new URLSearchParams();
+    if (month) params.append("month", month);
+    if (year) params.append("year", year);
 
-        const res = await fetch(url,{ next: { revalidate: 0 } });
-        if(!res.ok) {
-            throw new Error(res.statusText);
-        }
-        return res.json();
-    } catch (e : unknown) {
-        if (e instanceof Error) {
-            console.error(`Error Fetch IncomeExpenseStatistics: ${e.message}`);
-            throw new Error("Failed to IncomeExpenseStatistics");
-        } else {
-            console.error('An unknown error occurred');
-            throw new Error("Failed to IncomeExpenseStatistics");
-        }
-    }
+    return baseFetcher<IncomeExpenseStatistics>(`/budget/statistics/income_expense?${params.toString()}`);
 };
 
-export const IncomeExpenseStatisticsById = async (id: number) => {
-    const response = await fetch(process.env.NEXT_PUBLIC_APP_API_URL + "/statistics/budget/income_expense/"+id,{ next: { revalidate: 0 } });
-    return response.json();
+/**
+ * Fetch income and expense statistics for a specific budget ID
+ */
+export const IncomeExpenseStatisticsById = async (id: number): Promise<any[]> => {
+    return baseFetcher<any[]>(`/statistics/budget/income_expense/${id}`);
 };
-
-  
-  
-    
-  
-  
