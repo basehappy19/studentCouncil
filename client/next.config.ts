@@ -34,7 +34,7 @@ const nextConfig: NextConfig = {
         pathname: '/api/Uploads/**',
       }
     ],
-    domains: ['studentownschool.basehappy19.site']
+    domains: ['sc.phukhieo.ac.th', 'studentownschool.com', 'studentownschool.basehappy19.site'],
   },
   experimental: {
     serverActions: {
