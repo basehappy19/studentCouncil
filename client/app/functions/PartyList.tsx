@@ -8,9 +8,10 @@ import { PartyList, Platform, Skill, Message } from "../interfaces/PartyList/par
 /**
  * Helper to get authorization header
  */
-const getAuthHeader = async () => {
+const getAuthHeader = async (): Promise<Record<string, string>> => {
     const session = await auth();
-    return session?.user?.token ? { 'Authorization': session.user.token } : {};
+    const token = session?.user?.token;
+    return token ? { 'Authorization': String(token) } : {};
 };
 
 /**

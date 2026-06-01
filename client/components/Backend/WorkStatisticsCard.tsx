@@ -30,7 +30,9 @@ const StatItem = ({ icon: Icon, count, label, linkHref, linkText, iconColor }: {
 );
 
 const WorkStatisticsCard = async () => {
-    const works: WorkStatistics = await getUserWorkStatistics();
+    const worksResult = await getUserWorkStatistics();
+    if (!worksResult) return null;
+    const works: WorkStatistics = worksResult;
 
     return (
         <Card className="w-full bg-white dark:bg-gray-900 border dark:border-gray-800">

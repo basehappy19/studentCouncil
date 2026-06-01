@@ -17,7 +17,7 @@ export const getUserData = async (): Promise<UserData | null> => {
 
         const data = await baseFetcher<UserData['data']>(`/user/data`, {
             headers: {
-                'Authorization': session.user.token
+                'Authorization': String(session.user.token)
             }
         });
 

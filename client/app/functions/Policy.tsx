@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { baseFetcher } from "@/lib/fetcher";
-import { Policy, Status, StatisticProgresses } from "../interfaces/Policy/Policy";
+import { Policy, Status, StatisticProgresses as IStatisticProgresses } from "../interfaces/Policy/Policy";
 
 /**
  * Fetch recommended policies
@@ -78,8 +78,8 @@ export const AllStatuses = async (): Promise<Status[]> => {
 /**
  * Fetch policy track statistics
  */
-export const StatisticProgresses = async (): Promise<StatisticProgresses> => {
-    return baseFetcher<StatisticProgresses>("/policy_track_statistic");
+export const StatisticProgresses = async (): Promise<IStatisticProgresses> => {
+    return baseFetcher<IStatisticProgresses>("/policy_track_statistic");
 };
 
 /**

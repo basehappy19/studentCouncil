@@ -8,9 +8,10 @@ import { Work, Tag, WorkStatistics, UserWorks, Option } from "../interfaces/Work
 /**
  * Helper to get authorization header
  */
-const getAuthHeader = async () => {
+const getAuthHeader = async (): Promise<Record<string, string>> => {
     const session = await auth();
-    return session?.user?.token ? { 'Authorization': session.user.token } : {};
+    const token = session?.user?.token;
+    return token ? { 'Authorization': String(token) } : {};
 };
 
 /**
@@ -123,7 +124,7 @@ export const AddWork = async ({
     const result = await baseFetcher("/work", {
         method: 'POST',
         headers: {
-            'Authorization': session.user.token,
+            'Authorization': String(session.user.token),
             'X-Upload-Type': 'work',
         },
         body: formData,

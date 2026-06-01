@@ -86,8 +86,12 @@ export const getStatusConfig = (statusType: CheckInType) => {
 };
 
 const CheckInStatusCard = async () => {
-  const status: Omit<CheckIn, 'user'> = await getCheckInStatus();
-  const request: Request = await checkInRequestExist();
+  const statusResult = await getCheckInStatus();
+  const requestResult = await checkInRequestExist();
+  
+  if (!statusResult) return null;
+  const status: Omit<CheckIn, 'user'> = statusResult;
+  const request: Request | null = Array.isArray(requestResult) ? requestResult[0] : requestResult;
   
   const config = getStatusConfig(status.type);
 

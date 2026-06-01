@@ -27,7 +27,7 @@ export const getCheckInStatus = async (): Promise<CheckInInterface | null> => {
 
     return baseFetcher<CheckInInterface | null>('/checkInUser', {
         headers: {
-            'Authorization': session.user.token
+            'Authorization': String(session.user.token)
         },
     });
 };
@@ -38,14 +38,14 @@ export const CheckIn = async ({
 }: { 
     type: CheckInType, 
     reason: string | null 
-}): Promise<CheckInInterface | null> => {
+}): Promise<any> => {
     const session = await auth();
     if (!session?.user?.token) return null;
 
-    const result = await baseFetcher<CheckInInterface>("/checkIn", {
+    const result = await baseFetcher<any>("/checkIn", {
         method: 'POST',
         headers: {
-            'Authorization': session.user.token
+            'Authorization': String(session.user.token)
         },
         body: JSON.stringify({ type, reason }),
     });
@@ -71,7 +71,7 @@ export const getForgetCheckInRequests = async (): Promise<RequestData | null> =>
 
     return baseFetcher<RequestData>('/checkInRequests', {
         headers: {
-            'Authorization': session.user.token
+            'Authorization': String(session.user.token)
         },
     });
 };
@@ -82,7 +82,7 @@ export const checkInRequestExist = async (): Promise<Request[] | null> => {
 
     const data = await baseFetcher<Request[] | null>("/checkInRequest", {
         headers: {
-            'Authorization': session.user.token
+            'Authorization': String(session.user.token)
         },
     });
 
@@ -103,7 +103,7 @@ export const ActionCheckInRequest = async ({
     const result = await baseFetcher<Request>("/actionRequestCheckIn", {
         method: 'PUT',
         headers: {
-            'Authorization': session.user.token
+            'Authorization': String(session.user.token)
         },
         body: JSON.stringify({ requestId, status }),
     });

@@ -21,7 +21,12 @@ export const getPriorityTitle = (priority: Priority) => {
 /**
  * Get CSS styles for announcement priority alerts
  */
-export const getAlertStyles = (priority: Priority) => {
+export const getAlertStyles = (priority: Priority): {
+    container: string;
+    icon: string;
+    title: string;
+    description: string;
+} => {
     switch (priority) {
         case 'NORMAL':
             return {
