@@ -6,11 +6,7 @@ const { upload } = require('../Middlewares/UploadsMiddlewares');
 
 router.get("/votes", AllVotes)
 router.get("/vote/:id", getVote)
-router.delete("/vote", RemoveVote)
-// router.post("/vote", (req, res, next) => {
-//     req.params.fieldName = 'voteDocumentFiles';
-//     req.params.type = 'documents';
-//     next();
-// }, upload, AddVote)
+router.delete("/vote/:id", RemoveVote)
+router.post("/vote", upload.array("documents"), AddVote)
 
 module.exports = router;

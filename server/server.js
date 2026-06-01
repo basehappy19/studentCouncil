@@ -31,12 +31,17 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/Uploads", express.static("Uploads"));
 
-// Middleware to strip /api prefix if present
+// Middleware to strip prefixes if present (/api or /server)
 app.use((req, res, next) => {
-    if (req.url === "/api") {
-        req.url = "/";
-    } else if (req.url.startsWith("/api/")) {
-        req.url = req.url.slice(4);
+    const prefixes = ["/api", "/server"];
+    for (const prefix of prefixes) {
+        if (req.url === prefix) {
+            req.url = "/";
+            break;
+        } else if (req.url.startsWith(prefix + "/")) {
+            req.url = req.url.slice(prefix.length);
+            break;
+        }
     }
     next();
 });

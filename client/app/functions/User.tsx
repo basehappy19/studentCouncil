@@ -8,10 +8,7 @@ export const AllUsers = async (): Promise<User[]> => {
 };
 
 export const getUser = async (id: number): Promise<User> => {
-    return baseFetcher<User>("/user", {
-        method: 'POST',
-        body: JSON.stringify(id)
-    });
+    return baseFetcher<User>(`/user/${id}`);
 };
 
 export const AddUser = async ({ 

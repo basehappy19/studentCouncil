@@ -34,15 +34,15 @@ exports.AllUsers = async (req, res, next) => {
 }
 
 /**
- * Get current user data
+ * Get user data (Self or specific ID)
  */
 exports.User = async (req, res, next) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({ message: 'กรุณาเข้าสู่ระบบ', type: 'error' });
+        const id = req.params.id || (req.user ? req.user.id : null);
+
+        if (!id) {
+            return res.status(401).json({ message: 'กรุณาเข้าสู่ระบบ หรือ ระบุ ID', type: 'error' });
         }
-        
-        const { id } = req.user;
 
         const user = await prisma.user.findUnique({
             where: {
@@ -78,7 +78,7 @@ exports.User = async (req, res, next) => {
  */
 exports.updateUser = async (req, res, next) => {
     try {
-        const { id } = req.query;
+        const { id } = req.params;
         const { email, username, password, fullName, displayName, profileImg, accessId, partylistId } = req.body;
 
         // Basic authorization: user can only update themselves unless they are admin (accessId 3)
@@ -148,7 +148,7 @@ exports.updateUser = async (req, res, next) => {
  */
 exports.updateUserProfile = async (req, res, next) => {
     try {
-        const { id } = req.query;
+        const { id } = req.params;
 
         // Basic authorization
         if (req.user.id !== id && req.user.accessId !== 3) {
@@ -204,7 +204,7 @@ exports.RemoveUser = async (req, res, next) => {
             return res.status(403).json({ message: 'คุณไม่มีสิทธิ์ลบผู้ใช้', type: 'error' });
         }
 
-        const { id } = req.query;
+        const { id } = req.params;
 
         const user = await prisma.user.findFirst({
             where: {

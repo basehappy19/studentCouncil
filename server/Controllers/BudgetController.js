@@ -1,6 +1,20 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+exports.AllBudget = async (req, res, next) => {
+    try {
+        const budgets = await prisma.budget.findMany({
+            include: {
+                department: true
+            }
+        });
+        return res.status(200).json(budgets);
+    } catch (e) {
+        console.error("[AllBudget Error]:", e);
+        next(e);
+    }
+};
+
 exports.BudgetInDepartment = async (req, res, next) => {
     try {
         const { id } = req.query;
@@ -39,7 +53,7 @@ exports.BudgetInDepartment = async (req, res, next) => {
 
 exports.IncomeExpenseStatisticsById = async (req, res, next) => {
     try {
-        const { id } = req.query;
+        const { id } = req.params;
         const currentDate = new Date();
 
         const month = parseInt(req.query.month) || currentDate.getMonth() + 1;

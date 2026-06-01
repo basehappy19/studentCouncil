@@ -39,6 +39,12 @@
             "allowedAccessIds": []
         },
         {
+            "path": "/budget",
+            "method": "GET",
+            "requiresAuth": false,
+            "allowedAccessIds": []
+        },
+        {
             "path": "/budget/department",
             "method": "GET",
             "requiresAuth": false,

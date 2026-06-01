@@ -4,7 +4,18 @@ const path = require('path');
 const accessControl = JSON.parse(fs.readFileSync(path.join(__dirname, 'AccessControl.json'), 'utf-8'));
 
 const AccessControlMiddleware = (req, res, next) => {
-    const pathToCheck = req.originalUrl.startsWith('/api') ? req.originalUrl.replace('/api', '') : req.originalUrl;
+    let pathToCheck = req.originalUrl;
+    const prefixes = ["/api", "/server"];
+    
+    for (const prefix of prefixes) {
+        if (pathToCheck === prefix) {
+            pathToCheck = "/";
+            break;
+        } else if (pathToCheck.startsWith(prefix + "/")) {
+            pathToCheck = pathToCheck.slice(prefix.length);
+            break;
+        }
+    }
 
     const route = accessControl.routes.find(r => {
         const regex = new RegExp(`^${r.path.replace(/:\w+/g, '\\w+')}$`);
